@@ -1,5 +1,7 @@
 user_id,username,password,role,location,email,bio
-a01,arkan,12345,user,bandung,alarfi@gmail.com,seorang pemuda yang ganteng
-b01,budi,abcde,photografer,jakarta
-s01,siti,pass789,user,yogyakarta
-a02,ajumalaka,tilakamu,admin,cimahi
+f001,arkan,12345,finder,bandung,alarfi@gmail.com,seorang pemuda yang ganteng
+p002,budi,abcde,photografer,jakarta,budi123@gmail.com,seorang fotografer profesional
+f003,siti,pass789,finder,yogyakarta,sitiayu@gmail.com,mahasiswi yang rajin dan aktif
+f004,ajumalaka,tilakamu,finder,cimahi,ajumalaka@gmail.com,admin yang berdedikasi tinggi
+muki,ajumdua
+p003,test,testing2
