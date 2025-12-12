@@ -3,7 +3,7 @@ import pandas as pd
 #Variables
 id_nav = 0
 jumlah_nav = 0
-account_db = pd.read_csv('user.csv')
+account_db = pd.read_csv('storage/user.csv')
 
 #Menu Navigasi
 def navBelumLogin():
@@ -41,8 +41,12 @@ def autoIncrementUserId(role_id):
     new_user_id = f"{role_id}{new_number:03}"
     return new_user_id
 
-
-#Utility--
+def askInput(prompt):
+    value = input(prompt)
+    if value.lower() == "batal":
+        print("Operasi dibatalkan, kembali ke menu Sebelumnya")
+        return None
+    return value
 
 def navHub():
     global input_navigasi
@@ -59,40 +63,35 @@ def login(username, password):
     
     return not account.empty
 
+#Utility--
+
 while True:
     
     navHub()
 
     #Login
     if (id_nav == 0 and input_navigasi == 1):
-        print("\n============================ MENU LOGIN =================================")
-        print("Jika Ingin membatalkan login, ketik 'batal' pada username atau password")
+        print("\n============================= MENU LOGIN ==================================")
+        print("Jika Ingin membatalkan login, ketik 'batal' saat input username atau password")
         
-        input_username = input("Masukkan username: ")
-        if (input_username == "batal"):
-            print("Login dibatalkan, kembali ke menu navigasi.")
-        elif (input_username != "batal"):
-            input_password = input("Masukkan password: ")
-            if (input_password == "batal"):
-                print("Login dibatalkan, kembali ke menu navigasi.")
+        input_username = askInput("Masukkan username: ")
+        if (input_username):
+            input_password = askInput("Masukkan password: ")
+            if (input_password):
+                if(login(input_username, input_password)):
+                    print(f"Berhasil login sebagai {input_username}, Selamat datang!")
+                    id_nav = 1
+                else:
+                    print("Gagal login, username atau password salah.")
                 
-        print("=========================================================================")
-        
-        if (input_username == "batal" or input_password == "batal"):
-            print("Login dibatalkan, kembali ke menu navigasi.")
-            
-        elif (login(input_username, input_password)):
-            print(f"Berhasil login sebagai {input_username}, Selamat datang!")
-            id_nav = 1 
-        else:
-            print("Gagal login, username atau password salah.")
+        print("===========================================================================")
     #Login--
     
     #Registrasi
     if (id_nav == 0 and input_navigasi == 2):
         
         while True:
-            print("\n============================ MENU REGISTRASI =================================")
+            print("\n============================= MENU REGISTRASI ==================================")
             print("Apakah anda Photografer atau Finder?")
             print("1. Photografer")
             print("2. Finder")
@@ -100,40 +99,49 @@ while True:
             role_id = "null"
             if (role_picked == "1"):
                 role_id = "p"
+                role_name = "photografer"
                 break
             elif(role_picked == "2"):
                 role_id = "f"
+                role_name = "finder"
                 break
             else:
                 print(f"'{role_picked}' tidak valid, silahkan masukan nomor yang sesuai (1 dan 2)")
                 
-        print("\n============================ MENU REGISTRASI =================================")
-        print("Jika Ingin membatalkan registrasi, ketik 'batal' pada saat menginputkan data")
+        print("\n============================= MENU REGISTRASI ==================================")
+        print("Jika Ingin membatalkan registrasi, ketik 'batal' saat menginputkan data")
         
-        input_username = input("Masukkan username: ")
-        if (input_username == "batal"):
-            print("Registrasi dibatalkan, kembali ke menu navigasi.")
-        elif (input_username != "batal"):
-            input_password = input("Masukkan password: ")
-            if (input_password == "batal"):
-                print("Registrasi dibatalkan, kembali ke menu navigasi.")
-                
-        print("=========================================================================")
+        input_username = askInput("Masukkan username: ")
+
+        if (input_username):
+            input_password = askInput("Masukkan password: ")
+        if (input_password):
+            input_location = askInput("Masukkan lokasi: ")
+        if (input_location):
+            input_email = askInput("Masukkan email: ")
+            if (input_email):
+                input_bio = askInput("Masukkan bio: ")
+                if (input_bio):
+                    new_id = autoIncrementUserId(role_id)
+                    new_account = pd.DataFrame({'user_id': [new_id], 
+                                        'username': [input_username], 
+                                        'password': [input_password], 
+                                        'role': [role_name], 
+                                        'location': [input_location], 
+                                        'email': [input_email], 
+                                        'bio': [input_bio]
+                                        })
+                    new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
+                    print(f"Berhasil registrasi sebagai {input_username}.")
+                    print(f"Selamat Datang, {input_username}")
+                    id_nav = 1
+        print("===========================================================================")
         
-        if (input_username == "batal" or input_password == "batal"):
-            print("Registrasi dibatalkan, kembali ke menu navigasi.")
-        else:
-            new_id = autoIncrementUserId(role_id)
-            new_account = pd.DataFrame({'user_id': [new_id], 'username': [input_username], 'password': [input_password]})
-            new_account.to_csv('user.csv', mode='a', header=False, index=False)
-            print(f"Berhasil registrasi sebagai {input_username}.")
-            print(f"Selamat Datang, {input_username}")
-            id_nav = 1
     #Registrasi--
     
     
     if (input_navigasi == 99):
-        print("Berhasil logout, sampai jumpa!")
+        print("Berhasil logout")
         id_nav = 0
     if (input_navigasi == 0):
         print("Terimakasih Telah menggunakan program ini.")
