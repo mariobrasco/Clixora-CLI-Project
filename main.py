@@ -1,5 +1,7 @@
 import pandas as pd
 
+from fyp import forYouPage
+
 #Variables
 id_nav = 0
 jumlah_nav = 0
@@ -7,23 +9,31 @@ account_db = pd.read_csv('storage/user.csv')
 
 #Menu Navigasi
 def navBelumLogin():
+    #id_nav = 0
     global jumlah_nav
-    jumlah_nav = 2
-    print("\n============== MENU NAVIGASI ===============")
+    jumlah_nav = 4
+    print("\n" + "="*44 + " MENU NAVIGASI " + "="*44)
+    print("Selamat Datang di Clixora!, disini adalah tempat photografer mendapat finder dan finder mendapat photografer.")
     print("1. Login") 
     print("2. Registrasi")
+    print("3. Beranda")
+    print("4. Unggah sebuah Job")
+    print("-----------------")
     print("0. Keluar")
-    print("============================================")
+    print("="*103)
 
 def navSudahLogin():
+    #id_nav = 1
     global jumlah_nav
-    jumlah_nav = 2
-    print("\n============== MENU NAVIGASI ===============")
+    jumlah_nav = 3
+    print("\n" + "="*44 + " MENU NAVIGASI " + "="*44)
     print("1. Profil Saya") 
     print("2. For You Page")
+    print("3. Unggah sebuah Job")
+    print("-----------------")
     print("0. Keluar")
     print("99. Logout")
-    print("============================================")
+    print("="*103)
 #Menu Navigasi--
 
 #Utiliy
@@ -41,6 +51,14 @@ def autoIncrementUserId(role_id):
     new_user_id = f"{role_id}{new_number:03}"
     return new_user_id
 
+def autoIncrementNumber(db_name):
+    if db_name.empty:
+        return 1
+    else:
+        latest_id = db_name.iloc[-1, 0] or 0
+        new_id = int(latest_id) + 1
+        return new_id
+
 def askInput(prompt):
     value = input(prompt)
     if value.lower() == "batal":
@@ -56,7 +74,7 @@ def navHub():
         input_navigasi = int(input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau 0 untuk keluar: "))
     elif (id_nav == 1):
         navSudahLogin()
-        input_navigasi = int(input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau 0 untuk keluar: "))
+        input_navigasi = int(input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau 0 untuk keluar 99 untuk logout: "))
 
 def login(username, password):
     account = account_db[(account_db['username'] == username) & (account_db['password'] == password)]
@@ -71,7 +89,7 @@ while True:
 
     #Login
     if (id_nav == 0 and input_navigasi == 1):
-        print("\n============================= MENU LOGIN ==================================")
+        print("\n" + "="*44 + " MENU LOGIN " + "="*44)
         print("Jika Ingin membatalkan login, ketik 'batal' saat input username atau password")
         
         input_username = askInput("Masukkan username: ")
@@ -84,14 +102,14 @@ while True:
                 else:
                     print("Gagal login, username atau password salah.")
                 
-        print("===========================================================================")
+        print("="*90)
     #Login--
     
     #Registrasi
     if (id_nav == 0 and input_navigasi == 2):
         
         while True:
-            print("\n============================= MENU REGISTRASI ==================================")
+            print("\n" + "="*44 + " MENU REGISTRASI " + "="*44)
             print("Apakah anda Photografer atau Finder?")
             print("1. Photografer")
             print("2. Finder")
@@ -108,38 +126,51 @@ while True:
             else:
                 print(f"'{role_picked}' tidak valid, silahkan masukan nomor yang sesuai (1 dan 2)")
                 
-        print("\n============================= MENU REGISTRASI ==================================")
+        print("\n" + "="*44 + " MENU REGISTRASI " + "="*44)
         print("Jika Ingin membatalkan registrasi, ketik 'batal' saat menginputkan data")
         
         input_username = askInput("Masukkan username: ")
-
         if (input_username):
             input_password = askInput("Masukkan password: ")
-        if (input_password):
-            input_location = askInput("Masukkan lokasi: ")
-        if (input_location):
-            input_email = askInput("Masukkan email: ")
-            if (input_email):
-                input_bio = askInput("Masukkan bio: ")
-                if (input_bio):
+            if (input_password):
+                input_email = askInput("Masukkan email: ")
+                if (role_id == "p" and input_email):
+                    input_location = askInput("Masukkan lokasi: ")
+                    if (input_location):
+                        input_bio = askInput("Masukkan bio: ")
+                        if (input_bio):
+                            new_id = autoIncrementUserId(role_id)
+                            new_account = pd.DataFrame({'user_id': [new_id], 
+                                                'username': [input_username], 
+                                                'password': [input_password], 
+                                                'role': [role_name], 
+                                                'location': [input_location], 
+                                                'email': [input_email], 
+                                                'bio': [input_bio]
+                                                })
+                            new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
+                            print(f"Berhasil registrasi sebagai {input_username}.")
+                            print(f"Selamat Datang, {input_username}")
+                            id_nav = 1
+                elif (role_id == "f" and input_email):
                     new_id = autoIncrementUserId(role_id)
                     new_account = pd.DataFrame({'user_id': [new_id], 
-                                        'username': [input_username], 
-                                        'password': [input_password], 
-                                        'role': [role_name], 
-                                        'location': [input_location], 
-                                        'email': [input_email], 
-                                        'bio': [input_bio]
-                                        })
-                    new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
-                    print(f"Berhasil registrasi sebagai {input_username}.")
-                    print(f"Selamat Datang, {input_username}")
-                    id_nav = 1
-        print("===========================================================================")
+                                                'username': [input_username], 
+                                                'password': [input_password],
+                                                'email': [input_email],
+                                                })
+            new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
+            print(f"Berhasil registrasi sebagai {input_username}.")
+            print(f"Selamat Datang, {input_username}")
+            id_nav = 1
+        print("="*90)
         
     #Registrasi--
-    
-    
+    if (id_nav == 1 and input_navigasi == 2):
+        forYouPage()
+    if (id_nav == 0 and input_navigasi == 3):
+        forYouPage()
+
     if (input_navigasi == 99):
         print("Berhasil logout")
         id_nav = 0
