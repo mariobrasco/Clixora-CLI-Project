@@ -1,11 +1,12 @@
 import pandas as pd
 
+import postAJob as paj
 from fyp import forYouPage
 
 #Variables
 id_nav = 0
 jumlah_nav = 0
-account_db = pd.read_csv('storage/user.csv')
+account_db = pd.read_csv('Clixora-CLI-Project/storage/user.csv')
 
 #Menu Navigasi
 def navBelumLogin():
@@ -103,6 +104,8 @@ while True:
                     print("Gagal login, username atau password salah.")
                 
         print("="*90)
+    elif (id_nav == 0 and input_navigasi == 4):
+        paj.form_post_job()
     #Login--
     
     #Registrasi
