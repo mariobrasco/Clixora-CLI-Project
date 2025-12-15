@@ -16,9 +16,7 @@ def validasi_tanggal(tanggal):
     bulan_str = tanggal[3:5]
     tahun_str = tanggal[6:8]
 
-    if not (validasi_angka(hari_str) and 
-            validasi_angka(bulan_str) and 
-            validasi_angka(tahun_str)):
+    if not (validasi_angka(hari_str) and validasi_angka(bulan_str) and validasi_angka(tahun_str)):
         return False
 
     hari = int(hari_str)
@@ -75,7 +73,19 @@ def form_post_job():
             break
         print("Format waktu salah! Gunakan HH:MM")
 
-    budget = input("Pilih Tipe Budget Lowongan (1. Per Jam, 2. Per Proyek): ")
+    while True:
+        tipe_budget = input("Pilih Tipe Budget Lowongan (1. Per Jam, 2. Per Proyek): ")
+
+        if (tipe_budget == '1'):
+            per_jam = input("Masukkan Besaran Budget Per Jam: ")
+            budget = per_jam
+            break
+        elif (tipe_budget == '2'):
+            per_proyek = input("Masukkan Besaran Budget Per Proyek: ")
+            budget = per_proyek
+            break
+        else:
+            print("Masukkan Tipe Budget yang Valid! (1 atau 2)")
 
     post_job = {
         "judul": judul,
@@ -84,6 +94,7 @@ def form_post_job():
         "lokasi": lokasi,
         "tanggal": tanggal,
         "waktu": waktu,
+        "tipe_budget": tipe_budget,
         "budget": budget
     }
 
@@ -91,3 +102,5 @@ def form_post_job():
     post_job_df.to_csv('Clixora-CLI-Project/storage/postAJob.csv',mode='a', header=False, index=False)
 
     print("Lowongan berhasil diposting!")
+
+# form_post_job()
