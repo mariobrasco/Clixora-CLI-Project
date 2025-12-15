@@ -3,9 +3,10 @@ import pandas as pd
 from fyp import forYouPage
 
 #Variables
-id_nav = 0
+# id_nav = 0
 jumlah_nav = 0
 account_db = pd.read_csv('storage/user.csv')
+state = {"account_session": None, "input_navigasi": 0}
 
 #Menu Navigasi
 def navBelumLogin():
@@ -41,7 +42,7 @@ def autoIncrementUserId(role_id):
     # Filter existing IDs by role prefix (p or f)
     role_users = account_db[account_db['user_id'].str.startswith(role_id)]
 
-    if len(role_users) == 0:
+    if (len(role_users) == 0):
         new_number = 1
     else:
         max_id = role_users['user_id'].str[1:].astype(int).max()
@@ -52,7 +53,7 @@ def autoIncrementUserId(role_id):
     return new_user_id
 
 def autoIncrementNumber(db_name):
-    if db_name.empty:
+    if (db_name.empty):
         return 1
     else:
         latest_id = db_name.iloc[-1, 0] or 0
@@ -61,34 +62,43 @@ def autoIncrementNumber(db_name):
 
 def askInput(prompt):
     value = input(prompt)
-    if value.lower() == "batal":
+    if (value.lower() == "batal"):
         print("Operasi dibatalkan, kembali ke menu Sebelumnya")
         return None
     return value
 
-def navHub():
-    global input_navigasi
+# def navHub():
+#     global input_navigasi
     
-    if (id_nav == 0):
-        navBelumLogin()
-        input_navigasi = int(input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau 0 untuk keluar: "))
-    elif (id_nav == 1):
-        navSudahLogin()
-        input_navigasi = int(input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau 0 untuk keluar 99 untuk logout: "))
-
 def login(username, password):
+    # global account_session
     account = account_db[(account_db['username'] == username) & (account_db['password'] == password)]
     
+    if (not account.empty):
+        state["account_session"] = account.iloc[0]
     return not account.empty
 
 #Utility--
 
 while True:
+    print(state)
+    # navHub()
     
-    navHub()
+    if (state["account_session"] is None):
+        navBelumLogin()
+        state["input_navigasi"] = int(input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau 0 untuk keluar: "))
+        
+    elif (state["account_session"] is not None):
+        navSudahLogin()
+        state["input_navigasi"] = int(input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau 0 untuk keluar 99 untuk logout: "))
+        
+    if (state["account_session"] is not None and state["input_navigasi"] == 2):
+        forYouPage(state)
+    if (state["account_session"] is None and state["input_navigasi"] == 3):
+        forYouPage(state)
 
     #Login
-    if (id_nav == 0 and input_navigasi == 1):
+    if (state["account_session"] is None and state["input_navigasi"] == 1):
         print("\n" + "="*44 + " MENU LOGIN " + "="*44)
         print("Jika Ingin membatalkan login, ketik 'batal' saat input username atau password")
         
@@ -98,7 +108,7 @@ while True:
             if (input_password):
                 if(login(input_username, input_password)):
                     print(f"Berhasil login sebagai {input_username}, Selamat datang!")
-                    id_nav = 1
+                    
                 else:
                     print("Gagal login, username atau password salah.")
                 
@@ -106,7 +116,7 @@ while True:
     #Login--
     
     #Registrasi
-    if (id_nav == 0 and input_navigasi == 2):
+    if (state["account_session"] is None and state["input_navigasi"] == 2):
         
         while True:
             print("\n" + "="*44 + " MENU REGISTRASI " + "="*44)
@@ -151,7 +161,7 @@ while True:
                             new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
                             print(f"Berhasil registrasi sebagai {input_username}.")
                             print(f"Selamat Datang, {input_username}")
-                            id_nav = 1
+                            # id_nav = 1
                 elif (role_id == "f" and input_email):
                     new_id = autoIncrementUserId(role_id)
                     new_account = pd.DataFrame({'user_id': [new_id], 
@@ -159,21 +169,17 @@ while True:
                                                 'password': [input_password],
                                                 'email': [input_email],
                                                 })
-            new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
-            print(f"Berhasil registrasi sebagai {input_username}.")
-            print(f"Selamat Datang, {input_username}")
-            id_nav = 1
+                    new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
+                    print(f"Berhasil registrasi sebagai {input_username}.")
+                    print(f"Selamat Datang, {input_username}")
+                    # id_nav = 1
         print("="*90)
-        
+    
     #Registrasi--
-    if (id_nav == 1 and input_navigasi == 2):
-        forYouPage()
-    if (id_nav == 0 and input_navigasi == 3):
-        forYouPage()
-
-    if (input_navigasi == 99):
+    if (state["input_navigasi"] == 99):
         print("Berhasil logout")
-        id_nav = 0
-    if (input_navigasi == 0):
+        state['account_session'] = None
+        
+    if (state["input_navigasi"] == 0):
         print("Terimakasih Telah menggunakan program ini.")
         break
