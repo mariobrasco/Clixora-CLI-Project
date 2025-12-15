@@ -1,5 +1,6 @@
 import pandas as pd
 
+import postAJob as paj
 from fyp import forYouPage
 
 #Variables
@@ -113,6 +114,8 @@ while True:
                     print("Gagal login, username atau password salah.")
                 
         print("="*90)
+    elif (id_nav == 0 and input_navigasi == 4):
+        paj.form_post_job()
     #Login--
     
     #Registrasi

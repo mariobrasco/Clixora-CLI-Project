@@ -1,7 +1,7 @@
 import pandas as pd
 
-post_db = pd.read_csv('storage/post.csv')
-account_db = pd.read_csv('storage/user.csv')
+post_db = pd.read_csv('Clixora-CLI-Project/storage/post.csv')
+account_db = pd.read_csv('Clixora-CLI-Project/storage/user.csv')
 
 def forYouPage(state):
     while True: 
