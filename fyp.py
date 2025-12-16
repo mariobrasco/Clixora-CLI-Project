@@ -1,7 +1,7 @@
 import pandas as pd
 
-post_db = pd.read_csv('Clixora-CLI-Project/storage/post.csv')
-account_db = pd.read_csv('Clixora-CLI-Project/storage/user.csv')
+post_db = pd.read_csv('storage/post.csv')
+account_db = pd.read_csv('storage/user.csv')
 
 def forYouPage(state):
     while True: 
@@ -39,14 +39,14 @@ def forYouPage(state):
         print("="*102)
 
         if (state['account_session'] is not None):
-            print("Ketik 'kembali' untuk kembali, ketik 'keluar' untuk keluar dari program dan 'logout' untuk logout.")
+            print("Ketik 'kembali' untuk kembali, ketik 'x' untuk keluar dari program dan 'logout' untuk logout.")
         else:
-            print("Ketik 'kembali' untuk kembali, ketik 'keluar' untuk keluar dari program.")
+            print("Ketik 'kembali' untuk kembali, ketik 'x' untuk keluar dari program.")
         input_navigasi = (input("Masukan nomor postingan untuk melihat detailnya : "))
 
         if (input_navigasi == "kembali"):
             return
-        elif (input_navigasi == "0"):
+        elif (input_navigasi == "x"):
             exit()
         elif (input_navigasi == "logout"):
             print("Logout...")
@@ -66,7 +66,8 @@ def forYouPage(state):
             print("="*98)
             aksi = input("Jika tertarik dengan postingan ini ketik 1 untuk melanjutkan transaksi, atau 0 untuk kembali:")
             if (aksi == '1'):
-                print("Fitur transaksi belum tersedia. Kembali ke For You Page.")
+                print(f"Berhasil Memilih Tawaran {selected_post['content']} dari @{user_info['username']}")
+                print("Ketik '1' untuk melanjutkan dan '0' untuk batal")
             else:
                 print("Kembali ke For You Page.")
         else:

@@ -1,6 +1,7 @@
 import pandas as pd
 
-import postAJob as paj
+import postAJob as postJob
+import findWork as findWork
 from fyp import forYouPage
 
 #Variables
@@ -13,13 +14,14 @@ state = {"account_session": None, "input_navigasi": 0}
 def navBelumLogin():
     #id_nav = 0
     global jumlah_nav
-    jumlah_nav = 4
+    jumlah_nav = 5
     print("\n" + "="*44 + " MENU NAVIGASI " + "="*44)
     print("Selamat Datang di Clixora!, disini adalah tempat photografer mendapat finder dan finder mendapat photografer.")
     print("1. Login") 
     print("2. Registrasi")
     print("3. Beranda")
-    print("4. Unggah sebuah Job")
+    print("4. Unggah Lowongan Pekerjaan")
+    print("5. Cari Pekerjaan")
     print("-----------------")
     print("0. Keluar")
     print("="*103)
@@ -27,11 +29,12 @@ def navBelumLogin():
 def navSudahLogin():
     #id_nav = 1
     global jumlah_nav
-    jumlah_nav = 3
-    print("\n" + "="*44 + " MENU NAVIGASI " + "="*44)
+    jumlah_nav = 4
+    print("\n" + "="*44 + " MENU NAVIGASI " + "="*32 + f" {state["account_session"]['username']} ({state["account_session"]['role']}) ")
     print("1. Profil Saya") 
     print("2. For You Page")
-    print("3. Unggah sebuah Job")
+    print("3. Unggah Lowongan Pekerjaan")
+    print("4. Cari Pekerjaan")
     print("-----------------")
     print("0. Keluar")
     print("99. Logout")
@@ -82,7 +85,7 @@ def login(username, password):
 #Utility--
 
 while True:
-    print(state)
+    # print(state)
     # navHub()
     
     if (state["account_session"] is None):
@@ -93,15 +96,24 @@ while True:
         navSudahLogin()
         state["input_navigasi"] = int(input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau 0 untuk keluar 99 untuk logout: "))
         
-    if (state["account_session"] is not None and state["input_navigasi"] == 2):
+    if (state["account_session"] is not None and state["input_navigasi"] == 2 or state["account_session"] is None and state["input_navigasi"] == 3):
         forYouPage(state)
-    if (state["account_session"] is None and state["input_navigasi"] == 3):
-        forYouPage(state)
+        
+    if (state["account_session"] is not None and state["input_navigasi"] == 3):
+        postJob.form_post_job(state)
+    elif (state["account_session"] is None and state["input_navigasi"] == 4):
+        print("\n" + "="*44 + " Peringatan! " + "="*44)
+        print("Anda harus login terlebih dahulu untuk mengunggah lowongan pekerjaan.")
+        print("="*101)
+        
+        
+    if (state["account_session"] is not None and state["input_navigasi"] == 4 or state["account_session"] is None and state["input_navigasi"] == 5):
+        findWork.find_work()
 
     #Login
     if (state["account_session"] is None and state["input_navigasi"] == 1):
         print("\n" + "="*44 + " MENU LOGIN " + "="*44)
-        print("Jika Ingin membatalkan login, ketik 'batal' saat input username atau password")
+        print("Jika Ingin membatalkan login, ketik 'batal'")
         
         input_username = askInput("Masukkan username: ")
         if (input_username):
@@ -114,8 +126,7 @@ while True:
                     print("Gagal login, username atau password salah.")
                 
         print("="*90)
-    elif (id_nav == 0 and input_navigasi == 4):
-        paj.form_post_job()
+    
     #Login--
     
     #Registrasi
@@ -153,25 +164,32 @@ while True:
                         input_bio = askInput("Masukkan bio: ")
                         if (input_bio):
                             new_id = autoIncrementUserId(role_id)
-                            new_account = pd.DataFrame({'user_id': [new_id], 
-                                                'username': [input_username], 
-                                                'password': [input_password], 
-                                                'role': [role_name], 
-                                                'location': [input_location], 
-                                                'email': [input_email], 
-                                                'bio': [input_bio]
-                                                })
+                            reg_data = {
+                                'user_id': [new_id], 
+                                'username': [input_username], 
+                                'password': [input_password], 
+                                'role': [role_name], 
+                                'location': [input_location], 
+                                'email': [input_email], 
+                                'bio': [input_bio]
+                            }
+                            new_account = pd.DataFrame({reg_data})
                             new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
                             print(f"Berhasil registrasi sebagai {input_username}.")
                             print(f"Selamat Datang, {input_username}")
                             # id_nav = 1
                 elif (role_id == "f" and input_email):
                     new_id = autoIncrementUserId(role_id)
-                    new_account = pd.DataFrame({'user_id': [new_id], 
-                                                'username': [input_username], 
-                                                'password': [input_password],
-                                                'email': [input_email],
-                                                })
+                    reg_data = {
+                        'user_id': [new_id], 
+                        'username': [input_username], 
+                        'password': [input_password], 
+                        'role': [role_name], 
+                        'location': [input_location or ""], 
+                        'email': [input_email], 
+                        'bio': [input_bio or ""]
+                    }
+                    new_account = pd.DataFrame({reg_data})
                     new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
                     print(f"Berhasil registrasi sebagai {input_username}.")
                     print(f"Selamat Datang, {input_username}")

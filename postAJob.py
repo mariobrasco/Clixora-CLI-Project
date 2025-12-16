@@ -1,4 +1,7 @@
 import pandas as pd
+import main as main
+
+jobs_db = pd.read_csv('storage/jobs.csv')
 
 def validasi_angka(teks):
     for char in teks:
@@ -54,7 +57,7 @@ def validasi_waktu(waktu):
 
     return True
 
-def form_post_job():
+def form_post_job(state):
     print("\n" + "="*44 + " Form Postingan Lowongan " + "="*44)
     judul = input("Masukkan Judul Lowongan: ")
     deskripsi = input("Masukkan Deskripsi Lowongan: ")
@@ -74,7 +77,7 @@ def form_post_job():
         print("Format waktu salah! Gunakan HH:MM")
 
     while True:
-        tipe_budget = input("Pilih Tipe Budget Lowongan (1. Per Jam, 2. Per Proyek): ")
+        tipe_budget = input("Pilih Tipe Budget Lowongan: \n(1. Per Jam, \n2. Per Proyek): ")
 
         if (tipe_budget == '1'):
             per_jam = input("Masukkan Besaran Budget Per Jam: ")
@@ -87,20 +90,22 @@ def form_post_job():
         else:
             print("Masukkan Tipe Budget yang Valid! (1 atau 2)")
 
-    post_job = {
-        "judul": judul,
-        "deskripsi": deskripsi,
-        "tema": tema,
-        "lokasi": lokasi,
-        "tanggal": tanggal,
-        "waktu": waktu,
-        "tipe_budget": tipe_budget,
-        "budget": budget
+    jobs_data = {
+        "job_id": main.autoIncrementNumber(jobs_db),
+        "finder_id": state['account_session']['user_id'] or "",
+        "title": judul,
+        "description": deskripsi,
+        "theme": tema,
+        "budget": budget,
+        "location": lokasi,
+        "date_needed": tanggal,
+        "time": waktu,
+        "status": "available"
     }
 
-    post_job_df = pd.DataFrame([post_job])
-    post_job_df.to_csv('Clixora-CLI-Project/storage/postAJob.csv',mode='a', header=False, index=False)
+    post_job_df = pd.DataFrame([jobs_data])
+    post_job_df.to_csv('storage/jobs.csv',mode='a', header=False, index=False)
 
-    print("Lowongan berhasil diposting!")
+    print("Lowongan berhasil diunggah!")
 
 # form_post_job()
