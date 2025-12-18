@@ -1,11 +1,10 @@
 import pandas as pd
 
-post_db = pd.read_csv('storage/post.csv')
-account_db = pd.read_csv('storage/user.csv')
-
 def forYouPage(state):
+    post_db = pd.read_csv('storage/post.csv')
+    account_db = pd.read_csv('storage/user.csv')
     while True: 
-        print("\n" + "="*44 + " For You Page " + "="*44)
+        print("\n" + "="*44 + " Catalog List " + "="*44)
         
         # merged_db = post_db.merge(account_db, on='user_id', how='left', suffixes=('_post', '_user'))
         # print(merged_db[['content', 'type', 'username', 'location']])
