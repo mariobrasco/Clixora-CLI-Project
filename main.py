@@ -96,6 +96,10 @@ while True:
         navSudahLogin()
         state["input_navigasi"] = int(input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau 0 untuk keluar 99 untuk logout: "))
         
+    if (state["input_navigasi"] == 0):
+        print("Terimakasih Telah menggunakan program ini.")
+        break
+        
     if (state["account_session"] is not None and state["input_navigasi"] == 2 or state["account_session"] is None and state["input_navigasi"] == 3):
         forYouPage(state)
         
@@ -201,6 +205,4 @@ while True:
         print("Berhasil logout")
         state['account_session'] = None
         
-    if (state["input_navigasi"] == 0):
-        print("Terimakasih Telah menggunakan program ini.")
-        break
+    
