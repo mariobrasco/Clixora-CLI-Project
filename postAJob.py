@@ -1,5 +1,6 @@
 import pandas as pd
-import main as main
+
+from utility import autoIncrementNumber
 
 jobs_db = pd.read_csv('storage/jobs.csv')
 
@@ -91,7 +92,7 @@ def form_post_job(state):
             print("Masukkan Tipe Budget yang Valid! (1 atau 2)")
 
     jobs_data = {
-        "job_id": main.autoIncrementNumber(jobs_db),
+        "job_id": autoIncrementNumber(jobs_db),
         "finder_id": state['account_session']['user_id'] or "",
         "title": judul,
         "description": deskripsi,

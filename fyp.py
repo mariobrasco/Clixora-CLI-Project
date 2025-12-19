@@ -1,11 +1,11 @@
 import pandas as pd
-
-post_db = pd.read_csv('storage/post.csv')
-account_db = pd.read_csv('storage/user.csv')
+from applyJobs import applyJobs
 
 def forYouPage(state):
+    post_db = pd.read_csv('storage/post.csv')
+    account_db = pd.read_csv('storage/user.csv')
     while True: 
-        print("\n" + "="*44 + " For You Page " + "="*44)
+        print("\n" + "="*44 + " Catalog List " + "="*44)
         
         # merged_db = post_db.merge(account_db, on='user_id', how='left', suffixes=('_post', '_user'))
         # print(merged_db[['content', 'type', 'username', 'location']])
@@ -66,12 +66,8 @@ def forYouPage(state):
             print("="*98)
             aksi = input("Jika tertarik dengan postingan ini ketik 1 untuk melanjutkan transaksi, atau 0 untuk kembali:")
             if (aksi == '1'):
-                print(f"Berhasil Memilih Tawaran {selected_post['content']} dari @{user_info['username']}")
-                print("Ketik '1' untuk melanjutkan dan '0' untuk batal")
+                applyJobs()
             else:
                 print("Kembali ke For You Page.")
         else:
             print("Nomor postingan tidak valid!")
-
-    
-# forYouPage()
