@@ -1,6 +1,6 @@
 import pandas as pd
 
-postAJob_csv = pd.read_csv('Clixora-CLI-Project/storage/postAJob.csv')
+postAJob_csv = pd.read_csv('storage/postAJob.csv')
 
 def validasi_angka(teks):
     for char in teks:
@@ -16,7 +16,7 @@ def find_work():
         print("="*125)
 
         print("\nKetik nomor index (angka paling kiri) untuk melihat detail.")
-        print("Ketik 'x' untuk keluar.")
+        print("Ketik 'x' untuk kembali.")
         
         pilih = input("Pilih lowongan: ")
 
@@ -36,9 +36,9 @@ def find_work():
                 if job['tipe_budget'] == 2:
                     keterangan_tipe = "Project Price"
 
-                print("\n" + "#"*60)
+                print("\n" + "="*60)
                 print(f" DETAIL PEKERJAAN (ID: {index}) ")
-                print("#" * 60)
+                print("=" * 60)
 
                 for i, (key, value) in enumerate(job.items(), start=1):
                     if key == "tipe_budget":
@@ -61,6 +61,6 @@ def find_work():
             else:
                 print("⚠️  Nomor index tidak ditemukan.")
         else:
-            print("⚠️  Mohon masukkan angka saja.")
+            print("⚠️  Mohon masukkan input berupa angka.")
 
 # find_work()
