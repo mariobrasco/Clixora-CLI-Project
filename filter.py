@@ -1,14 +1,30 @@
-# DATA RESTORAN
-postingan = [
-    {"nama": "Warung Nasi Padang", "kategori": "Indonesian", "budget": 25000, "rating": 4.8, "jarak": 0.8},
-    {"nama": "Sushi Tei Express", "kategori": "Japanese", "budget": 50000, "rating": 4.6, "jarak": 1.2},
-    {"nama": "Starbucks Coffee", "kategori": "Coffee", "budget": 40000, "rating": 4.7, "jarak": 0.5},
-    {"nama": "Burger Queen", "kategori": "Burger", "budget": 30000, "rating": 4.3, "jarak": 1.8}
-]
+import csv
+
+# FUNCTION REUSABLE
+def load_postingan(csv_path):
+    postingan = []
+    with open(csv_path, newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            postingan.append({
+                "nama": row["nama"],
+                "kategori": row["kategori"],
+                "budget": int(row["budget"]),
+                "rating": float(row["rating"]),
+                "jarak": float(row["jarak"])
+            })
+    return postingan
+
+
+# PATH FILE CSV (FIX)
+csv_path = r"C:\Users\FADIL\OneDrive\Documents\coba\Clixora-CLI-Project\storage\data_postingan.csv"
+
+# PANGGIL FUNCTION (INI SAJA YANG BARU)
+postingan = load_postingan(csv_path)
 
 hasil = []
 
-# MENU FILTER (SAMA KONSEP)
+# MENU FILTER (TIDAK DIUBAH)
 print("=== FILTER FOODFAST ===")
 print("1. Filter berdasarkan Kategori")
 print("2. Filter berdasarkan Budget")
@@ -89,8 +105,8 @@ elif pilihan == "4":
         if r["jarak"] <= max_jarak:
             hasil.append(r)
 
-# OUTPUT (SAMA)
-print("\n Hasil Filter:")
+# OUTPUT (TIDAK DIUBAH)
+print("\nHasil Filter:")
 if not hasil:
     print("Tidak ada Foodfast yang sesuai.")
 else:
