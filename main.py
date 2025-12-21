@@ -5,6 +5,7 @@ import findWork as findWork
 from utility import autoIncrementUserId, askInput, cardTemplate
 from fyp import forYouPage
 
+
 #Variables
 jumlah_nav = 0
 account_db = pd.read_csv('storage/user.csv')
@@ -187,4 +188,3 @@ while True:
                     # id_nav = 1
     
     #Registrasi--
-    

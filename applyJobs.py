@@ -1,8 +1,8 @@
 import pandas as pd
-from postAJob import validasi_tanggal, validasi_waktu
+from postAJob import validasi_angka, validasi_tanggal, validasi_waktu
 from utility import autoIncrementNumber
 
-messages_db = pd.read_csv('storage/listJobs.csv')
+messages_db = pd.read_csv('storage/listJobsPhotographer.csv')
 
 def applyJobs():
     print("\n" + "="*44 + " Proses Pemesanan " + "="*44)
@@ -28,10 +28,16 @@ def applyJobs():
 
         if (tipe_budget == '1'):
             per_jam = input("Masukkan Besaran Budget Per Jam: ")
+            if not validasi_angka(per_jam):
+                print("\nBudget harus berupa angka.\n")
+                continue 
             budget = per_jam
             break
         elif (tipe_budget == '2'):
             per_proyek = input("Masukkan Besaran Budget Per Proyek: ")
+            if not validasi_angka(per_proyek):
+                print("\nBudget harus berupa angka.\n")
+                continue 
             budget = per_proyek
             break
         else:
@@ -39,6 +45,7 @@ def applyJobs():
 
     messages_data = {
         'message_id': [autoIncrementNumber(messages_db)],
+        # "finder_id": state['account_session']['user_id'] or "",
         'judul': [judul],
         'deskripsi': [deskripsi],
         'tema': [tema],
@@ -47,11 +54,13 @@ def applyJobs():
         'waktu': [waktu],
         'tipe_budget': [tipe_budget],
         'budget': [budget],
-        'status': ['pending']
+        'status': ['pending'],
+        'negotiated_budget': ['-']
     }
 
     apply_job_df = pd.DataFrame(messages_data)
-    apply_job_df.to_csv('storage/listJobs.csv', mode='a', header=False, index=False)
+    apply_job_df.to_csv('storage/listJobsPhotographer.csv', mode='a', header=False, index=False)
+    apply_job_df.to_csv('storage/listJobsFinder.csv', mode='a', header=False, index=False)
 
     print("\n✅ Berhasil mengirim permintaan pekerjaan!")
 
