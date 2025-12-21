@@ -5,6 +5,7 @@ import findWork as findWork
 from utility import autoIncrementUserId, askInput, cardTemplate
 from catalog import catalogList
 
+
 #Variables
 jumlah_nav = 0
 account_db = pd.read_csv('storage/user.csv')
@@ -180,4 +181,3 @@ while True:
                     cardTemplate("Berhasil", f"Berhasil registrasi sebagai {role_name}.\nSelamat Datang, {input_username}!")
     
     #Registrasi--
-    

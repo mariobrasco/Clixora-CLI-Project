@@ -1,4 +1,5 @@
 import pandas as pd
+from applyJobs import applyJobs
 
 def catalogList(state):
     post_db = pd.read_csv('storage/post.csv')
@@ -65,12 +66,8 @@ def catalogList(state):
             print("="*98)
             aksi = input("Jika tertarik dengan postingan ini ketik 1 untuk melanjutkan transaksi, atau 0 untuk kembali:")
             if (aksi == '1'):
-                print(f"Berhasil Memilih Tawaran {selected_post['content']} dari @{user_info['username']}")
-                print("Ketik '1' untuk melanjutkan dan '0' untuk batal")
+                applyJobs()
             else:
                 print("Kembali ke For You Page.")
         else:
             print("Nomor postingan tidak valid!")
-
-    
-# forYouPage()

@@ -32,9 +32,9 @@ def find_work():
                 
                 job = postAJob_csv.iloc[index]
 
-                keterangan_tipe = "Hourly Price"
+                keterangan_tipe = "Budget Per Jam"
                 if job['tipe_budget'] == 2:
-                    keterangan_tipe = "Project Price"
+                    keterangan_tipe = "Budget Proyek"
 
                 print("\n" + "="*60)
                 print(f" DETAIL PEKERJAAN (ID: {index}) ")
