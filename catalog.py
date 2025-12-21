@@ -1,6 +1,6 @@
 import pandas as pd
 
-def forYouPage(state):
+def catalogList(state):
     post_db = pd.read_csv('storage/post.csv')
     account_db = pd.read_csv('storage/user.csv')
     while True: 

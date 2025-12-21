@@ -1,6 +1,6 @@
 import pandas as pd
 
-postAJob_csv = pd.read_csv('storage/postAJob.csv')
+postAJob_csv = pd.read_csv('storage/jobs.csv')
 
 def validasi_angka(teks):
     for char in teks:
