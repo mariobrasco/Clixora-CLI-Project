@@ -93,7 +93,7 @@ def form_post_job(state):
 
     jobs_data = {
         "job_id": autoIncrementNumber(jobs_db),
-        "finder_id": state['account_session']['user_id'] or "",
+        "user_id": state['account_session']['user_id'] or "",
         "judul": judul,
         "deskripsi": deskripsi,
         "tema": tema,

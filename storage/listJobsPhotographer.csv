@@ -1,7 +1,7 @@
 message_id,judul,deskripsi,tema,lokasi,tanggal,waktu,tipe_budget,budget,status,negotiated_budget
 1,Photoshoot Pernikahan,Butuh fotografer untuk acara pernikahan,wedding,Bandung,19-01-22,09:00,2,5000000,negotiation,1000
 2,Prewedding Outdoor,Foto prewedding konsep alam,prewedding,Lembang,02-02-22,07:00,2,3500000,accepted,-
-3,Foto Produk UMKM,Foto katalog produk makanan,produk,Bandung,10-02-22,10:00,1,300000,pending,-
+3,Foto Produk UMKM,Foto katalog produk makanan,produk,Bandung,10-02-22,10:00,1,300000,negotiation,1200000
 4,Event Ulang Tahun,Foto acara ulang tahun anak,event,Bogor,15-02-22,15:00,1,250000,accepted,-
 6,Wedding Intimate,Acara pernikahan sederhana,wedding,Depok,25-02-22,09:00,2,4500000,pending,-
 7,Foto Fashion,Photoshoot model pakaian,fashion,Bandung,01-03-22,13:00,1,500000,pending,-

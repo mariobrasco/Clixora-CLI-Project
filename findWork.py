@@ -50,7 +50,7 @@ def find_work():
 
                 print("#" * 60)
 
-                print("\n[1] Lamar Pekerjaan ini")
+                print("[1] Lamar Pekerjaan ini")
                 print("[0] Kembali ke menu awal")
                 
                 aksi = input("Pilih aksi: ")

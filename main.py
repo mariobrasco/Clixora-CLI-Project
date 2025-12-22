@@ -2,16 +2,16 @@ import pandas as pd
 import postAJob as postJob
 import findWork as findWork
 
-from utility import autoIncrementUserId, askInput, cardTemplate
+from utility import autoIncrementUserId, askInput, cardTemplate, login, menuLogin
 from catalog import catalogList
 
 
 #Variables
-jumlah_nav = 0
+# jumlah_nav = 0
 account_db = pd.read_csv('storage/user.csv')
 state = {
     "account_session": None, 
-    "input_navigasi": "x",
+    "input_navigasi": None,
     }
 
 #Menu Navigasi
@@ -47,20 +47,14 @@ def navSudahLogin():
     
 #Menu Navigasi--
     
-def login(username, password):
-    account_db = pd.read_csv('storage/user.csv')
-    account = account_db[(account_db['username'] == username) & (account_db['password'] == password)]
-    
-    if (not account.empty):
-        state["account_session"] = account.iloc[0]
-    return not account.empty
+
 
 
 while True:
 
     # print(state)
     
-    if (state["account_session"] is None):
+    if (state["account_session"] is None ):
         navBelumLogin()
         state["input_navigasi"] = (input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau x untuk keluar: "))
     else:
@@ -84,6 +78,7 @@ while True:
     if (state["input_navigasi"] == "99"):
         cardTemplate("Berhasil", f"Anda telah logout dari akun {state['account_session']['username']}.")
         state['account_session'] = None
+        state["input_navigasi"] = None
 
     if (state["account_session"] is not None and state["input_navigasi"] == "2" or state["account_session"] is None and state["input_navigasi"] == "3"):
         catalogList(state)
@@ -98,18 +93,7 @@ while True:
 
     #Login
     if (state["account_session"] is None and state["input_navigasi"] == "1"):
-        print("\n" + "="*44 + " MENU LOGIN " + "="*44)
-        print("Jika Ingin membatalkan login, ketik 'batal'")
-        
-        input_username = askInput("Masukkan username: ")
-        if (input_username):
-            input_password = askInput("Masukkan password: ")
-            if (input_password):
-                if(login(input_username, input_password)):
-                    print("="*90)
-                    cardTemplate("Berhasil!",f"Berhasil login sebagai {state['account_session']['role']}, Selamat datang, {input_username}!")
-                else:
-                    cardTemplate("Peringatan!", "Gagal login, username atau password salah.")
+        menuLogin(state)
     #Login--
     
     #Registrasi
@@ -159,7 +143,7 @@ while True:
                             new_account = pd.DataFrame([reg_data])
                             new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
                             print("="*90)
-                            login(input_username, input_password)
+                            login(input_username, input_password, state)
                             cardTemplate("Berhasil", f"Berhasil registrasi sebagai {role_name}.\nSelamat Datang, {input_username}!")
                             # id_nav = 1
                 elif (role_id == "f" and input_email):
@@ -177,7 +161,7 @@ while True:
                     new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
                     print("="*90)
                     
-                    login(input_username, input_password) 
+                    login(input_username, input_password, state) 
                     cardTemplate("Berhasil", f"Berhasil registrasi sebagai {role_name}.\nSelamat Datang, {input_username}!")
     
     #Registrasi--
