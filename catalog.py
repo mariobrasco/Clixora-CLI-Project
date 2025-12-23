@@ -62,20 +62,24 @@ def catalogList(state):
             selected_post = catalog_db.iloc[selected_index]
 
             user_info = account_db[account_db['user_id'] == selected_post['user_id']].iloc[0]
+            
+            if user_info.empty:
+                cardTemplate("Error", "Data pemilik katalog tidak ditemukan.")
+                return
 
             print("\n" + "="*40 + " DETAIL CATALOG " + "="*40)
             print(f"Title  : {selected_post['title']}")
             print(f"Description: \n{selected_post['description']}")
             print(f"\nTheme: {selected_post['theme']}")
-            print(f"Budget : {selected_post['budget']}")
+            print(f"Budget : {selected_post['budget']} / {'Per Jam' if selected_post['tipe_budget'] == 1 else 'Proyek'}")
             print(f"\nby @{user_info['username']} in {user_info['location']}")
             print("="*98)
             aksi = input("Jika tertarik ketik '1' untuk melanjutkan proses, atau '0' untuk kembali: ")
             if (aksi == '1' and state['account_session'] is not None):
-                negotiateCatalog(state, selected_post, user_info)
+                negotiateCatalog(state, selected_post)
             elif (aksi == '1' and state['account_session'] is None):
                 cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melanjutkan proses .")
-                state["input_navigasi"] = 1
+                # state["input_navigasi"] = 1
                 print("\n" + "="*44 + " MENU LOGIN " + "="*44)
                 print("Jika Ingin membatalkan login, ketik 'batal'")
                 
