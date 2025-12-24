@@ -1,1 +1,2 @@
-job_id,finder_id,title,description,theme,budget,location,date_needed,time,status
+job_id,user_id,title,description,theme,budget,location,date_needed,time,status
+1,f001,Wedding Organizer,saya membutuhkan photografer ganteng untuk menjadi pengantin kedua saya,Wedding Outdoor ,12000000,Bandung,23-12-26,12:12,available

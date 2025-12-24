@@ -1,6 +1,6 @@
 import pandas as pd
 
-postAJob_csv = pd.read_csv('storage/postAJob.csv')
+postAJob_csv = pd.read_csv('storage/jobs.csv')
 
 def validasi_angka(teks):
     for char in teks:
@@ -50,7 +50,7 @@ def find_work():
 
                 print("#" * 60)
 
-                print("\n[1] Lamar Pekerjaan ini")
+                print("[1] Lamar Pekerjaan ini")
                 print("[0] Kembali ke menu awal")
                 
                 aksi = input("Pilih aksi: ")

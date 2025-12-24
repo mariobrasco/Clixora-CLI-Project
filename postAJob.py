@@ -1,6 +1,6 @@
 import pandas as pd
 
-from utility import autoIncrementNumber
+from utility import autoIncrementNumber, cardTemplate
 
 jobs_db = pd.read_csv('storage/jobs.csv')
 
@@ -93,7 +93,7 @@ def form_post_job(state):
 
     jobs_data = {
         "job_id": autoIncrementNumber(jobs_db),
-        "finder_id": state['account_session']['user_id'] or "",
+        "user_id": state['account_session']['user_id'] or "",
         "judul": judul,
         "deskripsi": deskripsi,
         "tema": tema,
@@ -106,8 +106,8 @@ def form_post_job(state):
     }
         
     post_job_df = pd.DataFrame([jobs_data])
-    post_job_df.to_csv('storage/jobs.csv',mode='a', header=False, index=False)
+    post_job_df.to_csv('storage/jobs.csv', mode='a', header=False, index=False)
 
-    print("Lowongan berhasil diunggah!")
+    cardTemplate("Berhasil", "Lowongan berhasil diunggah!")
 
 # form_post_job()
