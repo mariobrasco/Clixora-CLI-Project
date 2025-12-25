@@ -1,4 +1,5 @@
 import pandas as pd
+from createCatalog import formCatalog
 import postAJob as postJob
 import findWork as findWork
 
@@ -88,7 +89,7 @@ while True:
         if (state["account_session"]['role'] == "finder"):
             postJob.form_post_job(state)
         elif (state["account_session"]['role'] == "photografer"):
-            print("Fitur Unggah Catalog untuk Photografer masih dalam pengembangan.")
+            formCatalog(state)
     elif (state["account_session"] is None and state["input_navigasi"] == "5"):
         cardTemplate("Peringatan!", "Anda harus login terlebih dahulu sebagai finder untuk mengunggah lowongan pekerjaan.")
     elif (state["account_session"] is None and state["input_navigasi"] == "6"):
