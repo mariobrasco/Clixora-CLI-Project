@@ -1,7 +1,8 @@
 import pandas as pd
 
 from utility import cardTemplate
-from listJobsFInder import listJobsFinder
+from jobApplications import listJobsFinder
+from catalogApplications import listCatalogApplications
 
 
 def myCatalog(state):
@@ -27,7 +28,7 @@ def myCatalog(state):
             catalog_id = int(aksi)
             catalog_to_edit = catalog_db_user[catalog_db_user['catalog_id'] == catalog_id].iloc[0]
             print(f"Anda memilih catalog dengan ID {catalog_id} dan judul '{catalog_to_edit['title']}' untuk diedit.")
-            listJobsFinder(state)
+            listCatalogApplications(state, catalog_id)
 
 def myJobs(state):
     while True:

@@ -24,6 +24,7 @@ def negotiateCatalog(state, catalog_data):
         else:
             cardTemplate("Peringatan!",f"Input {aksi} tidak valid. Silahkan input 1 atau 2.")
             continue
+        
         print("Pesan bersifat opsional, jika tidak ada, tekan enter.")
         message = input("Masukkan pesan tambahan untuk photografer : ")
         location = input("Masukkan lokasi tempat dilaksanakan: ")
@@ -37,6 +38,7 @@ def negotiateCatalog(state, catalog_data):
             if validasi_waktu(waktu):
                 break
             print("Format waktu salah! Gunakan HH:MM")
+            
         new_application = {
             "applications_id": autoIncrementNumber(catalogApplications_db),
             "catalog_id": catalog_data['catalog_id'],
