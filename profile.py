@@ -1,6 +1,6 @@
 import pandas as pd
 
-from userPost import myCatalog, myJobs
+from userPost import myApplications, myCatalog, myJobs, myOrders
 from utility import cardTemplate
 
 def profilePage(state):
@@ -17,7 +17,7 @@ def profilePage(state):
             print(f"Bio        : {user_info['bio']}")
         print("="*101)
 
-        print(f"Aksi: \n[k] Kembali \n[x] Keluar dari program \n[s] logout \n{'[c] Catalog saya' if (state["account_session"]["role"] == "photografer") else '[j] Lowongan Saya'}.")
+        print(f"Aksi: \n[k] Kembali \n[x] Keluar dari program \n[s] logout \n{'[c] Catalog saya' if (state["account_session"]["role"] == "photografer") else '[j] Lowongan Saya'} \n{'[a] Lamaran saya' if (state["account_session"]["role"] == "photografer") else '[p] Pesanan Saya'} .")
         aksi = (input("Masukan aksi: "))
 
         if (aksi == "k"):
@@ -26,10 +26,12 @@ def profilePage(state):
             exit()
         elif (aksi == "c" and state["account_session"]["role"] == "photografer"):
             myCatalog(state)
-            # listJobsFinder(state)    
         elif (aksi == "j" and state["account_session"]["role"] == "finder"):
             myJobs(state)
-            # listJobsFinder(state)
+        elif (aksi == "a" and state["account_session"]["role"] == "photografer"):
+            myApplications(state)
+        elif (aksi == "p" and state["account_session"]["role"] == "finder"):
+            myOrders(state)
         elif (aksi == "s"):
             cardTemplate("Berhasil!",f"Anda Telah Logout dari akun  @{state['account_session']['username']}.")
             state['account_session'] = None
