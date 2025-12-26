@@ -1,1 +1,2 @@
-job_id,finder_id,title,description,theme,budget,location,date_needed,time,status
+job_id,user_id,title,description,theme,tipe_budget,budget,location,date_needed,time,status
+1,f001,test,tes,test,1,1200000,test,12-12-12,12:12,available
