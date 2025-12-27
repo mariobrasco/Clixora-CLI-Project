@@ -1,6 +1,6 @@
 import pandas as pd
 
-from utility import autoIncrementNumber
+from utility import autoIncrementNumber, cardTemplate
 
 def formCatalog(state):
     catalog_db = pd.read_csv('storage/catalog.csv')
@@ -34,7 +34,7 @@ def formCatalog(state):
         'status': 'available'
     }
 
-    catalog_db = pd.concat([catalog_db, pd.DataFrame([new_catalog])], ignore_index=True)
-    catalog_db.to_csv('storage/catalog.csv', index=False)
+    catalog_df = pd.DataFrame([new_catalog])
+    catalog_df.to_csv('storage/catalog.csv', mode='a', header=False, index=False)
 
-    print("✅ Catalog berhasil dibuat.")
+    cardTemplate("✅ Catalog berhasil dibuat.")

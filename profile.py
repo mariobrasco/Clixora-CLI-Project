@@ -1,6 +1,6 @@
 import pandas as pd
 
-from userPost import myCatalog, myJobs
+from userPost import myApplications, myCatalog, myJobs, myOrders
 from utility import cardTemplate
 
 
@@ -75,10 +75,12 @@ def profilePage(state):
         # ===== katalog fotografer =====
         elif aksi == "c" and state['account_session']['role'] == "photografer":
             myCatalog(state)
-
-        # ===== lowongan finder =====
-        elif aksi == "j" and state['account_session']['role'] == "finder":
+            # listJobsFinder(state)    
+        elif (aksi == "j" and state["account_session"]["role"] == "finder"):
             myJobs(state)
-
-        else:
-            print("Aksi tidak valid!")
+            # listJobsFinder(state)
+        elif (aksi == "s"):
+            cardTemplate("Berhasil!",f"Anda Telah Logout dari akun  @{state['account_session']['username']}.")
+            state['account_session'] = None
+            state["input_navigasi"] = None
+            return

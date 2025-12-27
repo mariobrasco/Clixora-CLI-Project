@@ -100,7 +100,7 @@ def listJobsFinder(state, job_id):
         user_db = pd.read_csv('storage/user.csv')
         job_info = jobs_db[jobs_db['job_id'] == job_id].iloc[0]
         
-        print(f"Lowongan: {job_info['title']} | Budget Asli: {job_info['budget']}")
+        print(f"Lowongan: {job_info['title']} | Budget Asli: {job_info['budget']}\n")
         for index, row in applications_selected.iterrows():
             print(
                 f"Id Tawaran: {row['applications_id']}. "
