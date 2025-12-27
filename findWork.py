@@ -1,6 +1,8 @@
 import pandas as pd
 
-postAJob_csv = pd.read_csv('storage/jobs.csv')
+from applyJobs import applyJobs
+from utility import cardTemplate
+
 
 def validasi_angka(teks):
     for char in teks:
@@ -8,11 +10,16 @@ def validasi_angka(teks):
             return False
     return True
 
-def find_work():
+def find_work(state):
+    
     while True:
+        postAJob_csv = pd.read_csv('storage/jobs.csv')
+
         print("\n" + "="*50 + " Find Work " + "="*50)
-        
-        print(postAJob_csv)
+        if (postAJob_csv.empty):
+            print("⚠️  Belum ada lowongan pekerjaan yang tersedia.")
+        else:
+            print(postAJob_csv[["title","description","theme","location","date_needed","time","tipe_budget","budget","status"]].to_string(index=True))
         print("="*125)
 
         print("\nKetik nomor index (angka paling kiri) untuk melihat detail.")
@@ -48,15 +55,17 @@ def find_work():
                     else:
                         print(f"{i}. {key:<12}: {value}")
 
-                print("#" * 60)
+                print("=" * 60)
 
                 print("[1] Lamar Pekerjaan ini")
                 print("[0] Kembali ke menu awal")
                 
                 aksi = input("Pilih aksi: ")
                 
-                if aksi == '1':
-                    print(f"\n✅ Berhasil melamar ke: {job['judul']}")
+                if (aksi == '1' and state['account_session'] is not None):
+                    applyJobs(state, job)
+                elif (aksi == '1' and state['account_session'] is None):
+                    cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
                 
             else:
                 print("⚠️  Nomor index tidak ditemukan.")

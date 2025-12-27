@@ -1,9 +1,10 @@
 import pandas as pd
 
 from postAJob import validasi_angka
+from utility import cardTemplate
 
 FILE_PATH_PHOTOGRAPHER = 'storage/listJobsPhotographer.csv'
-FILE_PATH_FINDER = 'storage/listJobsFinder.csv'
+FILE_PATH_FINDER = 'storage/jobsApplications.csv'
 
 list_jobs_photographer_db = pd.read_csv(FILE_PATH_PHOTOGRAPHER)
 list_jobs_finder_db = pd.read_csv(FILE_PATH_FINDER)
@@ -14,7 +15,7 @@ def syncFinderWithPhotographer():
 
     for idx, row in list_jobs_finder_db.iterrows():
         match = list_jobs_photographer_db[
-            list_jobs_photographer_db['message_id'] == row['message_id']
+            list_jobs_photographer_db['applications_id'] == row['applications_id']
         ]
 
         if not match.empty:
@@ -32,12 +33,12 @@ def updateFinderJob(message_no, status=None, negotiated_budget=None):
         print("Nomor tidak valid.")
         return False
 
-    message_id = list_jobs_finder_db.iloc[index]['message_id']
+    applications_id = list_jobs_finder_db.iloc[index]['applications_id']
 
     if status:
         list_jobs_finder_db.at[index, 'status'] = status
         list_jobs_photographer_db.loc[
-            list_jobs_photographer_db['message_id'] == message_id,
+            list_jobs_photographer_db['applications_id'] == applications_id,
             'status'
         ] = status
 
@@ -46,12 +47,12 @@ def updateFinderJob(message_no, status=None, negotiated_budget=None):
         list_jobs_finder_db.at[index, 'status'] = 'negotiation'
 
         list_jobs_photographer_db.loc[
-            list_jobs_photographer_db['message_id'] == message_id,
+            list_jobs_photographer_db['applications_id'] == applications_id,
             'negotiated_budget'
         ] = negotiated_budget
 
         list_jobs_photographer_db.loc[
-            list_jobs_photographer_db['message_id'] == message_id,
+            list_jobs_photographer_db['applications_id'] == applications_id,
             'status'
         ] = 'negotiation'
 
@@ -61,27 +62,39 @@ def updateFinderJob(message_no, status=None, negotiated_budget=None):
     return True
 
 
-def listJobsFinder():
+def listJobsFinder(state, job_id):
     global list_jobs_finder_db
+    jobs_db = pd.read_csv('storage/jobs.csv')
 
-    syncFinderWithPhotographer()
+    # syncFinderWithPhotographer()
 
     while True:
         print("\n" + "="*63 + " Tawaran Finder " + "="*63)
 
         if list_jobs_finder_db.empty:
-            print("Tidak ada tawaran.")
-            return False
+            cardTemplate("Info!","Belum ada tawaran yang tersedia.")
+            return
 
-        display_db = (
-            list_jobs_finder_db
-            .reset_index(drop=True)
-            .rename_axis('No')
-            .reset_index()
-            .assign(No=lambda x: x['No'] + 1)
-        )
+        # display_db = (
+        #     list_jobs_finder_db
+        #     .reset_index(drop=True)
+        #     .rename_axis('No')
+        #     .reset_index()
+        #     .assign(No=lambda x: x['No'] + 1)
+        # )
+        applications_selected = list_jobs_finder_db[list_jobs_finder_db['job_id'] == job_id] 
+        user_db = pd.read_csv('storage/user.csv')
 
-        print(display_db[['No','judul','lokasi','tanggal','budget','negotiated_budget','status']])
+        for index, row in applications_selected.iterrows():
+            job_info = jobs_db[jobs_db['job_id'] == row['job_id']].iloc[0]
+            print(
+                f"{row['applications_id']}. "
+                f"Title: {job_info['title']} | "
+                f"Status: {row['status']} | "
+                f"Budget Asli: {job_info['budget']} | "
+                f"Budget Diajukan: {row['negotiated_budget']}  | "
+                f"oleh @{user_db[user_db['user_id'] == row['user_id']].iloc[0]['username']}"
+            )
 
         print(f"\nPilih nomor 1–{len(list_jobs_finder_db)}")
         print("(x) Kembali")
@@ -89,7 +102,7 @@ def listJobsFinder():
         choice = input("Pilih: ").lower()
 
         if choice == 'x':
-            return False
+            return 
 
         if not choice.isdigit() or not (1 <= int(choice) <= len(list_jobs_finder_db)):
             print("Pilihan tidak valid.")

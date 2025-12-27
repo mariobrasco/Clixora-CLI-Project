@@ -2,12 +2,10 @@ import pandas as pd
 import postAJob as postJob
 import findWork as findWork
 
+from profile import profilePage 
 from utility import autoIncrementUserId, askInput, cardTemplate, login, menuLogin
 from catalog import catalogList
 
-
-#Variables
-# jumlah_nav = 0
 account_db = pd.read_csv('storage/user.csv')
 state = {
     "account_session": None, 
@@ -17,7 +15,7 @@ state = {
 #Menu Navigasi
 def navBelumLogin():
     global jumlah_nav
-    jumlah_nav = 5
+    jumlah_nav = 6
     print("\n" + "="*44 + " LANDING PAGE " + "="*44)
     print("Selamat Datang di Clixora!, disini adalah tempat photografer mendapat finder dan finder mendapat photografer.")
     print("1. Login") 
@@ -25,6 +23,7 @@ def navBelumLogin():
     print("3. Catalog List")
     print("4. Cari Pekerjaan")
     print("5. Unggah Lowongan Pekerjaan")
+    print("6. Unggah Catalog Saya")
     print("-----------------")
     print("X. Keluar")
     print("="*103)
@@ -45,15 +44,12 @@ def navSudahLogin():
     print("99. Logout")
     print("="*103)
     
-#Menu Navigasi--
-    
 
-
-
+#Main Program Loop
 while True:
-
     # print(state)
     
+    #Landing Page
     if (state["account_session"] is None ):
         navBelumLogin()
         state["input_navigasi"] = (input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau x untuk keluar: "))
@@ -61,6 +57,7 @@ while True:
         navSudahLogin()
         state["input_navigasi"] = (input(f"Masukkan angka untuk navigasi (1-{jumlah_nav}) atau x untuk keluar 99 untuk logout: "))
 
+    #Validasi Input Navigasi
     if (state["account_session"] is None):
         if state["input_navigasi"] not in [str(i) for i in range(1, jumlah_nav + 1)] + ["x"]:
             cardTemplate("Peringatan!", f"Input '{state['input_navigasi']}' tidak valid, silahkan masukan input yang sesuai.")
@@ -70,35 +67,48 @@ while True:
             cardTemplate("Peringatan!", f"Input '{state['input_navigasi']}' tidak valid, silahkan masukan input yang sesuai.")
             continue
     
+    #Keluar Program
     if (state["input_navigasi"] == "x"):
         cardTemplate("Terimakasih", "Terimakasih Telah menggunakan program ini.")
         # exit()
         break
     
+    #Logout
     if (state["input_navigasi"] == "99"):
         cardTemplate("Berhasil", f"Anda telah logout dari akun {state['account_session']['username']}.")
         state['account_session'] = None
         state["input_navigasi"] = None
 
+    #Page List Catalog
     if (state["account_session"] is not None and state["input_navigasi"] == "2" or state["account_session"] is None and state["input_navigasi"] == "3"):
         catalogList(state)
-    
+
+    #Post Job / Upload Catalog
     if (state["account_session"] is not None and state["input_navigasi"] == "4"):
-        postJob.form_post_job(state)
+        if (state["account_session"]['role'] == "finder"):
+            postJob.form_post_job(state)
+        elif (state["account_session"]['role'] == "photografer"):
+            print("Fitur Unggah Catalog untuk Photografer masih dalam pengembangan.")
     elif (state["account_session"] is None and state["input_navigasi"] == "5"):
         cardTemplate("Peringatan!", "Anda harus login terlebih dahulu sebagai finder untuk mengunggah lowongan pekerjaan.")
+    elif (state["account_session"] is None and state["input_navigasi"] == "6"):
+        cardTemplate("Peringatan!", "Anda harus login terlebih dahulu sebagai photografer untuk mengunggah catalog.")
 
+    #Page List Jobs
     if (state["account_session"] is not None and state["input_navigasi"] == "3" or state["account_session"] is None and state["input_navigasi"] == "4"):
-        findWork.find_work()
+        findWork.find_work(state)
 
     #Login
     if (state["account_session"] is None and state["input_navigasi"] == "1"):
         menuLogin(state)
-    #Login--
+        state["input_navigasi"] = None
+
+    #Page Profil  
+    if (state["account_session"] is not None and state["input_navigasi"] == "1"):
+        profilePage(state)
     
     #Registrasi
     if (state["account_session"] is None and state["input_navigasi"] == "2"):
-        
         while True:
             print("\n" + "="*44 + " MENU REGISTRASI " + "="*44)
             print("Apakah anda Photografer atau Finder?")
@@ -145,7 +155,7 @@ while True:
                             print("="*90)
                             login(input_username, input_password, state)
                             cardTemplate("Berhasil", f"Berhasil registrasi sebagai {role_name}.\nSelamat Datang, {input_username}!")
-                            # id_nav = 1
+                            
                 elif (role_id == "f" and input_email):
                     new_id = autoIncrementUserId(role_id)
                     reg_data = {

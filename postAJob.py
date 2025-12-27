@@ -94,15 +94,15 @@ def form_post_job(state):
     jobs_data = {
         "job_id": autoIncrementNumber(jobs_db),
         "user_id": state['account_session']['user_id'] or "",
-        "judul": judul,
-        "deskripsi": deskripsi,
-        "tema": tema,
-        "lokasi": lokasi,
-        "tanggal": tanggal,
-        "waktu": waktu,
+        "title": judul,
+        "description": deskripsi,
+        "theme": tema,
+        "tipe_budget": tipe_budget,
         "budget": budget,
+        "location": lokasi,
+        "date_needed": tanggal,
+        "time": waktu,
         "status": "available",
-        "negotiated_budget": "-"
     }
         
     post_job_df = pd.DataFrame([jobs_data])
