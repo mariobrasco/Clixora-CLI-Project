@@ -1,8 +1,2 @@
 applications_id,job_id,user_id,message,tipe_budget,negotiated_budget,status
-1,1,f001,,1,1200000,pending
-2,1,f004,,1,1000000,pending
-3,1,p002,jadi gini,1,1200000,pending
-3,1,p002,,1,1200000,pending
-3,1,p002,po,1,1200000,pending
-4,1,p002,eumm,1,1200000,pending
-4,1,p002,,1,1200000,pending
+3,1,p002,saya bisa apa aja ,1,1200000,pending
