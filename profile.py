@@ -22,11 +22,9 @@ def profilePage(state):
         print(f"Email      : {user_info['email']}")
         print(f"Role       : {state['account_session']['role']}")
 
-        print(f"Role       : {user_info['role']}")  
-
-    if state['account_session']['role'] == "photografer":
-        print(f"Lokasi     : {user_info['location']}")
-        print(f"Bio        : {user_info['bio']}")
+        if state['account_session']['role'] == "photografer":
+            print(f"Lokasi     : {user_info['location']}")
+            print(f"Bio        : {user_info['bio']}")
 
 
         print("=" * 101)
