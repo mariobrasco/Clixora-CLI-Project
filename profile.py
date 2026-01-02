@@ -32,6 +32,7 @@ def profilePage(state):
         # ===== menu aksi =====
         print(
             f"Aksi:\n"
+            f"[a] Lamaran saya\n"
             f"[e] Edit data profil\n"
             f"[b] Tambahkan bio\n"
             f"[s] Link sosial media\n"
@@ -73,6 +74,10 @@ def profilePage(state):
             cardTemplate("Berhasil!", "Bio berhasil ditambahkan")
 
         # ===== katalog fotografer =====
+        elif (aksi == "p" and state["account_session"]["role"] == "finder"):
+            myOrders(state)
+        elif (aksi == "a" and state["account_session"]["role"] == "photografer"):
+            myApplications(state)
         elif aksi == "c" and state['account_session']['role'] == "photografer":
             myCatalog(state)
             # listJobsFinder(state)    
