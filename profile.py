@@ -22,10 +22,20 @@ def profilePage(state):
         print(f"Email      : {user_info['email']}")
         print(f"Role       : {state['account_session']['role']}")
 
-        if state['account_session']['role'] == "photografer":
-            print(f"Lokasi     : {user_info['location']}")
+          # ===== bio (jika ada) =====
+        if 'bio' in user_info and pd.notna(user_info['bio']) and user_info['bio']:
             print(f"Bio        : {user_info['bio']}")
 
+        # ===== sosial media (tampil sesuai yang diisi user) =====
+        sosmed = {
+            "Instagram": "instagram",
+            "Twitter": "twitter",
+            "Facebook": "facebook"
+        }
+
+        for label, field in sosmed.items():
+            if field in user_info and pd.notna(user_info[field]) and user_info[field]:
+                print(f"{label:<11}: {user_info[field]}")
 
         print("=" * 101)
 
@@ -68,9 +78,26 @@ def profilePage(state):
         # ===== tambah bio =====
         elif aksi == "b" and state['account_session']['role'] == "photografer":
             bio = input("Masukan bio: ")
-            account_db.at[user_idx, 'bio'] = bio
+            account_db.at[user_idx, 'bio'] = bio 
             account_db.to_csv('storage/user.csv', index=False)
             cardTemplate("Berhasil!", "Bio berhasil ditambahkan")
+            
+        # ===== tambah link sosial media =====
+        elif aksi == "s":
+            print("\nKetik '-' jika ingin mengosongkan")
+            
+            instagram = input("Instagram : ")
+            twitter = input("Twitter : ")
+            facebook = input("Facebook : ")
+            if instagram:
+                account_db.at[user_idx, 'instagram'] = instagram
+            if twitter:
+                account_db.at[user_idx, 'twitter'] = twitter
+            if facebook:
+                account_db.at[user_idx, 'facebook'] = facebook  
+                
+            account_db.to_csv('storage/user.csv', index=False)
+            cardTemplate("Berhasil", "Ssosial media berhasil disimpan")
 
         # ===== katalog fotografer =====
         elif aksi == "c" and state['account_session']['role'] == "photografer":
@@ -79,7 +106,7 @@ def profilePage(state):
         elif (aksi == "j" and state["account_session"]["role"] == "finder"):
             myJobs(state)
             # listJobsFinder(state)
-        elif (aksi == "s"):
+        elif (aksi == "x"):
             cardTemplate("Berhasil!",f"Anda Telah Logout dari akun  @{state['account_session']['username']}.")
             state['account_session'] = None
             state["input_navigasi"] = None
