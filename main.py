@@ -4,7 +4,7 @@ import postAJob as postJob
 import findWork as findWork
 
 from profile import profilePage 
-from utility import autoIncrementUserId, askInput, cardTemplate, login, menuLogin
+from utility import autoIncrementUserId, askInput, cardTemplate, login, menuLogin, menuRegistrasi
 from catalog import catalogList
 
 account_db = pd.read_csv('storage/user.csv')
@@ -15,8 +15,6 @@ state = {
 
 #Menu Navigasi
 def navBelumLogin():
-    global jumlah_nav
-    # jumlah_nav = 6
     print("\n" + "="*44 + " BERANDA " + "="*44)
     print("📷  CLIXORA  📷")
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
@@ -31,24 +29,16 @@ def navBelumLogin():
     print("="*103)
 
 def navSudahLogin():
-    global jumlah_nav
-    # jumlah_nav = 4
     print("\n" + "="*44 + " BERANDA " + "="*32 + f" {state["account_session"]['username']} ({state["account_session"]['role']}) ")
-    print("        📷  CLIXORA  📷")
+    print("📷  CLIXORA  📷")
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
     print("[T] Tentang Clixora")
     print("[C] Cara Penggunaan (How To Use)")
     print("[A] About Us")
     print("-----------------")
-    print("[1] Profil Saya") 
-    print("[2] List Catalog")
-    print("[3] List Pekerjaan")
-    if (state["account_session"]['role'] == "finder"):
-        print("[4] Unggah Lowongan Pekerjaan")
-    else:
-        print("[4] Unggah Catalog")
-    print("[X] Keluar")
-    print("[L] Logout")
+    print("[1] Profil Saya      [3] List Pekerjaan") 
+    print(f"[2] List Catalog    {' [4] Unggah Lowongan Pekerjaan' if state['account_session']['role'] == 'finder' else ' [4] Unggah Catalog'}")
+    print("[X] Keluar           [L] Logout")
     print("="*103)
     
 
@@ -81,7 +71,7 @@ while True:
         break
     
     #Logout
-    if (state["input_navigasi"] == "99"):
+    if (state["input_navigasi"] == "l"):
         cardTemplate("Berhasil", f"Anda telah logout dari akun {state['account_session']['username']}.")
         state['account_session'] = None
         state["input_navigasi"] = None
@@ -123,69 +113,6 @@ while True:
     
     #Registrasi
     if (state["account_session"] is None and state["input_navigasi"] == "2"):
-        while True:
-            print("\n" + "="*44 + " MENU REGISTRASI " + "="*44)
-            print("Apakah anda Photografer atau Finder?")
-            print("1. Photografer")
-            print("2. Finder")
-            role_picked = (input("Masukan nomor sesuai tipe akun yang diinginkan: "))
-            role_id = "null"
-            if (role_picked == "1"):
-                role_id = "p"
-                role_name = "photografer"
-                break
-            elif(role_picked == "2"):
-                role_id = "f"
-                role_name = "finder"
-                break
-            else:
-                cardTemplate("Peringatan", f"input '{role_picked}' tidak valid, silahkan masukan nomor yang sesuai (1 dan 2)")
-                
-        print("\n" + "="*44 + " MENU REGISTRASI " + "="*44)
-        print("Jika Ingin membatalkan registrasi, ketik 'batal' saat menginputkan data")
-        
-        input_username = askInput("Masukkan username: ")
-        if (input_username):
-            input_password = askInput("Masukkan password: ")
-            if (input_password):
-                input_email = askInput("Masukkan email: ")
-                if (role_id == "p" and input_email):
-                    input_location = askInput("Masukkan lokasi: ")
-                    if (input_location):
-                        input_bio = askInput("Masukkan bio: ")
-                        if (input_bio):
-                            new_id = autoIncrementUserId(role_id)
-                            reg_data = {
-                                'user_id': new_id, 
-                                'username': input_username, 
-                                'password': input_password, 
-                                'role': role_name, 
-                                'location': input_location, 
-                                'email': input_email, 
-                                'bio': input_bio
-                            }
-                            new_account = pd.DataFrame([reg_data])
-                            new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
-                            print("="*90)
-                            login(input_username, input_password, state)
-                            cardTemplate("Berhasil", f"Berhasil registrasi sebagai {role_name}.\nSelamat Datang, {input_username}!")
-                            
-                elif (role_id == "f" and input_email):
-                    new_id = autoIncrementUserId(role_id)
-                    reg_data = {
-                        'user_id': new_id, 
-                        'username': input_username, 
-                        'password': input_password,
-                        'role': role_name,
-                        'location':  "",
-                        'email': input_email, 
-                        'bio': ""
-                    }
-                    new_account = pd.DataFrame([reg_data])
-                    new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
-                    print("="*90)
-                    
-                    login(input_username, input_password, state) 
-                    cardTemplate("Berhasil", f"Berhasil registrasi sebagai {role_name}.\nSelamat Datang, {input_username}!")
+        menuRegistrasi(state)
     
     #Registrasi--
