@@ -10,7 +10,7 @@ def formCatalog(state):
     theme = input("Masukkan Tema: ")
     
     while True:
-        tipe_budget = input("Pilih Tipe Budget Lowongan: \n(1. Per Jam, \n2. Per Proyek): ")
+        tipe_budget = input("Pilih Tipe Budget Katalog: \n(1. Per Jam, \n2. Per Proyek): ")
 
         if (tipe_budget == '1'):
             per_jam = input("Masukkan Besaran Budget Per Jam: ")

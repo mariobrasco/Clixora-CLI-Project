@@ -3,7 +3,6 @@ import pandas as pd
 from applyJobs import applyJobs
 from utility import cardTemplate
 
-
 def validasi_angka(teks):
     for char in teks:
         if char < '0' or char > '9':

@@ -3,7 +3,6 @@ import pandas as pd
 from userPost import myApplications, myCatalog, myJobs, myOrders
 from utility import cardTemplate
 
-
 def profilePage(state):
     while True:
         # ===== ambil data user =====
@@ -32,13 +31,11 @@ def profilePage(state):
         # ===== menu aksi =====
         print(
             f"Aksi:\n"
-            f"[a] Lamaran saya\n"
-            f"[e] Edit data profil\n"
-            f"[b] Tambahkan bio\n"
-            f"[s] Link sosial media\n"
-            f"[k] Kembali\n"
-            f"[x] Keluar\n"
-            f"{'[c] Katalog saya' if state['account_session']['role'] == 'photografer' else '[j] Lowongan saya'}"
+            f"{'[p] Pesanan saya    ' if state['account_session']['role'] == 'finder' else '[a] Lamaran saya    '}[e] Edit data profil\n"
+            f"{'[c] Katalog saya    ' if state['account_session']['role'] == 'photografer' else '[j] Lowongan saya   '}[b] Tambahkan bio\n"
+            f"[K] Kembali\n"
+            f"[L] Logout\n"
+            f"[X] Keluar\n"
         )
 
         aksi = input("Masukan aksi: ").lower()
@@ -84,7 +81,7 @@ def profilePage(state):
         elif (aksi == "j" and state["account_session"]["role"] == "finder"):
             myJobs(state)
             # listJobsFinder(state)
-        elif (aksi == "s"):
+        elif (aksi == "l"):
             cardTemplate("Berhasil!",f"Anda Telah Logout dari akun  @{state['account_session']['username']}.")
             state['account_session'] = None
             state["input_navigasi"] = None

@@ -4,8 +4,9 @@ import postAJob as postJob
 import findWork as findWork
 
 from profile import profilePage 
-from utility import autoIncrementUserId, askInput, cardTemplate, login, menuLogin, menuRegistrasi
+from utility import autoIncrementUserId, askInput, cardTemplate, login
 from catalog import catalogList
+from loginRegister import menuLogin, menuRegistrasi
 
 account_db = pd.read_csv('storage/user.csv')
 state = {
