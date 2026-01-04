@@ -90,3 +90,17 @@ def cardTemplate(title, message):
     print(message)
     panjang_text = int(88+len(title)+2)
     print("="*panjang_text)
+    
+def validasiEmail(email):
+    if "@" not in email or "." not in email:
+        return False
+
+    parts = email.split("@")
+
+    if len(parts) != 2:
+        return False
+
+    if "." not in parts[1]:
+        return False
+
+    return True
