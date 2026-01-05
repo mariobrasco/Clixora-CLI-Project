@@ -116,9 +116,9 @@ def listCatalogApplications(catalog_id):
 def listOrderApplications(applications_id):
     while True:
         catalog_db = pd.read_csv('storage/catalog.csv')
-        catalog_info = catalog_db[catalog_db['catalog_id'] == applications_id].iloc[0]
-        
         applications_selected = list_catalog_photographer_db[list_catalog_photographer_db['applications_id'] == applications_id].iloc[0] 
+        catalog_info = catalog_db[catalog_db['catalog_id'] == applications_selected['catalog_id']].iloc[0]
+        
         
         user_db = pd.read_csv('storage/user.csv')
         photographer_info = user_db[user_db['user_id'] == catalog_info['user_id']].iloc[0]
