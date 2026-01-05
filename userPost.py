@@ -1,7 +1,7 @@
 import pandas as pd
 
 from utility import cardTemplate
-from jobApplications import listJobsFinder
+from jobApplications import listJobsApplications, listJobsFinder
 from catalogApplications import listCatalogApplications, listOrderApplications
 
 
@@ -52,11 +52,7 @@ def myApplications(state):
             return
         elif(int(aksi) in applications_db_user['applications_id'].values):
             application_id = int(aksi)
-            application_to_view = applications_db_user[applications_db_user['applications_id'] == application_id]
-            print("="*44 + " Detail Lamaran " + "="*44)
-            print(application_to_view.to_string(index=False))
-            print("="*102)
-            kembali = input("Tekan Enter untuk kembali...")
+            listJobsApplications(application_id)
             
 
 def myJobs(state):

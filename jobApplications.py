@@ -113,9 +113,9 @@ def listJobsFinder(job_id):
 def listJobsApplications(applications_id):
     while True:
         job_db = pd.read_csv('storage/jobs.csv')
-        job_info = job_db[job_db['job_id'] == applications_id].iloc[0]
-        
         applications_selected = list_jobs_finder_db[list_jobs_finder_db['applications_id'] == applications_id].iloc[0] 
+        job_info = job_db[job_db['job_id'] == applications_selected['job_id']].iloc[0]
+        
         
         user_db = pd.read_csv('storage/user.csv')
         finder_info = user_db[user_db['user_id'] == job_info['user_id']].iloc[0]
@@ -131,9 +131,9 @@ def listJobsApplications(applications_id):
         print(f"Tema            : {job_info['theme']}")
         print(f"Deskripsi       : {job_info['description']}")
         print(f"Pesan           : {applications_selected['message']}")
-        print(f"Lokasi          : {applications_selected['location']}")
-        print(f"Tanggal         : {applications_selected['date']}")
-        print(f"Waktu           : {applications_selected['time']}")
+        print(f"Lokasi          : {job_info['location']}")
+        print(f"Tanggal         : {job_info['date_needed']}")
+        print(f"Waktu           : {job_info['time']}")
         print(f"Budget          : {applications_selected['negotiated_budget']}")
         print(f"Status          : {applications_selected['status']}")
         print("="*135)
