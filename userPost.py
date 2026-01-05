@@ -28,7 +28,7 @@ def myCatalog(state):
             catalog_id = int(aksi)
             catalog_to_edit = catalog_db_user[catalog_db_user['catalog_id'] == catalog_id].iloc[0]
             print(f"Anda memilih catalog dengan ID {catalog_id} dan judul '{catalog_to_edit['title']}' untuk diedit.")
-            listCatalogApplications(state, catalog_id)
+            listCatalogApplications(catalog_id)
 
 
 def myApplications(state):
