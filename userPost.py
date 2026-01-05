@@ -82,7 +82,7 @@ def myJobs(state):
             job_id = int(aksi)
             job_to_edit = jobs_db_user[jobs_db_user['job_id'] == job_id].iloc[0]
             print(f"Anda memilih lowongan dengan ID {job_id} dan judul '{job_to_edit['title']}' untuk diedit.")
-            listJobsFinder(state, job_id)            
+            listJobsFinder(job_id)            
 
 def myOrders(state):
     while True:
