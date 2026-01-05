@@ -1,5 +1,7 @@
 applications_id,catalog_id,user_id,message,location,date,time,tipe_budget,negotiated_budget,status
-1,2,f001,,Bandung,12-12-12,12:12,2,1200000,pending
+1,2,f001,,Bandung,12-12-12,12:12,2,1200000,accepted
 2,1,f004,,ki,12-12-12,12:12,1,500000,pending
 3,1,f001,jadi gini pres,bandung,19-02-25,09:00,1,500000,pending
 4,2,f001,asdfghjkl,ajum,12-12-12,09:00,2,4000000,accepted
+5,2,f001,adadeh,bandung,12-12-21,09:00,2,1200000,pending
+6,2,f001,anu,bandung,19-12-25,09:00,2,1200000,pending
