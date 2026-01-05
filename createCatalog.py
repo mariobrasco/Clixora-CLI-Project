@@ -37,4 +37,4 @@ def formCatalog(state):
     catalog_df = pd.DataFrame([new_catalog])
     catalog_df.to_csv('storage/catalog.csv', mode='a', header=False, index=False)
 
-    cardTemplate("✅ Catalog berhasil dibuat.")
+    cardTemplate("Berhasil","✅ Catalog berhasil dibuat.")

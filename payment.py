@@ -4,7 +4,8 @@ from utility import cardTemplate, autoIncrementCustom, updateRowById
 
 def menuPayment(applications_info, event_info, photographer_info):
     FILE_PATH_APPLICATIONS = 'storage/jobsApplications.csv' if 'job_id' in applications_info else 'storage/catalogApplications.csv'
-    payment_db = pd.read_csv('storage/payments.csv')
+    PAYMENT_CSV_PATH = 'storage/payments.csv'
+    payment_db = pd.read_csv(PAYMENT_CSV_PATH)
 
     print("\n" + "="*44 + " Pembayaran " + "="*44)
     print("Detail Pekerjaan:")
@@ -68,50 +69,55 @@ QRIS PAYMENT
 Scan menggunakan e-wallet Anda
 """.strip())
 
+        while True:
+            konfirmasi = input("\nKetik 'bayar' setelah pembayaran berhasil atau 'batal' untuk membatalkan: ")
 
-        konfirmasi = input("\nKetik 'bayar' setelah pembayaran berhasil atau 'batal' untuk membatalkan: ")
-
-        if konfirmasi.lower() == 'bayar':
-            payment_data = {
-                'payment_id': autoIncrementCustom("p", payment_db, 'payment_id'), 
-                'user_id': applications_info['user_id'], 
-                'application_id': applications_info['application_id'], 
-                'application_type': 'catalog' if 'catalog_id' in applications_info else 'job', 
-                'payment_method': metode,
-                'payment_type': tipe_pembayaran,
-                'payment_refs': autoIncrementCustom("ref", payment_db, 'payment_refs'),
-                'amount': total,
-                'status': 'Paid',
-                'paid_at': pd.Timestamp.now()
-                }
-            payment_df = pd.DataFrame([payment_data])
-            payment_df.to_csv('storage/payments.csv', mode='a', header=False, index=False)
-            updateRowById(
-                FILE_PATH_APPLICATIONS,
-                'applications_id',
-                applications_info['applications_id'],
-                {'status': 'on going'}
-            )
-            cardTemplate("Berhasil", f"Pembayaran sebesar Rp{total} telah berhasil dilakukan kepada {photographer_info['username']}.\nTerimakasih telah menggunakan layanan Clixora!")
-        elif konfirmasi.lower() == 'batal':
-            cardTemplate("Batal!","Pembayaran dibatalkan.")
-        else:
-            cardTemplate(f"Input '{konfirmasi}' tidak valid.")
+            if konfirmasi.lower() == 'bayar':
+                payment_data = {
+                    'payment_id': autoIncrementCustom("pm", PAYMENT_CSV_PATH, 'payment_id'), 
+                    'user_id': applications_info['user_id'], 
+                    'application_id': applications_info['applications_id'], 
+                    'application_type': 'catalog' if 'catalog_id' in applications_info else 'job', 
+                    'payment_method': 'qris',
+                    'payment_type': tipe_pembayaran,
+                    'payment_refs': autoIncrementCustom("ref", PAYMENT_CSV_PATH, 'payment_refs'),
+                    'amount': total,
+                    'status': 'paid',
+                    'paid_at': pd.Timestamp.now()
+                    }
+                payment_df = pd.DataFrame([payment_data])
+                payment_df.to_csv('storage/payments.csv', mode='a', header=False, index=False)
+                
+                updateRowById(
+                    FILE_PATH_APPLICATIONS,
+                    'applications_id',
+                    applications_info['applications_id'],
+                    {'status': 'on going (paid)'}
+                )
+                cardTemplate("Berhasil", f"Pembayaran sebesar Rp{total} telah berhasil dilakukan kepada {photographer_info['username']}.\nTerimakasih telah menggunakan layanan Clixora!")
+                return
+            elif konfirmasi.lower() == 'batal':
+                cardTemplate("Batal!","Pembayaran dibatalkan.")
+                return
+            else:
+                cardTemplate(f"Input '{konfirmasi}' tidak valid.")
             
     elif metode == '2':
+        print("\n="*50 + " PEMBAYARAN CASH " + "="*50)
         print("Anda memilih metode pembayaran Cash.") 
         print(f"Silahkan lakukan pembayaran secara langsung kepada Photographer saat pekerjaan selesai\n Siapkan uang Tunai sebesar {total}!.") 
         print("Jika sudah membayar Photographer, silahkan konfirmasi pembayaran kepada Clixora.")
+        print("="*100)
         input("Ketik Enter jika sudah mengerti: ")
         payment_data = {
-            'payment_id': autoIncrementCustom("p", payment_db, 'payment_id'), 
+            'payment_id': autoIncrementCustom("pm", payment_db, 'payment_id'), 
             'user_id': applications_info['user_id'], 
-            'application_id': applications_info['application_id'], 
+            'application_id': applications_info['applications_id'], 
             'application_type': 'catalog' if 'catalog_id' in applications_info else 'job', 
-            'payment_method': metode,
+            'payment_method': 'cash',
             'payment_type': tipe_pembayaran,
             'payment_refs': autoIncrementCustom("ref", payment_db, 'payment_refs'),
             'amount': total,
-            'status': 'Pending',
+            'status': 'pending',
             'paid_at': ""
             }

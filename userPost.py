@@ -8,8 +8,8 @@ from catalogApplications import listCatalogApplications, listOrderApplications
 def myCatalog(state):
     while True:
         catalog_db = pd.read_csv('storage/catalog.csv')
-        
         catalog_db_user = catalog_db[catalog_db['user_id'] == state['account_session']['user_id']]
+        
         print("="*44 + " Catalog Saya " + "="*44)
         print(catalog_db_user[['catalog_id','title', 'theme', 'budget', 'status']].to_string(index=False))
         print("="*102)

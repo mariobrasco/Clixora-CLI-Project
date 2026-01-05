@@ -1,6 +1,7 @@
 catalog_id,user_id,title,description,theme,tipe_budget,budget,status
-1,p001,Foto Wedding,dengan jasa ini saya yakin wedding anda akan terlihat mewah sekali aw,landscape,1,500000,available
 2,p002,Foto pemandangan alam,APakh adiwidjwajdwai,wedding,2,1200000,available
 3,p002,Undangan Ajum,Disini hanya untk elit yahh,wedding modern,1,1000,available
 4,p002,anuan,pokonya adalah,sekolah,2,6700000,available
 5,p002,anuan,anuan,sekolah,2,670000,available
+6,p002,testing,testing,test,1,200000,available
+7,p002,test,test,test,1,200000,available
