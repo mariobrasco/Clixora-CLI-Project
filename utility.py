@@ -8,32 +8,6 @@ def login(username, password, state):
         state["account_session"] = account.iloc[0]
     return not account.empty
 
-def menuLogin(state):
-    print("\n" + "="*44 + " MENU LOGIN " + "="*44)
-    print("Jika Ingin membatalkan login, ketik 'batal'")
-    
-    input_username = askInput("Masukkan username: ")
-    if (input_username):
-        input_password = askInput("Masukkan password: ")
-        if (input_password):
-            if(login(input_username, input_password, state)):
-                print("="*90)
-                cardTemplate("Berhasil!",f"Berhasil login sebagai {state['account_session']['role']}, Selamat datang, {input_username}!")
-            else:
-                cardTemplate("Peringatan!", "Gagal login, username atau password salah.")
-
-def deleteRowById(db_name, column_name, id_value):
-    db = pd.read_csv(db_name)
-    cardTemplate("Peringatan!", f"Apakah anda yakin untuk Menghapus data {db[db[column_name] == id_value].to_string(index=False)}? \n[y] Ya \n[n] Tidak")
-    confirm = input("Masukkan pilihan Anda: ")
-    if (confirm.lower() == 'y'):
-        db = db[db[column_name] != id_value]
-        db.to_csv(db_name, index=False)
-        cardTemplate("Berhasil", "Data berhasil dihapus.")
-    if (confirm.lower() == 'n'):
-        cardTemplate("Info!", "Penghapusan data dibatalkan.")
-    db = pd.read_csv(db_name)
-
 def autoIncrementUserId(role_id):
     account_db = pd.read_csv('storage/user.csv')
     # Filter existing IDs by role prefix (p or f)
@@ -78,15 +52,62 @@ def autoIncrementNumber(db_name):
         new_id = int(latest_id) + 1
         return new_id
 
-def askInput(prompt):
-    value = input(prompt)
+def askInput(message, required):
+    value = input(message)
+    
     if (value.lower() == "batal"):
-        print("Operasi dibatalkan, kembali ke menu Sebelumnya")
-        return None
+        cardTemplate("Info!", "Operasi dibatalkan, kembali ke menu Sebelumnya")
+        return 
+    if (required and not value):
+        cardTemplate("Required!", "Input tidak boleh kosong, silahkan coba lagi.")
+        return askInput(message, required)
+    
     return value
 
 def cardTemplate(title, message):
     print("\n" + "="*44 + f" {title} " + "="*44)
     print(message)
+    
     panjang_text = int(88+len(title)+2)
     print("="*panjang_text)
+    
+def validasiEmail(email):
+    if "@" not in email or "." not in email:
+        return False
+
+    parts = email.split("@")
+    if len(parts) != 2:
+        return False
+
+    if "." not in parts[1]:
+        return False
+
+    return True
+
+# ======================= CRUD ======================= 
+
+def updateRowById(db_name, key_column, id_value, update_data):
+    
+    db = pd.read_csv(db_name)
+    selected_row = db[key_column] == id_value
+    
+    for key, value in update_data.items():
+        db.loc[selected_row, key] = value
+    
+    db.to_csv(db_name, index=False)
+    cardTemplate("Berhasil", "Data berhasil diperbarui.")
+
+def deleteRowById(db_name, key_column, id_value):
+    db = pd.read_csv(db_name)
+    cardTemplate("Peringatan!", f"Apakah anda yakin untuk Menghapus data {db[db[key_column] == id_value].to_string(index=False)}? \n[Y] Ya \n[N] Tidak")
+    confirm = input("Masukkan pilihan Anda: ")
+    
+    if (confirm.lower() == 'y'):
+        db = db[db[key_column] != id_value]
+        db.to_csv(db_name, index=False)
+        cardTemplate("Berhasil", "Data berhasil dihapus.")
+        
+    if (confirm.lower() == 'n'):
+        cardTemplate("Info!", "Penghapusan data dibatalkan.")
+        
+    db = pd.read_csv(db_name)

@@ -1,2 +1,3 @@
 job_id,user_id,title,description,theme,tipe_budget,budget,location,date_needed,time,status
 1,f001,test,tes,test,1,1200000,test,12-12-12,12:12,available
+2,f001,anu,anuan,wedding,1,67890,bandung,19-06-06,09:00,available

@@ -2,7 +2,7 @@ import pandas as pd
 
 from utility import cardTemplate
 from jobApplications import listJobsFinder
-from catalogApplications import listCatalogApplications
+from catalogApplications import listCatalogApplications, listOrderApplications
 
 
 def myCatalog(state):
@@ -28,7 +28,7 @@ def myCatalog(state):
             catalog_id = int(aksi)
             catalog_to_edit = catalog_db_user[catalog_db_user['catalog_id'] == catalog_id].iloc[0]
             print(f"Anda memilih catalog dengan ID {catalog_id} dan judul '{catalog_to_edit['title']}' untuk diedit.")
-            listCatalogApplications(state, catalog_id)
+            listCatalogApplications(catalog_id)
 
 
 def myApplications(state):
@@ -82,8 +82,7 @@ def myJobs(state):
             job_id = int(aksi)
             job_to_edit = jobs_db_user[jobs_db_user['job_id'] == job_id].iloc[0]
             print(f"Anda memilih lowongan dengan ID {job_id} dan judul '{job_to_edit['title']}' untuk diedit.")
-            listJobsFinder(state, job_id)
-            
+            listJobsFinder(state, job_id)            
 
 def myOrders(state):
     while True:
@@ -105,10 +104,6 @@ def myOrders(state):
             state["input_navigasi"] = None
             return
         elif(int(aksi) in orders_db_user['applications_id'].values):
-            order_id = int(aksi)
-            order_to_view = orders_db_user[orders_db_user['applications_id'] == order_id]
-            print("="*44 + " Detail Pesanan " + "="*44)
-            print(order_to_view.to_string(index=False))
-            print("="*102)
-            kembali = input("Tekan Enter untuk kembali...")
+            applications_id = int(aksi)
+            listOrderApplications(applications_id)
         

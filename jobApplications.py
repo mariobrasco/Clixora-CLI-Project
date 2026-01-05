@@ -1,102 +1,25 @@
 import pandas as pd
 
+from payment import menuPayment
 from postAJob import validasi_angka
-from utility import cardTemplate
+from utility import cardTemplate, updateRowById
 
-# FILE_PATH_PHOTOGRAPHER = 'storage/catalogApplications.csv'
 FILE_PATH_FINDER = 'storage/jobsApplications.csv'
 
-# list_jobs_photographer_db = pd.read_csv(FILE_PATH_PHOTOGRAPHER)
 list_jobs_finder_db = pd.read_csv(FILE_PATH_FINDER)
 
-
-# def syncFinderWithPhotographer():
-#     global list_jobs_finder_db, list_jobs_photographer_db
-
-#     for idx, row in list_jobs_finder_db.iterrows():
-#         match = list_jobs_photographer_db[
-#             list_jobs_photographer_db['applications_id'] == row['applications_id']
-#         ]
-
-#         if not match.empty:
-#             list_jobs_finder_db.at[idx, 'status'] = match.iloc[0]['status']
-#             list_jobs_finder_db.at[idx, 'negotiated_budget'] = match.iloc[0].get('negotiated_budget', '')
-
-#     list_jobs_finder_db.to_csv(FILE_PATH_FINDER, index=False)
-
-
-# def updateFinderJob(message_no, status=None, negotiated_budget=None):
-#     global list_jobs_finder_db, list_jobs_photographer_db
-
-#     index = message_no - 1
-#     if index < 0 or index >= len(list_jobs_finder_db):
-#         print("Nomor tidak valid.")
-#         return False
-
-#     applications_id = list_jobs_finder_db.iloc[index]['applications_id']
-
-#     if status:
-#         list_jobs_finder_db.at[index, 'status'] = status
-#         list_jobs_photographer_db.loc[
-#             list_jobs_photographer_db['applications_id'] == applications_id,
-#             'status'
-#         ] = status
-
-#     if negotiated_budget:
-#         list_jobs_finder_db.at[index, 'negotiated_budget'] = negotiated_budget
-#         list_jobs_finder_db.at[index, 'status'] = 'negotiation'
-
-#         list_jobs_photographer_db.loc[
-#             list_jobs_photographer_db['applications_id'] == applications_id,
-#             'negotiated_budget'
-#         ] = negotiated_budget
-
-#         list_jobs_photographer_db.loc[
-#             list_jobs_photographer_db['applications_id'] == applications_id,
-#             'status'
-#         ] = 'negotiation'
-
-#     list_jobs_finder_db.to_csv(FILE_PATH_FINDER, index=False)
-#     list_jobs_photographer_db.to_csv(FILE_PATH_PHOTOGRAPHER, index=False)
-
-#     return True
-
-def updateFinderJob(applications_id, status, negotiated_budget):
-    global list_jobs_finder_db
-
-    # selected = list_jobs_finder_db[list_jobs_finder_db['applications_id'] == applications_id].index[0]
-    # if index < 0 or index >= len(list_jobs_finder_db):
-    #     print("Nomor tidak valid.")
-    #     return False
-
-    selected_row = list_jobs_finder_db['applications_id'] == applications_id
-    
-    list_jobs_finder_db.loc[selected_row, 'status'] = status
-    list_jobs_finder_db.loc[selected_row, 'negotiated_budget'] = negotiated_budget
-
-    # if negotiated_budget:
-    #     list_jobs_finder_db.at[index, 'negotiated_budget'] = negotiated_budget
-    #     list_jobs_finder_db.at[index, 'status'] = 'negotiation'
-
-    list_jobs_finder_db.to_csv(FILE_PATH_FINDER, index=False)
-
-    return True
-
-
-def listJobsFinder(state, job_id):
-    global list_jobs_finder_db
-    jobs_db = pd.read_csv('storage/jobs.csv')
-
-    # syncFinderWithPhotographer()
-
+def listJobsFinder(job_id):
     while True:
+        global list_jobs_finder_db
+        jobs_db = pd.read_csv('storage/jobs.csv')
+        
         print("\n" + "="*63 + " List Tawaran " + "="*63)
+        applications_selected = list_jobs_finder_db[list_jobs_finder_db['job_id'] == job_id] 
 
         if list_jobs_finder_db.empty:
             cardTemplate("Info!","Belum ada yang melamar lowongan anda.")
             return
         
-        applications_selected = list_jobs_finder_db[list_jobs_finder_db['job_id'] == job_id] 
         user_db = pd.read_csv('storage/user.csv')
         job_info = jobs_db[jobs_db['job_id'] == job_id].iloc[0]
         
@@ -117,19 +40,8 @@ def listJobsFinder(state, job_id):
 
         if choice == 'x':
             return 
-
-        # if not choice.isdigit() or not (1 <= int(choice) <= len(list_jobs_finder_db)):
-        #     print("Pilihan tidak valid.")
-        #     continue
-        # index = int(choice) - 1
         
         selected =  applications_selected[applications_selected['applications_id'] == int(choice)].iloc[0]
-
-        # jila belum ada negosiasi
-        # if pd.isna(selected['negotiated_budget']) or str(selected['negotiated_budget']).strip() == '':
-        #     print("\n⏳ Menunggu negosiasi dari Photographer.")
-        #     print("❗ Anda belum dapat melakukan aksi apa pun.")
-        #     continue
         
         if (selected['status'] == 'waiting for photographer'):
             cardTemplate("Info!","Menunggu Photographer merespon tawaran Anda.")
@@ -149,6 +61,17 @@ def listJobsFinder(state, job_id):
             action = input("Aksi: ").lower()
 
             if action == 'b':
+                print("\n💬 Ajukan negosiasi balik ke Photographer")
+                
+                while True:
+                    tipe_budget = input("Pilih Tipe Budget Lowongan: \n(1. Per Jam, \n2. Per Proyek): ")
+
+                    if (tipe_budget != '1' and tipe_budget != '2'):
+                        print("Masukkan Tipe Budget yang Valid! (1 atau 2)")
+                        continue
+                    else:
+                        break
+                    
                 new_budget = input("Masukkan budget baru: ")
                 if new_budget <= '0':
                     print("\nBudget harus lebih dari 0.")
@@ -158,12 +81,26 @@ def listJobsFinder(state, job_id):
                     print("\nBudget harus berupa angka.")
                     continue
 
-                updateFinderJob(selected['applications_id'], status='waiting for response', negotiated_budget=new_budget)
-                print("💰 Negosiasi balasan dikirim ke Photographer.")
+                updateRowById(
+                    FILE_PATH_FINDER, 
+                    'applications_id', 
+                    selected['applications_id'], 
+                    {'status': 'waiting for photographer',
+                    'tipe_budget': tipe_budget,
+                    'negotiated_budget': new_budget
+                })
+                cardTemplate("Berhasil!","💰 Negosiasi balasan dikirim ke Photographer, Silahkan tunggu respon dari Photographer.")
                 break
             
             elif action == 'a':
-                updateFinderJob(selected['applications_id'], status='accepted', negotiated_budget=selected['negotiated_budget'])
+                updateRowById(
+                    FILE_PATH_FINDER, 
+                    'applications_id', 
+                    selected['applications_id'], 
+                    {'status': 'accepted',
+                    'tipe_budget': selected['tipe_budget'],
+                    'negotiated_budget': selected['negotiated_budget']
+                })
                 cardTemplate("Berhasil!",f"✅ Tawaran @{user_db[user_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.")
                 break
 
@@ -171,7 +108,76 @@ def listJobsFinder(state, job_id):
                 break
 
             else:
-                print("Input tidak valid.")
+                cardTemplate("Peringatan!", f"Input '{action}' tidak valid.")
 
+def listJobsApplications(applications_id):
+    while True:
+        job_db = pd.read_csv('storage/jobs.csv')
+        job_info = job_db[job_db['job_id'] == applications_id].iloc[0]
+        
+        applications_selected = list_jobs_finder_db[list_jobs_finder_db['applications_id'] == applications_id].iloc[0] 
+        
+        user_db = pd.read_csv('storage/user.csv')
+        finder_info = user_db[user_db['user_id'] == job_info['user_id']].iloc[0]
+        
+        print("\n" + "="*63 + " Detail Pesanan " + "="*63)
 
-# listJobsFinder()
+        if applications_selected.empty:
+            cardTemplate("Info!","Pesanan tidak ditemukan.")
+            return
+        
+        print(f"Finder          : {finder_info['username']}")
+        print(f"Judul Lamaran   : {job_info['title']}")
+        print(f"Tema            : {job_info['theme']}")
+        print(f"Deskripsi       : {job_info['description']}")
+        print(f"Pesan           : {applications_selected['message']}")
+        print(f"Lokasi          : {applications_selected['location']}")
+        print(f"Tanggal         : {applications_selected['date']}")
+        print(f"Waktu           : {applications_selected['time']}")
+        print(f"Budget          : {applications_selected['negotiated_budget']}")
+        print(f"Status          : {applications_selected['status']}")
+        print("="*135)
+        
+        print(f"Aksi:")
+        print(f"{'[A] Ajukan Negosiasi' if applications_selected['status'] == 'waiting for photographer' else ''}")
+        print(f"{'[T] Tolak Negosiasi' if applications_selected['status'] == 'waiting for photographer' else ''}")
+        print(f"{'[B] Bayar Pesanan' if applications_selected['status'] == 'accepted' else ''}")
+        print("[K] Kembali")
+        
+        choice = input("Masukan Aksi: ").lower()
+        if choice == 'k':
+            return  
+        
+        if choice == 'a' and applications_selected['status'] == 'waiting for photographer':
+            print("\n💬 Ajukan negosiasi balik ke Finder")
+            while True:
+                tipe_budget = input("Pilih Tipe Budget Katalog: \n(1. Per Jam, \n2. Per Proyek): ")
+
+                if (tipe_budget != '1' and tipe_budget != '2'):
+                    print("Masukkan Tipe Budget yang Valid! (1 atau 2)")
+                    continue
+                else:
+                    break
+                
+            new_budget = input("Masukkan budget baru: ")
+            if new_budget <= '0':
+                print("\nBudget harus lebih dari 0.")
+                continue
+
+            if not validasi_angka(new_budget):
+                print("\nBudget harus berupa angka.")
+                continue
+
+            updateRowById(
+                FILE_PATH_FINDER, 
+                'applications_id', 
+                applications_id, 
+                {'status': 'waiting for finder',
+                'tipe_budget': tipe_budget,
+                'negotiated_budget': new_budget
+            })
+            cardTemplate("Berhasil!","💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Finder.")
+            return
+        
+        if choice == 'b' and applications_selected['status'] == 'accepted':
+            menuPayment(applications_selected, job_info, finder_info)
