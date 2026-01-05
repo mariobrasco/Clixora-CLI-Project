@@ -101,7 +101,7 @@ def listJobsFinder(job_id):
                     'tipe_budget': selected['tipe_budget'],
                     'negotiated_budget': selected['negotiated_budget']
                 })
-                cardTemplate("Berhasil!",f"✅ Tawaran @{user_db[user_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.")
+                cardTemplate("Berhasil!",f"✅ Tawaran {user_db[user_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.")
                 break
 
             elif action == 'x':
@@ -141,7 +141,8 @@ def listJobsApplications(applications_id):
         print(f"Aksi:")
         print(f"{'[A] Ajukan Negosiasi' if applications_selected['status'] == 'waiting for photographer' else ''}")
         print(f"{'[T] Tolak Negosiasi' if applications_selected['status'] == 'waiting for photographer' else ''}")
-        print(f"{'[B] Bayar Pesanan' if applications_selected['status'] == 'accepted' else ''}")
+        print(f"{'[J] Terima Negosiasi' if applications_selected['status'] == 'waiting for photographer' else ''}")
+        # print(f"{'[B] Bayar Pesanan' if applications_selected['status'] == 'accepted' else ''}")
         print("[K] Kembali")
         
         choice = input("Masukan Aksi: ").lower()
@@ -179,5 +180,14 @@ def listJobsApplications(applications_id):
             cardTemplate("Berhasil!","💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Finder.")
             return
         
-        if choice == 'b' and applications_selected['status'] == 'accepted':
-            menuPayment(applications_selected, job_info, finder_info)
+        if choice == 'j' and applications_selected['status'] == 'waiting for photographer':
+            updateRowById(
+                FILE_PATH_FINDER, 
+                'applications_id', 
+                applications_id, 
+                {'status': 'accepted',
+                'tipe_budget': applications_selected['tipe_budget'],
+                'negotiated_budget': applications_selected['negotiated_budget']
+            })
+            cardTemplate("Berhasil!",f"✅ Negosiasi diterima dengan Harga {applications_selected['negotiated_budget']}.")
+            return
