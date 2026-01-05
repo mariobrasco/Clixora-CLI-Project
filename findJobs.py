@@ -9,7 +9,7 @@ def validasi_angka(teks):
             return False
     return True
 
-def find_work(state):
+def findJobs(state):
     
     while True:
         postAJob_csv = pd.read_csv('storage/jobs.csv')

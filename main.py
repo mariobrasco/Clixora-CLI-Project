@@ -1,7 +1,7 @@
 import pandas as pd
 from createCatalog import formCatalog
 import postAJob as postJob
-import findWork as findWork
+import findJobs as findjobs
 
 from profile import profilePage 
 from utility import autoIncrementUserId, askInput, cardTemplate, login
@@ -21,11 +21,10 @@ def navBelumLogin():
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
     print("[T] Tentang Clixora")
     print("[C] Cara Penggunaan (How To Use)")
-    print("[A] About Us")
+    print("[A] Tentang Kami")
     print("-----------------")
-    print("[1] Login            [4] List Pekerjaan") 
-    print("[2] Registrasi       [5] Unggah Lowongan Pekerjaan")
-    print("[3] List Catalog     [6] Unggah Catalog")
+    print("[1] Login            [3] List Catalog") 
+    print("[2] Registrasi       [4] List Pekerjaan")
     print("[X] Keluar")
     print("="*103)
 
@@ -35,7 +34,7 @@ def navSudahLogin():
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
     print("[T] Tentang Clixora")
     print("[C] Cara Penggunaan (How To Use)")
-    print("[A] About Us")
+    print("[A] Tentang Kami")
     print("-----------------")
     print("[1] Profil Saya      [3] List Pekerjaan") 
     print(f"[2] List Catalog    {' [4] Unggah Lowongan Pekerjaan' if state['account_session']['role'] == 'finder' else ' [4] Unggah Catalog'}")
@@ -102,7 +101,7 @@ while True:
 
     #Page List Jobs
     if (state["account_session"] is not None and state["input_navigasi"] == "3" or state["account_session"] is None and state["input_navigasi"] == "4"):
-        findWork.find_work(state)
+        findjobs.find_work(state)
 
     #Login
     if (state["account_session"] is None and state["input_navigasi"] == "1"):

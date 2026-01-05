@@ -2,61 +2,105 @@ import pandas as pd
 
 # from applyJobs import applyJobs
 from negotiateCatalog import negotiateCatalog
-from utility import cardTemplate, askInput, login
+from utility import cardTemplate, askInput, login, searchAndFilterByDataFrame, mergeCSV
 
 def catalogList(state):
-    catalog_db = pd.read_csv('storage/catalog.csv')
-    account_db = pd.read_csv('storage/user.csv')
-    while True: 
-        print("\n" + "="*44 + " Catalog List " + "="*44)
+    merged_db = mergeCSV('storage/catalog.csv', 'storage/user.csv', 'user_id', 'user_id')
+    
+    searchWord = ""
+    filter_theme = ""
+    filter_budget = ""
+    filter_location = ""
+    filter_status = ""
+    filters = {}
+    tampilan_catalog = merged_db[['catalog_id','title', 'theme', 'budget', 'status', 'username', 'location']]
+    
+    while True:
+        catalog_db = pd.read_csv('storage/catalog.csv')
+        account_db = pd.read_csv('storage/user.csv')
+        merged_db = mergeCSV('storage/catalog.csv', 'storage/user.csv', 'user_id', 'user_id')
         
-        # merged_db = catalog_db.merge(account_db, on='user_id', how='left', suffixes=('_post', '_user'))
-        # print(merged_db[['content', 'type', 'username', 'location']])
-
-        # no_width = len(str(len(catalog_db))) + 2
-        # content_width = max(catalog_db['content'].astype(str).apply(len).max(), len("Content")) + 2
-        # type_width = max(catalog_db['type'].astype(str).apply(len).max(), len("Type")) + 2
-
-        # # Header
-        # print(
+        print("\n" + "="*44 + " Catalog List " + "="*44)
+        print(f"Cari: ({searchWord}) [H] Hapus Pencarian | Filter: (theme: {filter_theme}) (budget: {filter_budget}) (location: {filter_location}) (status: {filter_status}) [A] Hapus Filter")
+        
+        if (filters or searchWord):
+            tampilan_catalog = searchAndFilterByDataFrame(
+                merged_db,
+                keyword=searchWord,
+                search_columns=['title', 'description', 'theme'],
+                filters=filters,
+                select_columns=['catalog_id','title', 'theme', 'budget', 'status', 'username', 'location']
+            )
+        else:
+            tampilan_catalog = merged_db[['catalog_id','title', 'theme', 'budget', 'status', 'username', 'location']]
             
-        #     f"{'No'.ljust(no_width)}| "
-        #     f"{'Content'.ljust(content_width)}| "
-        #     f"{'Type'.ljust(type_width)}"
-        # )
-
-        # print("-" * (no_width + content_width + type_width + 4))
-
-        # # Isi
-        # for i, row in catalog_db.iterrows():
-        #     user_id = row['user_id']
-        #     user_info = account_db[account_db['user_id'] == user_id].iloc[0]
-        #     print(
-        #         f"{str(i+1).ljust(no_width)}| "
-        #         f"{row['content'].ljust(content_width)}| "
-        #         f"{row['type'].ljust(type_width)}"
-        #         f" (made by {user_info['username']} in {user_info['location']})"
-        #     )
-
-        print(catalog_db[['catalog_id','title', 'theme', 'budget', 'status']].to_string(index=True))    
+        print("="*102)
+        if (tampilan_catalog.empty):
+            print("⚠️  Tidak ada catalog yang sesuai dengan kriteria pencarian dan/atau filter Anda.")
+        else:
+            print(tampilan_catalog)    
 
         print("="*102)
 
         if (state['account_session'] is not None):
-            print("Aksi: \n[k] Kembali \n[x] Keluar dari program \n[s] logout.")
+            print("Aksi:")
+            print("[K] Kembali  [C] Cari  [F] Filter")
+            print("[X] Keluar   [L] Logout")
         else:
-            print("Aksi: \n[k] Kembali \n[x] Keluar dari program")
-        input_navigasi = (input("Masukan nomor id untuk melihat detailnya atau aksi: "))
+            print("Aksi:")
+            print("[K] Kembali  [C] Cari  [F] Filter")
+            print("[X] Keluar")
+            
+        input_navigasi = (input("Masukan Catalog id untuk melihat detailnya atau aksi: ")).lower()
 
         if (input_navigasi == "k"):
             return
         elif (input_navigasi == "x"):
             exit()
-        elif (input_navigasi == "s" and state['account_session'] is not None):
+        elif (input_navigasi == "l" and state['account_session'] is not None):
             cardTemplate("Berhasil!","Anda Telah Logout dari akun " + state['account_session']['username'] + ".")
             state['account_session'] = None
             state["input_navigasi"] = None
             return
+        elif (input_navigasi == "c"):
+            searchWord = input("Masukkan kata kunci pencarian: ")
+        elif (input_navigasi == "a"):
+            filter_theme = ""
+            filter_budget = ""
+            filter_location = ""
+            filter_status = ""
+            filters = {}
+        elif (input_navigasi == "f"):
+            print("Masukkan filter yang diinginkan. Kosongkan jika tidak ingin menambahkan filter pada kolom tersebut.")
+            filter_theme = input("Filter Theme: ")
+            filter_budget = input("Filter Budget (angka): ")
+            filter_location = input("Filter Location: ")
+            filter_status = input("Filter Status (available/unavailable): ")
+
+            filters = {}
+            if filter_theme:
+                filters['theme'] = filter_theme
+            if filter_budget:
+                try:
+                    filters['budget'] = int(filter_budget)
+                except ValueError:
+                    cardTemplate("Peringatan!", "Filter budget harus berupa angka.")
+                    continue
+            if filter_location:
+                filters['location'] = filter_location
+            if filter_status:
+                filters['status'] = filter_status
+
+            # tampilan_catalog = searchAndFilterByDataFrame(
+            #     merged_db,
+            #     keyword=searchWord,
+            #     search_columns=['title', 'description', 'theme'],
+            #     filters=filters,
+            #     select_columns=['catalog_id','title', 'theme', 'budget', 'status', 'username', 'location']
+            # )
+        elif (input_navigasi == "h"):
+            searchWord = ""
+            # tampilan_catalog = merged_db[['catalog_id','title', 'theme', 'budget', 'status', 'username', 'location']].to_string(index=True)
         elif (input_navigasi.isdigit() and int(input_navigasi) in catalog_db['catalog_id'].values):
             selected_post = catalog_db[catalog_db['catalog_id'] == int(input_navigasi)].iloc[0]
 

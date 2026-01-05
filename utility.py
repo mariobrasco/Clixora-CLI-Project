@@ -44,11 +44,11 @@ def autoIncrementCustom(char, db_name, column_name):
     new_id = f"{char}{new_number:03}"
     return new_id
 
-def autoIncrementNumber(db_target):
-    if (db_target.empty):
+def autoIncrementNumber(db_name):
+    if (db_name.empty):
         return 1
     else:
-        latest_id = db_target.iloc[-1, 0] or 0
+        latest_id = db_name.iloc[-1, 0] or 0
         new_id = int(latest_id) + 1
         return new_id
 
@@ -85,6 +85,108 @@ def validasiEmail(email):
     return True
 
 # ======================= CRUD ======================= 
+
+def getAllData(db_name):
+    db = pd.read_csv(db_name)
+    return db
+
+def getDataSpesificColumn(db_name, select_columns):
+    db = pd.read_csv(db_name)
+    db = db[select_columns]
+    return db
+
+def getRowById(db_name, key_column, id_value):
+    db = pd.read_csv(db_name)
+    selected_row = db[db[key_column] == id_value]
+    return selected_row
+
+def mergeCSV(
+    left_db,
+    right_db,
+    left_key,
+    right_key,
+    how='left',
+    suffixes=('_left', '_right')
+):
+    left = pd.read_csv(left_db)
+    right = pd.read_csv(right_db)
+
+    return pd.merge(
+        left,
+        right,
+        left_on=left_key,
+        right_on=right_key,
+        how=how,
+        suffixes=suffixes
+    )
+
+def searchAndFilterByDBName(
+    db_name,
+    keyword=None,
+    search_columns=None,
+    filters=None,
+    select_columns=None
+):
+    db = pd.read_csv(db_name)
+
+    # Filter
+    if filters:
+        for col, val in filters.items():
+            if isinstance(val, list):
+                db = db[db[col].isin(val)]
+            else:
+                db = db[db[col] == val]
+
+    # Search
+    if keyword:
+        if search_columns is None:
+            search_columns = db.columns
+
+        mask = False
+        for col in search_columns:
+            mask = mask | db[col].astype(str).str.contains(keyword, case=False, na=False)
+
+        db = db[mask]
+
+    # Columns
+    if select_columns:
+        db = db[select_columns]
+
+    return db
+
+def searchAndFilterByDataFrame(
+    df,
+    keyword=None,
+    search_columns=None,
+    filters=None,
+    select_columns=None
+):
+    # Filter
+    if filters:
+        for col, val in filters.items():
+            if isinstance(val, list):
+                df = df[df[col].isin(val)]
+            else:
+                df = df[df[col] == val]
+
+    # Search
+    if keyword:
+        if search_columns is None:
+            search_columns = df.columns
+
+        mask = False
+        for col in search_columns:
+            mask = mask | df[col].astype(str).str.contains(keyword, case=False, na=False)
+
+        df = df[mask]
+
+    # Select columns
+    if select_columns:
+        valid_cols = [c for c in select_columns if c in df.columns]
+        df = df[valid_cols]
+
+    return df
+
 
 def updateRowById(db_name, key_column, id_value, update_data):
     
