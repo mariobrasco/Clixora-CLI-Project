@@ -1,6 +1,5 @@
 import pandas as pd
 
-# from applyJobs import applyJobs
 from negotiateCatalog import negotiateCatalog
 from utility import cardTemplate, askInput, login, searchAndFilterByDataFrame, mergeCSV, headerTemplate, footerTemplate
 from loginRegister import menuLogin
@@ -28,7 +27,7 @@ def catalogList(state):
         tampilan_catalog, total_pages = searchAndFilterByDataFrame(
             merged_db,
             keyword=searchWord,
-            search_columns=['title', 'description', 'theme'],
+            search_columns=['title'],
             filters=filters,
             select_columns=['catalog_id','title', 'theme', 'budget', 'status', 'username', 'location'],
             page=current_page,
@@ -67,12 +66,13 @@ def catalogList(state):
             print("-----------------------------------")
             print("[K] Kembali  [C] Cari  [F] Filter")
             print("[X] Keluar")
-            
+        footerTemplate()
         input_navigasi = (input("Masukan Catalog id untuk melihat detailnya atau Aksi: ")).lower()
 
         if (input_navigasi == "k"):
             return
         elif (input_navigasi == "x"):
+            cardTemplate("Terima Kasih!","Terima kasih telah menggunakan Clixora CLI. Sampai jumpa!")
             exit()
         elif (input_navigasi == "l" and state['account_session'] is not None):
             cardTemplate("Berhasil!","Anda Telah Logout dari akun " + state['account_session']['username'] + ".")
