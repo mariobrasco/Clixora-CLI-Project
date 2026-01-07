@@ -20,7 +20,13 @@ def findJobs(state):
         account_db = pd.read_csv('storage/user.csv')
         merged_db = mergeCSV('storage/jobs.csv', 'storage/user.csv', 'user_id', 'user_id')
         merged_db = merged_db.rename(columns={
-            'location_left': 'location'
+            'job_id': 'Job Id',
+            'title': 'Judul Lowongan',
+            'theme': 'Tema',
+            'budget': 'Budget',
+            'status': 'Status',
+            'username': 'Diupload Oleh',
+            'location_left': 'Lokasi'
         })
         headerTemplate("FIND JOBS", state, profile=True)
         print(f"Cari    : ( {searchWord} ) [H] Hapus Pencarian ")
@@ -29,9 +35,9 @@ def findJobs(state):
         tampilan_job, total_pages = searchAndFilterByDataFrame(
             merged_db,
             keyword=searchWord,
-            search_columns=['title'],
+            search_columns=['Judul Lowongan'],
             filters=filters,
-            select_columns=['job_id','title', 'theme', 'budget', 'status', 'username', 'location'],
+            select_columns=['Job Id','Judul Lowongan', 'Tema', 'Budget', 'Status', 'Diupload Oleh', 'Lokasi'],
             page=current_page,
             per_page=10
         )
@@ -111,7 +117,7 @@ def findJobs(state):
                 filters['location'] = filter_location
         elif (pilih == "h"):
             searchWord = ""      
-        elif (pilih.isdigit() and int(pilih) in tampilan_job['job_id'].values):
+        elif (pilih.isdigit() and int(pilih) in tampilan_job['Job Id'].values):
             selected_post = postAJob_csv[postAJob_csv['job_id'] == int(pilih)].iloc[0]
             user_info = account_db[account_db['user_id'] == selected_post['user_id']].iloc[0]
             
@@ -123,9 +129,7 @@ def findJobs(state):
             if selected_post['tipe_budget'] == 2:
                 keterangan_tipe = "Budget Proyek"
 
-            print("\n" + "="*60)
-            print(f" DETAIL LOWONGAN PEKERJAAN ")
-            footerTemplate()
+            headerTemplate("DETAIL LOWONGAN PEKERJAAN", state, profile=True)
 
             for i, (key, value) in enumerate(selected_post.items(), start=1):
                 if key == "tipe_budget":
@@ -135,11 +139,10 @@ def findJobs(state):
                 else:
                     print(f"{i}. {key:<12}: {value}")
 
-            footerTemplate()
+            print("--------------------------------")
 
-            print("[1] Lamar Pekerjaan ini")
-            print("[0] Kembali ke menu awal")
-            
+            print("[1] Lamar Pekerjaan ini      [0] Kembali ke menu awal")
+            footerTemplate()
             aksi = input("Pilih aksi: ")
             
             if (aksi == '1' and state['account_session'] is not None):

@@ -56,6 +56,6 @@ def applyJobs(state, job_data):
     apply_job_df.to_csv('storage/jobsApplications.csv', mode='a', header=False, index=False)
     # apply_job_df.to_csv('storage/listJobsFinder.csv', mode='a', header=False, index=False)
 
-    cardTemplate("Berhasil", "✅ Berhasil mengirim permintaan pekerjaan!")
+    cardTemplate("Berhasil", "✅ Berhasil mengirimkan Lamaran pekerjaan!")
 
 # applyJobs()

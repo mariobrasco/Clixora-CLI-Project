@@ -18,8 +18,8 @@ def menuLogin(state):
 def menuRegistrasi(state):
     while True:
         headerTemplate("MENU REGISTRASI", state, profile=False)
-        print("Apakah anda Photografer atau Finder?")
-        print("[1] Photografer")
+        print("Apakah anda Photographer atau Finder?")
+        print("[1] Photographer")
         print("[2] Finder")
         print("[B] Batal Registrasi")
         role_picked = (input("Masukan nomor sesuai tipe akun yang diinginkan: "))
@@ -28,7 +28,7 @@ def menuRegistrasi(state):
             return
         if (role_picked == "1"):
             role_id = "p"
-            role_name = "photografer"
+            role_name = "photographer"
             break
         elif(role_picked == "2"):
             role_id = "f"

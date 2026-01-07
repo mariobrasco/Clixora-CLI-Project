@@ -26,10 +26,9 @@ def profilePage(state):
         # ===== menu aksi =====
         print("--------------------------------")
         print(
-            f"Aksi:\n"
-            f"{'[p] Pesanan saya    ' if state['account_session']['role'] == 'finder' else '[a] Lamaran saya    '}[e] Edit data profil\n"
-            f"{'[c] Katalog saya    ' if state['account_session']['role'] == 'photografer' else '[j] Lowongan saya   '}[b] Tambahkan bio\n"
-            f"[K] Kembali         [L] Logout\n"
+            f"[P] Pesanan saya     [E] Edit Profil    \n"
+            f"[C] Katalog saya     [B] Tambah Bio     \n"
+            f"[K] Kembali          [L] Logout\n"
             f"[X] Keluar"
         )
         footerTemplate()
@@ -38,8 +37,8 @@ def profilePage(state):
         # ===== aksi user =====
         if aksi == "k":
             return
-
         elif aksi == "x":
+            cardTemplate("Terima Kasih!","Terima kasih telah menggunakan Clixora CLI. Sampai jumpa!")
             exit()
 
         # ===== edit data profil (TANPA ROLE) =====
@@ -65,19 +64,8 @@ def profilePage(state):
             account_db.to_csv('storage/user.csv', index=False)
             cardTemplate("Berhasil!", "Bio berhasil ditambahkan")
 
-        # ===== katalog fotografer =====
-        elif (aksi == "p" and state["account_session"]["role"] == "finder"):
-            myOrders(state)
-        elif (aksi == "a" and state["account_session"]["role"] == "photografer"):
-            myApplications(state)
-        elif aksi == "c" and state['account_session']['role'] == "photografer":
-            myCatalog(state)
-            # listJobsFinder(state)    
-        elif (aksi == "j" and state["account_session"]["role"] == "finder"):
-            myJobs(state)
-            # listJobsFinder(state)
         elif (aksi == "l"):
-            cardTemplate("Berhasil!",f"Anda Telah Logout dari akun  @{state['account_session']['username']}.")
+            cardTemplate("Berhasil!",f"Anda Telah Logout dari akun  {state['account_session']['username']}.")
             state['account_session'] = None
             state["input_navigasi"] = None
             return

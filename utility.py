@@ -77,26 +77,26 @@ def cardTemplate(title, message):
     print("="*panjang_text)
     
 def headerTemplate(title, state=None, profile=False):
-    max_length = 100
+    max_length = 120
     panjang_title = len(title)
     each_side = (max_length - panjang_title - 2) // 2
     left_side = each_side
     info_side = each_side
     
+    if (profile):
+        profile_info = len(f" {state['account_session']['username']} ({state['account_session']['role']})")
+        info_side = each_side - profile_info
+        
     if ((each_side * 2 + panjang_title + 2) > max_length ):
         left_side -= 1
     elif ((each_side * 2 + panjang_title + 2) < max_length ):
         info_side += 1
-        
-    if (profile):
-        profile_info = len(f" {state['account_session']['username']} ({state['account_session']['role']})")
-        info_side = each_side - profile_info + 1
-        
-    # print(left_side, info_side, panjang_title)
+    
+    # print(left_side, info_side, panjang_title, )
     print("\n" + "="*left_side + f" {title} " + "="*info_side + " " + (state['account_session']['username'] + f" ({state['account_session']['role']})" if profile and state else ""))
 
 def footerTemplate():
-    print("="*100)
+    print("="*120)
 
 def validasiAngka(teks):
     for char in teks:
@@ -170,6 +170,8 @@ def validasiWaktu(waktu):
 # ======================= CRUD ======================= 
 def getAllData(db_name):
     db = pd.read_csv(db_name)
+    start_no = 1
+    db.insert(0, 'No', range(start_no, start_no + len(db)))
     return db
 
 def getDataSpesificColumn(db_name, select_columns):
@@ -282,7 +284,7 @@ def searchAndFilterByDataFrame(
 
     # Add 'no' column (starts from 1)
     start_no = (page - 1) * per_page + 1
-    df.insert(0, 'no', range(start_no, start_no + len(df)))
+    df.insert(0, 'No', range(start_no, start_no + len(df)))
 
     return df, total_pages
 

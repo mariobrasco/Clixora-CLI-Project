@@ -1,1 +1,2 @@
 applications_id,catalog_id,user_id,message,location,date,time,tipe_budget,negotiated_budget,status
+1,1,f001,plis,Bandung,12-12-2006,12:12,proyek,200000,pending

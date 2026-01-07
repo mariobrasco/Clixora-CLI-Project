@@ -2,44 +2,45 @@ import pandas as pd
 
 from payment import menuPayment
 # from postAJob import validasi_angka
-from utility import cardTemplate, updateRowById, validasiAngka
+from utility import askInput, cardTemplate, updateRowById, validasiAngka, headerTemplate, footerTemplate, mergeCSV
 
 FILE_PATH_FINDER = 'storage/jobsApplications.csv'
 
 
-def listJobsFinder(job_id):
+def listJobsFinder(state, job_id):
     while True:
-        list_jobs_finder_db = pd.read_csv(FILE_PATH_FINDER)
+        # list_jobs_finder_db = pd.read_csv(FILE_PATH_FINDER)
         jobs_db = pd.read_csv('storage/jobs.csv')
-        
-        print("\n" + "="*63 + " List Tawaran " + "="*63)
-        applications_selected = list_jobs_finder_db[list_jobs_finder_db['job_id'] == job_id] 
-
-        if applications_selected.empty:
-            cardTemplate("Info!","Belum ada yang melamar lowongan anda.")
-            return
-        
-        user_db = pd.read_csv('storage/user.csv')
+        merge_db = mergeCSV(FILE_PATH_FINDER, 'storage/user.csv', 'user_id', 'user_id')
         job_info = jobs_db[jobs_db['job_id'] == job_id].iloc[0]
+        applications_selected = merge_db[merge_db['job_id'] == job_id] 
+        applications_selected = applications_selected.rename(columns={
+            'applications_id': 'applications_id',
+            'username': 'username',
+            'tipe_budget': 'tipe_budget',
+            'negotiated_budget': 'negotiated_budget',
+            'status': 'status'
+        })
         
+        headerTemplate("Daftar Tawaran Lowongan", state, profile=True)
         print(f"Lowongan: {job_info['title']} | Budget Asli: {job_info['budget']}\n")
-        for index, row in applications_selected.iterrows():
-            print(
-                f"Id Tawaran: {row['applications_id']}. "
-                f"Budget Diajukan: {row['negotiated_budget']}  | "
-                f"oleh @{user_db[user_db['user_id'] == row['user_id']].iloc[0]['username']}  |"
-                f"Status: {row['status']}"
-            )
-        print("="*135)
-
-        print(f"Aksi:")
-        print("[x] Kembali")
-
+        footerTemplate()
+        if (applications_selected.empty):
+            print("⚠️  Belum ada tawaran untuk lowongan pekerjaan ini.")
+        else:
+            print(applications_selected[['applications_id','username', 'tipe_budget', 'negotiated_budget', 'status']].to_string(index=False))    
+        print("--------------------------------")
+        print("[K] Kembali  [X] Keluar dari program")
+        footerTemplate()
+        
         choice = input("Masukan Id Tawaran untuk menindak lanjuti atau Aksi: ").lower()
 
-        if choice == 'x':
+        if choice == 'k':
             return 
-        
+        elif choice == 'x':
+            cardTemplate("Terima Kasih!","Terima kasih telah menggunakan Clixora CLI. Sampai jumpa!")
+            exit()
+            
         elif choice.isdigit() and int(choice) in applications_selected['applications_id'].values:
             selected =  applications_selected[applications_selected['applications_id'] == int(choice)].iloc[0]
             
@@ -52,8 +53,8 @@ def listJobsFinder(job_id):
                 continue
             
             while True:
-                print("\n💬 Photographer mengajukan negosiasi")
-                print(f"💰 Budget diajukan: {selected['negotiated_budget']}")
+                headerTemplate("Detail Tawaran", state, profile=True)
+                print(f"💰 {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} mengajukan: {selected['negotiated_budget']}")
                 print("\n[a] Terima tawaran")
                 print("(b) Ajukan negosiasi balik")
                 print("(x) Kembali")
@@ -64,9 +65,18 @@ def listJobsFinder(job_id):
                     print("\n💬 Ajukan negosiasi balik ke Photographer")
                     
                     while True:
-                        tipe_budget = input("Pilih Tipe Budget Lowongan: \n(1. Per Jam, \n2. Per Proyek): ")
-
-                        if (tipe_budget != '1' and tipe_budget != '2'):
+                        print("Tipe Budget:\n[1] Per Jam\n[2] Per Proyek")
+                        tipe_budget_pilihan = askInput("Pilih Tipe Budget Katalog: ", True)
+                        
+                        if (tipe_budget_pilihan is None):
+                            return
+                        if (tipe_budget_pilihan == '1'):
+                            tipe_budget = 'jam'
+                            break
+                        elif (tipe_budget_pilihan == '2'):
+                            tipe_budget = 'proyek'
+                            break
+                        if (tipe_budget_pilihan != '1' and tipe_budget_pilihan != '2'):
                             print("Masukkan Tipe Budget yang Valid! (1 atau 2)")
                             continue
                         else:
@@ -101,7 +111,7 @@ def listJobsFinder(job_id):
                         'tipe_budget': selected['tipe_budget'],
                         'negotiated_budget': selected['negotiated_budget']
                     })
-                    cardTemplate("Berhasil!",f"✅ Tawaran {user_db[user_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.")
+                    cardTemplate("Berhasil!",f"✅ Tawaran {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.")
                     break
 
                 elif action == 'x':
@@ -112,7 +122,7 @@ def listJobsFinder(job_id):
         else:
             cardTemplate("Peringatan!", f"Input '{choice}' tidak valid.")
             
-def listJobsApplications(applications_id):
+def listJobsApplications(state, applications_id):
     while True:
         list_jobs_finder_db = pd.read_csv(FILE_PATH_FINDER)
         job_db = pd.read_csv('storage/jobs.csv')
@@ -123,7 +133,7 @@ def listJobsApplications(applications_id):
         user_db = pd.read_csv('storage/user.csv')
         finder_info = user_db[user_db['user_id'] == job_info['user_id']].iloc[0]
         
-        print("\n" + "="*63 + " Detail Lamaran " + "="*63)
+        headerTemplate("Detail Lamaran Lowongan", state, profile=True)
 
         if applications_selected.empty:
             cardTemplate("Info!","Pesanan tidak ditemukan.")
@@ -139,23 +149,23 @@ def listJobsApplications(applications_id):
         print(f"Waktu           : {job_info['time']}")
         print(f"Budget          : {applications_selected['negotiated_budget']}")
         print(f"Status          : {applications_selected['status']}")
-        print("="*135)
+        print("-----------------------------------")
         
-        print(f"Aksi:")
         if (applications_selected['status'] == 'waiting for finder'):
             print(f"[A] Ajukan Negosiasi")
         if (applications_selected['status'] == 'waiting for finder'):
             print(f"[T] Tolak Negosiasi")
         if (applications_selected['status'] == 'waiting for finder'):
             print(f"[J] Terima Negosiasi")
-        print("[K] Kembali")
+        print("[K] Kembali      [X] Keluar dari program")
+        footerTemplate()
         
         choice = input("Masukan Aksi: ").lower()
         if choice == 'k':
             return  
         
         if choice == 'a' and applications_selected['status'] == 'waiting for photographer':
-            print("\n💬 Ajukan negosiasi balik ke Finder")
+            headerTemplate("Pengajuan Negosiasi Balik ke Finder", state, profile=True)
             while True:
                 tipe_budget = input("Pilih Tipe Budget Katalog: \n(1. Per Jam, \n2. Per Proyek): ")
 
@@ -207,5 +217,5 @@ def listJobsApplications(applications_id):
             cardTemplate("Berhasil!",f"✅ Negosiasi diterima dengan Harga {applications_selected['negotiated_budget']}.")
             return
         
-        elif choice not in ['a', 't', 'j', 'k']:
+        elif choice not in ['a', 't', 'j', 'k', 'x']:
             cardTemplate("Peringatan!", f"Input '{choice}' tidak valid.")

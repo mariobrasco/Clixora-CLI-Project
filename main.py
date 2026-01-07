@@ -4,6 +4,7 @@ import postAJob as postJob
 import findJobs as findjobs
 
 from profile import profilePage 
+from userPost import myApplications, myCatalog, myJobs, myOrders
 from utility import cardTemplate, headerTemplate, footerTemplate
 from catalog import catalogList
 from loginRegister import menuLogin, menuRegistrasi
@@ -11,9 +12,11 @@ from loginRegister import menuLogin, menuRegistrasi
 account_db = pd.read_csv('storage/user.csv')
 dummy_akun = {
     'user_id': 'f001',
+    # 'user_id': 'p001',
     'username': 'ajum',
     'email': 'guest@example.com',
     'role': 'finder',
+    # 'role': 'photographer',
     'location': '',
     'bio': ''
 }
@@ -44,15 +47,14 @@ def navSudahLogin():
     print("[C] Cara Penggunaan (How To Use)")
     print("[A] Tentang Kami")
     print("-----------------")
-    print("[1] Profil Saya      [3] List Pekerjaan") 
-    print(f"[2] List Catalog    {' [4] Unggah Lowongan Pekerjaan' if state['account_session']['role'] == 'finder' else ' [4] Unggah Catalog'}")
+    print(f"[1] Profil Saya      [3] List Pekerjaan      {'  [5] Lowongan Saya' if state['account_session']['role'] == 'finder' else '  [5] Catalog Saya'}" ) 
+    print(f"[2] List Catalog    {' [4] Unggah Lowongan' if state['account_session']['role'] == 'finder' else ' [4] Unggah Catalog'}       {'[6] Pesanan Saya' if state['account_session']['role'] == 'finder' else ' [6] Lamaran Saya'}")
     print("[X] Keluar           [L] Logout")
     footerTemplate()
     
 
 #Main Program Loop
 while True:
-    # print(state)
     
     #Landing Page
     if (state["account_session"] is None ):
@@ -64,18 +66,17 @@ while True:
 
     #Validasi Input Navigasi
     if (state["account_session"] is None):
-        if state["input_navigasi"] not in ["x", "t", "c", "a", "1", "2", "3", "4", "5", "6"]:
+        if state["input_navigasi"] not in ["x", "t", "c", "a", "1", "2", "3", "4"]:
             cardTemplate("Peringatan!", f"Input '{state['input_navigasi']}' tidak valid, silahkan masukan input yang sesuai.")
             continue
     else:
-        if state["input_navigasi"] not in ["x", "l", "t", "c", "a", "1", "2", "3", "4"]:
+        if state["input_navigasi"] not in ["x", "l", "t", "c", "a", "1", "2", "3", "4", "5", "6"]:
             cardTemplate("Peringatan!", f"Input '{state['input_navigasi']}' tidak valid, silahkan masukan input yang sesuai.")
             continue
     
     #Keluar Program
     if (state["input_navigasi"] == "x"):
-        cardTemplate("Terimakasih", "Terimakasih Telah menggunakan program ini.")
-        # exit()
+        cardTemplate("Terimakasih", "Terimakasih Telah menggunakan program CLIXORA CLI, Sampai Jumpa!")
         break
     
     #Logout
@@ -102,14 +103,20 @@ while True:
             postJob.form_post_job(state)
         elif (state["account_session"]['role'] == "photografer"):
             formCatalog(state)
-    elif (state["account_session"] is None and state["input_navigasi"] == "5"):
-        cardTemplate("Peringatan!", "Anda harus login terlebih dahulu sebagai finder untuk mengunggah lowongan pekerjaan.")
-    elif (state["account_session"] is None and state["input_navigasi"] == "6"):
-        cardTemplate("Peringatan!", "Anda harus login terlebih dahulu sebagai photografer untuk mengunggah catalog.")
 
     #Page List Jobs
     if (state["account_session"] is not None and state["input_navigasi"] == "3" or state["account_session"] is None and state["input_navigasi"] == "4"):
         findjobs.findJobs(state)
+    
+    #Page User Posts
+    if (state["input_navigasi"] == "6" and state["account_session"]["role"] == "finder"):
+        myOrders(state)
+    if (state["input_navigasi"] == "6" and state["account_session"]["role"] == "photographer"):
+        myApplications(state)
+    if (state["input_navigasi"] == "5" and state['account_session']['role'] == "photographer"):
+        myCatalog(state) 
+    if (state["input_navigasi"] == "5" and state["account_session"]["role"] == "finder"):
+        myJobs(state)
 
     #Login
     if (state["account_session"] is None and state["input_navigasi"] == "1"):

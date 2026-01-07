@@ -19,7 +19,15 @@ def catalogList(state):
         catalog_db = pd.read_csv('storage/catalog.csv')
         account_db = pd.read_csv('storage/user.csv')
         merged_db = mergeCSV('storage/catalog.csv', 'storage/user.csv', 'user_id', 'user_id')
-        
+        merged_db = merged_db.rename(columns={
+            'catalog_id': 'Catalog Id',
+            'title': 'Judul Lowongan',
+            'theme': 'Tema',
+            'budget': 'Budget',
+            'status': 'Status',
+            'username': 'Diupload Oleh',
+            'location': 'Lokasi'
+        })
         headerTemplate("CATALOG", state, profile=True)
         print(f"Cari    : ( {searchWord} ) [H] Hapus Pencarian ")
         print(f"Filter  : ({'(theme: ' + filter_theme + ')' if filter_theme else ''} {'(budget: ' + filter_budget + ')' if filter_budget else ''} {'(location: ' + filter_location + ')' if filter_location else ''}) [A] Hapus Filter")
@@ -27,9 +35,9 @@ def catalogList(state):
         tampilan_catalog, total_pages = searchAndFilterByDataFrame(
             merged_db,
             keyword=searchWord,
-            search_columns=['title'],
+            search_columns=['Judul Lowongan'],
             filters=filters,
-            select_columns=['catalog_id','title', 'theme', 'budget', 'status', 'username', 'location'],
+            select_columns=['Catalog Id','Judul Lowongan', 'Tema', 'Budget', 'Status', 'Diupload Oleh', 'Lokasi'],
             page=current_page,
             per_page=10
         )
