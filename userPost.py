@@ -1,6 +1,6 @@
 import pandas as pd
 
-from utility import cardTemplate, headerTemplate, footerTemplate, mergeCSV, updateRowById, selectTheme, deleteRowById
+from utility import cardTemplate, headerTemplate, footerTemplate, mergeCSV, updateRowById, selectTheme, deleteRowById, deleteInstant
 from jobApplications import listJobsApplications, listJobsFinder
 from catalogApplications import listCatalogApplications, listOrderApplications
 
@@ -101,11 +101,17 @@ def myCatalog(state):
                     break  
 
                 elif aksi_detail == '3':
-                    deleteRowById(
+                    if (deleteRowById(
                         'storage/catalog.csv',
                         'catalog_id',
-                        catalog_id
-                    )
+                        catalog_id,
+                        "Menghapus catalog akan menghapus semua data tawaran yang terkait!"
+                    )):
+                        deleteInstant(
+                            'storage/catalogApplications.csv',
+                            'catalog_id',
+                            catalog_id
+                        )
                     break
 
                 elif aksi_detail == 'k':
@@ -267,11 +273,18 @@ def myJobs(state):
                     break  # reload list setelah edit
 
                 elif aksi_detail == '3':
-                    deleteRowById(
+                    
+                    if deleteRowById(
                         'storage/jobs.csv',
                         'job_id',
-                        job_id
-                    )
+                        job_id,
+                        "Menghapus lowongan akan menghapus semua data lamaran yang terkait!"
+                    ):
+                        deleteInstant(
+                            'storage/jobsApplications.csv',
+                            'job_id',
+                            job_id
+                        )
                     break
                 else:
                     cardTemplate("Peringatan!", "Pilihan tidak valid.")

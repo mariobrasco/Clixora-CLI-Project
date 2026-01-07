@@ -300,18 +300,29 @@ def updateRowById(db_name, key_column, id_value, update_data):
     db.to_csv(db_name, index=False)
     cardTemplate("Berhasil", "Data berhasil diperbarui.")
 
-def deleteRowById(db_name, key_column, id_value):
+def deleteRowById(db_name, key_column, id_value, message=""):
     db = pd.read_csv(db_name)
-    cardTemplate("Peringatan!", f"Apakah anda yakin untuk Menghapus data tersebut? \n[Y] Ya \n[N] Tidak")
+    cardTemplate("Peringatan!", f"{message}, Yakin? \n[Y] Ya     [N] Tidak")
     confirm = input("Masukkan pilihan Anda: ")
     
     if (confirm.lower() == 'y'):
         db = db[db[key_column] != id_value]
         db.to_csv(db_name, index=False)
         cardTemplate("Berhasil", "Data berhasil dihapus.")
+        return True
         
     if (confirm.lower() == 'n'):
         cardTemplate("Info!", "Penghapusan data dibatalkan.")
+        return False
+        
+    db = pd.read_csv(db_name)
+
+def deleteInstant(db_name, key_column, id_value):
+    db = pd.read_csv(db_name)
+    
+    db = db[db[key_column] != id_value]
+    db.to_csv(db_name, index=False)
+    # cardTemplate("Berhasil", "Data berhasil dihapus.")
         
     db = pd.read_csv(db_name)
         
