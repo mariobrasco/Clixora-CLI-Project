@@ -2,7 +2,7 @@ import pandas as pd
 
 from payment import menuPayment
 # from postAJob import validasi_angka
-from utility import askInput, cardTemplate, updateRowById, validasiAngka, headerTemplate, footerTemplate, mergeCSV
+from utility import askInput, cardTemplate, deleteRowById, updateRowById, validasiAngka, headerTemplate, footerTemplate, mergeCSV
 
 FILE_PATH_PHOTOGRAPHER = 'storage/catalogApplications.csv'
 
@@ -171,6 +171,9 @@ def listOrderApplications(state, applications_id):
             print(f"[B] Bayar Pesanan")
         if (applications_selected['status'] == 'pending'):
             print(f"[B] Lanjutkan Pembayaran")
+        if (applications_selected['status'] not in ['accepted', 'rejected']):
+            print("[C] Batalkan Pesanan")
+            
         print("[K] Kembali    [X] Keluar dari program")
         footerTemplate()
         
@@ -218,6 +221,15 @@ def listOrderApplications(state, applications_id):
                 'negotiated_budget': new_budget
             })
             cardTemplate("Berhasil!","💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Photographer.")
+            return
+        
+        if (pilihan_aksi == 'c') and (applications_selected['status'] in ['pending', 'accepted']):
+            deleteRowById(
+                FILE_PATH_PHOTOGRAPHER, 
+                'applications_id', 
+                applications_id,
+                "Pesanan akan dihapus permanen"
+            )
             return
         
         if pilihan_aksi == 'j' and applications_selected['status'] == 'waiting for finder':

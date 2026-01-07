@@ -49,7 +49,7 @@ def applyJobs(state, job_data):
         'deskripsi': message,
         'tipe_budget': tipe_budget,
         'negotiated_budget': negotiated_budget,
-        'status': 'pending'
+        'status': 'waiting for finder'
     }
 
     apply_job_df = pd.DataFrame([messages_data])

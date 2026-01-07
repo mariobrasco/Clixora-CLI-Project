@@ -2,7 +2,7 @@ import pandas as pd
 
 from payment import menuPayment
 # from postAJob import validasi_angka
-from utility import askInput, cardTemplate, updateRowById, validasiAngka, headerTemplate, footerTemplate, mergeCSV
+from utility import askInput, cardTemplate, deleteRowById, updateRowById, validasiAngka, headerTemplate, footerTemplate, mergeCSV
 
 FILE_PATH_FINDER = 'storage/jobsApplications.csv'
 
@@ -126,9 +126,8 @@ def listJobsApplications(state, applications_id):
     while True:
         list_jobs_finder_db = pd.read_csv(FILE_PATH_FINDER)
         job_db = pd.read_csv('storage/jobs.csv')
-        applications_selected = list_jobs_finder_db[list_jobs_finder_db['applications_id'] == applications_id].iloc[0] 
+        applications_selected = list_jobs_finder_db[list_jobs_finder_db['applications_id'] == applications_id].iloc[0]
         job_info = job_db[job_db['job_id'] == applications_selected['job_id']].iloc[0]
-        
         
         user_db = pd.read_csv('storage/user.csv')
         finder_info = user_db[user_db['user_id'] == job_info['user_id']].iloc[0]
@@ -157,14 +156,17 @@ def listJobsApplications(state, applications_id):
             print(f"[T] Tolak Negosiasi")
         if (applications_selected['status'] == 'waiting for finder'):
             print(f"[J] Terima Negosiasi")
+        if (applications_selected['status'] not in ['rejected', 'accepted']):
+            print("[B] Batalkan Lamaran")
+            
         print("[K] Kembali      [X] Keluar dari program")
         footerTemplate()
         
         choice = input("Masukan Aksi: ").lower()
-        if choice == 'k':
+        if (choice == 'k'):
             return  
         
-        if choice == 'a' and applications_selected['status'] == 'waiting for photographer':
+        if (choice == 'a' and applications_selected['status'] == 'waiting for photographer'):
             headerTemplate("Pengajuan Negosiasi Balik ke Finder", state, profile=True)
             while True:
                 tipe_budget = input("Pilih Tipe Budget Katalog: \n(1. Per Jam, \n2. Per Proyek): ")
@@ -195,7 +197,16 @@ def listJobsApplications(state, applications_id):
             cardTemplate("Berhasil!","💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Finder.")
             return
         
-        if choice == 't' and applications_selected['status'] == 'waiting for photographer':
+        if (choice == 'b' and applications_selected['status'] not in ['waiting for finder', 'waiting for photographer', 'rejected', 'accepted']):
+            deleteRowById(
+                FILE_PATH_FINDER, 
+                'applications_id', 
+                applications_id, 
+                "Lamaran akan dihapus permanen"
+            )
+            return
+        
+        if (choice == 't' and applications_selected['status'] == 'waiting for photographer'):
             updateRowById(
                 FILE_PATH_FINDER, 
                 'applications_id', 
@@ -205,7 +216,7 @@ def listJobsApplications(state, applications_id):
             cardTemplate("Berhasil!","❌ Negosiasi berhasil ditolak.")
             return
         
-        if choice == 'j' and applications_selected['status'] == 'waiting for photographer':
+        if (choice == 'j' and applications_selected['status'] == 'waiting for photographer'):
             updateRowById(
                 FILE_PATH_FINDER, 
                 'applications_id', 
@@ -217,5 +228,5 @@ def listJobsApplications(state, applications_id):
             cardTemplate("Berhasil!",f"✅ Negosiasi diterima dengan Harga {applications_selected['negotiated_budget']}.")
             return
         
-        elif choice not in ['a', 't', 'j', 'k', 'x']:
+        elif (choice not in ['a', 't', 'j', 'k', 'x', 'b']):
             cardTemplate("Peringatan!", f"Input '{choice}' tidak valid.")

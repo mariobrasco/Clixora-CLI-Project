@@ -136,7 +136,10 @@ def myApplications(state):
             'status_left': 'Status Lamaran'
         })
         headerTemplate("Lamaran Saya", state, profile=True)
-        print(merged_db[['Lamaran Id', "Judul Lowongan", "Lokasi", "Tema", "Tanggal", "Waktu", "Pesan", 'Budget', 'Status Lamaran']].to_string(index=False))
+        if merged_db.empty:
+            print("⚠️  Anda belum memiliki lamaran.")
+        else:
+            print(merged_db[['Lamaran Id', "Judul Lowongan", "Lokasi", "Tema", "Tanggal", "Waktu", "Pesan", 'Budget', 'Status Lamaran']].to_string(index=False))
         print("--------------------------------")
         print("[K] Kembali    [X] Keluar dari program     [S] logout.")
         footerTemplate()
@@ -306,7 +309,10 @@ def myOrders(state):
             'status_left': 'Status'
         })
         headerTemplate("Pesanan Saya", state, profile=True)
-        print(merge_db[['Id Pesanan','Judul Catalog', 'Pesan', 'Lokasi', 'Tanggal', 'Waktu', 'Budget Diajukan', 'Status']].to_string(index=False))
+        if merge_db.empty:
+            print("⚠️  Anda belum memiliki pesanan.")
+        else:
+            print(merge_db[['Id Pesanan','Judul Catalog', 'Pesan', 'Lokasi', 'Tanggal', 'Waktu', 'Budget Diajukan', 'Status']].to_string(index=False))
         print("--------------------------------")
         print("[K] Kembali    [X] Keluar dari program     [S] logout.")
         footerTemplate()
@@ -316,7 +322,7 @@ def myOrders(state):
         elif (aksi == "x"):
             exit()
         elif (aksi == "s"):
-            cardTemplate("Berhasil!",f"Anda Telah Logout dari akun  @{state['account_session']['username']}.")
+            cardTemplate("Berhasil!",f"Anda Telah Logout dari akun {state['account_session']['username']}.")
             state['account_session'] = None
             state["input_navigasi"] = None
             return

@@ -49,7 +49,7 @@ def negotiateCatalog(state, catalog_data):
             "time": waktu,
             "tipe_budget": catalog_data['tipe_budget'],
             "negotiated_budget": negotiated_budget,
-            "status": "pending"
+            "status": "waiting for photographer"
         }
         new_application_df = pd.DataFrame([new_application])
         new_application_df.to_csv('storage/catalogApplications.csv', mode='a', header=False, index=False)
