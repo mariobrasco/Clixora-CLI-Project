@@ -302,7 +302,7 @@ def updateRowById(db_name, key_column, id_value, update_data):
 
 def deleteRowById(db_name, key_column, id_value):
     db = pd.read_csv(db_name)
-    cardTemplate("Peringatan!", f"Apakah anda yakin untuk Menghapus data {db[db[key_column] == id_value].to_string(index=False)}? \n[Y] Ya \n[N] Tidak")
+    cardTemplate("Peringatan!", f"Apakah anda yakin untuk Menghapus data tersebut? \n[Y] Ya \n[N] Tidak")
     confirm = input("Masukkan pilihan Anda: ")
     
     if (confirm.lower() == 'y'):
@@ -316,8 +316,8 @@ def deleteRowById(db_name, key_column, id_value):
     db = pd.read_csv(db_name)
         
 # ======================= Select ======================= 
-def selectTheme():
-    picked_themes = []
+def selectTheme(picked=None):
+    picked_themes = picked if picked else []
     themes = [
         "Wedding", "School", "Event", "Nature", "Aerial", "Sports",
         "Product", "Street", "Documentary", "Fashion", "Advertising",

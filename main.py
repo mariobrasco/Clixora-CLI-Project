@@ -12,8 +12,8 @@ from loginRegister import menuLogin, menuRegistrasi
 account_db = pd.read_csv('storage/user.csv')
 dummy_akun = {
     'user_id': 'f001',
-    # 'user_id': 'p001',
-    'username': 'ajum',
+    # 'user_id': 'p002',
+    'username': 'budi',
     'email': 'guest@example.com',
     'role': 'finder',
     # 'role': 'photographer',

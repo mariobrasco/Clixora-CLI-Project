@@ -1,6 +1,6 @@
 import pandas as pd
 
-from utility import cardTemplate, headerTemplate, footerTemplate, mergeCSV
+from utility import cardTemplate, headerTemplate, footerTemplate, mergeCSV, updateRowById, selectTheme, deleteRowById
 from jobApplications import listJobsApplications, listJobsFinder
 from catalogApplications import listCatalogApplications, listOrderApplications
 
@@ -16,10 +16,14 @@ def myCatalog(state):
             'budget': 'Budget',
             'status': 'Status'
         })
+        
         headerTemplate("Katalog Saya", state, profile=True)
-        print(catalog_db_user[['Catalog Id','Judul Catalog', 'Tema', 'Budget', 'Status']].to_string(index=False))
+        if catalog_db_user.empty:
+            print("⚠️  Anda belum memiliki katalog.")
+        else:
+            print(catalog_db_user[['Catalog Id','Judul Catalog', 'Tema', 'Budget', 'Status']].to_string(index=False))
         print("--------------------------------")
-        print("[K] Kembali    [X] Keluar dari program     [S] logout.")
+        print("[K] Kembali    [X] Keluar dari program     [L] logout")
         footerTemplate()
         
         aksi = input("Masukan Catalog Id untuk melihat Detail atau Aksi: ")
@@ -27,17 +31,87 @@ def myCatalog(state):
             return
         elif (aksi == "x"):
             exit()
-        elif (aksi == "s"):
+        elif (aksi == "l"):
             cardTemplate("Berhasil!",f"Anda Telah Logout dari akun {state['account_session']['username']}.")
             state['account_session'] = None
             state["input_navigasi"] = None
             return
-        elif(aksi.isdigit() and int(aksi) in catalog_db_user['Catalog Id'].values):
+        elif aksi.isdigit() and int(aksi) in catalog_db_user['Catalog Id'].values:
             catalog_id = int(aksi)
-            catalog_to_edit = catalog_db_user[catalog_db_user['Catalog Id'] == catalog_id].iloc[0]
-            # cardTemplate("Info!", f"Anda memilih catalog dengan ID {catalog_id} dan judul '{catalog_to_edit['Judul Catalog']}' untuk diedit.")
-            listCatalogApplications(state,catalog_id)
 
+            # ambil data asli (bukan yang sudah di-rename)
+            catalog_detail = catalog_db[catalog_db['catalog_id'] == catalog_id].iloc[0]
+
+            while True:
+                headerTemplate("Detail Catalog", state, profile=True)
+
+                print(f"Catalog ID : {catalog_detail['catalog_id']}")
+                print(f"Judul      : {catalog_detail['title']}")
+                print(f"Description: {catalog_detail['description']}")
+                print(f"Tema       : {catalog_detail['theme']}")
+                print(f"Tipe Budget: {catalog_detail['tipe_budget']}")
+                print(f"Budget     : {catalog_detail['budget']}")
+                print(f"Status     : {catalog_detail['status']}")
+                print("--------------------------------")
+                print("[1] Lihat Tawaran      [2] Edit Catalog     [3] Hapus Catalog")
+                print("[K] Kembali")
+                footerTemplate()
+
+                aksi_detail = input("Pilih Aksi: ").lower()
+
+                if aksi_detail == '1':
+                    listCatalogApplications(state, catalog_id)
+
+                elif aksi_detail == '2':
+                    headerTemplate("Edit Catalog", state, profile=True)
+                    print("Kosongkan input jika tidak ingin mengubah kolom tersebut.")
+                    new_title = input(f"Judul Catalog ({catalog_detail['title']}): ")
+                    new_description = input(f"Deskripsi ({catalog_detail['description']}): ")
+                    new_theme = selectTheme(catalog_detail['theme'].split())
+                    print("Tipe Budget:")
+                    print("[1] Per Jam\n[2] Per Proyek")
+                    new_tipe_budget = input(f"Tipe Budget ({catalog_detail['tipe_budget']}): ")  
+                    new_budget = input(f"Budget ({catalog_detail['budget']}): ")
+                    new_status = input(f"Status ({catalog_detail['status']}): ")
+                    
+                    if new_title:
+                        catalog_detail['title'] = new_title
+                    if new_description:
+                        catalog_detail['description'] = new_description
+                    if new_theme:
+                        catalog_detail['theme'] = " ".join(new_theme)
+                    if new_budget:
+                        catalog_detail['budget'] = int(new_budget)
+                    if new_status:
+                        catalog_detail['status'] = new_status
+                    if new_tipe_budget:
+                        catalog_detail['tipe_budget'] = 'jam' if new_tipe_budget == '1' else 'proyek'
+                        
+                    updateRowById(
+                        'storage/catalog.csv',
+                        'catalog_id',
+                        catalog_id,
+                        {'title': catalog_detail['title'], 
+                         'description': catalog_detail['description'], 
+                         'theme': catalog_detail['theme'], 
+                         'budget': catalog_detail['budget'], 
+                         'status': catalog_detail['status'], 
+                         'tipe_budget': catalog_detail['tipe_budget']},
+                    )
+                    break  
+
+                elif aksi_detail == '3':
+                    deleteRowById(
+                        'storage/catalog.csv',
+                        'catalog_id',
+                        catalog_id
+                    )
+                    break
+
+                elif aksi_detail == 'k':
+                    break
+                else:
+                    cardTemplate("Peringatan!", "Pilihan tidak valid.")
 
 def myApplications(state):
     while True:
@@ -82,18 +156,21 @@ def myJobs(state):
         jobs_db_user = jobs_db[jobs_db['user_id'] == state['account_session']['user_id']]
         jobs_db_user = jobs_db_user.rename(columns={
             'job_id': 'Job Id',
-            'title': 'Judul Lowongan',
+            'title': 'Judul',
             'theme': 'Tema',
             'tipe_budget': 'Tipe Budget',
             'budget': 'Budget',
             'location': 'Lokasi',
-            'date_needed': 'Tanggal Dibutuhkan',
+            'date_needed': 'Tanggal',
             'time': 'Waktu',
             'status': 'Status'
         })
         
         headerTemplate("Lowongan Saya", state, profile=True)
-        print(jobs_db_user[['Job Id','Judul Lowongan', 'Tema', 'Lokasi', 'Tanggal Dibutuhkan', 'Waktu', 'Budget', 'Tipe Budget', 'Status']].to_string(index=False))
+        if jobs_db_user.empty:
+            print("⚠️  Anda belum memiliki lowongan.")
+        else:
+            print(jobs_db_user[['Job Id','Judul', 'Tema', 'Lokasi', 'Tanggal', 'Waktu', 'Budget', 'Tipe Budget', 'Status']].to_string(index=False))
         print("--------------------------------")
         print("[K] Kembali    [X] Keluar dari program     [S] logout.")
         footerTemplate()
@@ -104,15 +181,101 @@ def myJobs(state):
         elif (aksi == "x"):
             exit()
         elif (aksi == "s"):
-            cardTemplate("Berhasil!",f"Anda Telah Logout dari akun  @{state['account_session']['username']}.")
+            cardTemplate("Berhasil!",f"Anda Telah Logout dari akun {state['account_session']['username']}.")
             state['account_session'] = None
             state["input_navigasi"] = None
             return
         elif(int(aksi) in jobs_db_user['Job Id'].values):
             job_id = int(aksi)
-            job_to_edit = jobs_db_user[jobs_db_user['Job Id'] == job_id].iloc[0]
-            # print(f"Anda memilih lowongan dengan ID {job_id} dan judul '{job_to_edit['title']}' untuk diedit.")
-            listJobsFinder(state, job_id)            
+            job_detail = jobs_db[jobs_db['job_id'] == job_id].iloc[0]
+            
+            while True:
+                headerTemplate("Detail Lowongan", state, profile=True)
+
+                print(f"Job ID        : {job_detail['job_id']}")
+                print(f"Judul         : {job_detail['title']}")
+                print(f"Deskripsi     : {job_detail['description']}")
+                print(f"Tema          : {job_detail['theme']}")
+                print(f"Tipe Budget   : {job_detail['tipe_budget']}")
+                print(f"Budget        : {job_detail['budget']}")
+                print(f"Lokasi        : {job_detail['location']}")
+                print(f"Tanggal       : {job_detail['date_needed']}")
+                print(f"Waktu         : {job_detail['time']}")
+                print(f"Status        : {job_detail['status']}")
+                print("--------------------------------")
+                print("[1] Lihat Pelamar     [2] Edit Lowongan     [3] Hapus Lowongan")
+                print("[K] Kembali")
+                footerTemplate()
+
+                aksi_detail = input("Pilih Aksi: ").lower()
+
+                if aksi_detail == '1':
+                    listJobsFinder(state, job_id)
+
+                elif aksi_detail == 'k':
+                    break
+                
+                elif aksi_detail == '2':
+                    headerTemplate("Edit Catalog", state, profile=True)
+                    print("Kosongkan input jika tidak ingin mengubah kolom tersebut.")
+                    
+                    new_title = input(f"Judul Catalog ({job_detail['title']}): ")
+                    new_description = input(f"Deskripsi ({job_detail['description']}): ")
+                    new_theme = selectTheme(job_detail['theme'].split())
+                    print("Tipe Budget:")
+                    print("[1] Per Jam\n[2] Per Proyek")
+                    new_tipe_budget = input(f"Tipe Budget ({job_detail['tipe_budget']}): ")  
+                    new_budget = input(f"Budget ({job_detail['budget']}): ")
+                    new_location = input(f"Lokasi ({job_detail['location']}): ")
+                    new_date_needed = input(f"Tanggal Dibutuhkan ({job_detail['date_needed']}): ")
+                    new_time = input(f"Waktu ({job_detail['time']}): ")
+                    new_status = input(f"Status ({job_detail['status']}): ")
+                    
+                    if new_title:
+                        job_detail['title'] = new_title
+                    if new_description:
+                        job_detail['description'] = new_description
+                    if new_theme:
+                        job_detail['theme'] = " ".join(new_theme)
+                    if new_budget:
+                        job_detail['budget'] = int(new_budget)
+                    if new_status:
+                        job_detail['status'] = new_status
+                    if new_tipe_budget:
+                        job_detail['tipe_budget'] = 'jam' if new_tipe_budget == '1' else 'proyek'
+                    if new_location:
+                        job_detail['location'] = new_location
+                    if new_date_needed:
+                        job_detail['date_needed'] = new_date_needed
+                    if new_time:
+                        job_detail['time'] = new_time
+                    
+                    updateRowById(
+                        'storage/jobs.csv',
+                        'job_id',
+                        job_id,
+                        {'title': job_detail['title'], 
+                         'description': job_detail['description'], 
+                         'theme': job_detail['theme'], 
+                         'budget': job_detail['budget'], 
+                         'status': job_detail['status'], 
+                         'tipe_budget': job_detail['tipe_budget'], 
+                         'location': job_detail['location'], 
+                         'date_needed': job_detail['date_needed'], 
+                         'time': job_detail['time']},
+                    )
+                    break  # reload list setelah edit
+
+                elif aksi_detail == '3':
+                    deleteRowById(
+                        'storage/jobs.csv',
+                        'job_id',
+                        job_id
+                    )
+                    break
+                else:
+                    cardTemplate("Peringatan!", "Pilihan tidak valid.")
+                     
 
 def myOrders(state):
     while True:
