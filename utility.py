@@ -1,5 +1,6 @@
 import pandas as pd
 
+# ======================= Helper  ======================= 
 def login(username, password, state):
     account_db = pd.read_csv('storage/user.csv')
     account = account_db[(account_db['username'] == username) & (account_db['password'] == password)]
@@ -71,6 +72,12 @@ def cardTemplate(title, message):
     panjang_text = int(88+len(title)+2)
     print("="*panjang_text)
     
+def validasiAngka(teks):
+    for char in teks:
+        if char < '0' or char > '9':
+            return False
+    return True
+
 def validasiEmail(email):
     if "@" not in email or "." not in email:
         return False
@@ -84,8 +91,58 @@ def validasiEmail(email):
 
     return True
 
-# ======================= CRUD ======================= 
+def validasiTanggal(tanggal):
+    # format: dd-mm-yyyy → length 10
+    if len(tanggal) != 10:
+        return False
 
+    if tanggal[2] != "-" or tanggal[5] != "-":
+        return False
+
+    hari_str = tanggal[0:2]
+    bulan_str = tanggal[3:5]
+    tahun_str = tanggal[6:10]
+
+    if not (validasiAngka(hari_str) and validasiAngka(bulan_str) and validasiAngka(tahun_str)):
+        return False
+
+    hari = int(hari_str)
+    bulan = int(bulan_str)
+    tahun = int(tahun_str)
+
+    if hari < 1 or hari > 31:
+        return False
+    if bulan < 1 or bulan > 12:
+        return False
+    if tahun < 1000 or tahun > 9999:
+        return False
+
+    return True
+
+
+def validasiWaktu(waktu):
+    if len(waktu) != 5:
+        return False
+    if waktu[2] != ":":
+        return False
+
+    jam = waktu[0:2]
+    menit = waktu[3:5]
+
+    if not (validasiAngka(jam) and validasiAngka(menit)):
+        return False
+
+    jam = int(jam)
+    menit = int(menit)
+
+    if jam < 0 or jam > 23:
+        return False
+    if menit < 0 or menit > 59:
+        return False
+
+    return True
+
+# ======================= CRUD ======================= 
 def getAllData(db_name):
     db = pd.read_csv(db_name)
     return db
@@ -187,7 +244,6 @@ def searchAndFilterByDataFrame(
 
     return df
 
-
 def updateRowById(db_name, key_column, id_value, update_data):
     
     db = pd.read_csv(db_name)
@@ -213,3 +269,92 @@ def deleteRowById(db_name, key_column, id_value):
         cardTemplate("Info!", "Penghapusan data dibatalkan.")
         
     db = pd.read_csv(db_name)
+        
+# ======================= Select ======================= 
+def selectTheme():
+    picked_themes = []
+    themes = [
+        "Wedding", "School", "Event", "Nature", "Aerial", "Sports",
+        "Product", "Street", "Documentary", "Fashion", "Advertising",
+        "Vintage", "Outdoor", "Indoor"
+    ]
+    
+    while True:
+        print("="*40 + " TEMA PILIHAN " + "="*40)
+        count = 0
+
+        for i, theme in enumerate(themes, start=1):
+            label = f"[{i}] {theme}"
+
+            if theme in picked_themes:
+                label += " (✓)"
+
+            print(label.ljust(20), end="")
+
+            count += 1
+            if count == 4:
+                print()
+                count = 0
+
+        print()
+        print("-------------------------")
+        print("[D] Selesai memilih")
+        print("[R] Hapus tema terpilih")
+        print("[X] Batal")
+        print("="*88)
+
+        pilihan = input("Pilih tema (nomor / D / R / X): ").lower()
+
+        # Cancel
+        if pilihan == 'x':
+            cardTemplate("Info!", "Operasi dibatalkan, kembali ke menu sebelumnya")
+            return None
+
+        # Done
+        if pilihan == 'd':
+            if not picked_themes:
+                print("\nMinimal pilih 1 tema.\n")
+                continue
+            return picked_themes
+
+        # Remove selected theme
+        if pilihan == 'r':
+            if not picked_themes:
+                print("\nBelum ada tema yang dipilih.\n")
+                continue
+
+            print("\nTema terpilih:")
+            for i, theme in enumerate(picked_themes, start=1):
+                print(f"[{i}] {theme}")
+
+            remove_input = input("Masukkan nomor tema yang ingin dihapus: ")
+
+            if remove_input.isdigit():
+                idx = int(remove_input)
+                if 1 <= idx <= len(picked_themes):
+                    removed = picked_themes.pop(idx - 1)
+                    cardTemplate("Berhasil!", f"'{removed}' berhasil dihapus.")
+                else:
+                    cardTemplate("Peringatan!", "Nomor tidak valid.")
+            else:
+                cardTemplate("Peringatan!", "Input harus berupa angka.")
+
+            continue
+
+        # Add theme
+        if pilihan.isdigit():
+            idx = int(pilihan)
+            if 1 <= idx <= len(themes):
+                selected_theme = themes[idx - 1]
+                if selected_theme in picked_themes:
+                    cardTemplate("Info!", "Tema sudah dipilih.")
+                else:
+                    picked_themes.append(selected_theme)
+                    cardTemplate("Berhasil!", f"'{selected_theme}' berhasil ditambahkan.")
+            else:
+                cardTemplate("Peringatan!", "Pilihan tidak valid.")
+        else:
+            cardTemplate("Peringatan!", "Input tidak dikenali.")
+
+
+# selectTheme()

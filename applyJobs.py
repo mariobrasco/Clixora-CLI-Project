@@ -1,6 +1,6 @@
 import pandas as pd
-from postAJob import validasi_angka
-from utility import autoIncrementNumber, cardTemplate
+# from postAJob import validasi_angka
+from utility import autoIncrementNumber, cardTemplate, validasiAngka
 
 jobs_applications_db = pd.read_csv('storage/jobsApplications.csv')
 
@@ -22,13 +22,13 @@ def applyJobs(state, job_data):
 
             if (tipe_budget == '1'):
                 negotiated_budget = input("Masukkan Besaran Budget Per Jam: ")
-                if not validasi_angka(negotiated_budget):
+                if not validasiAngka(negotiated_budget):
                     print("\nBudget harus berupa angka.\n")
                     continue
                 break
             elif (tipe_budget == '2'):
                 negotiated_budget = input("Masukkan Besaran Budget Per Proyek: ")
-                if not validasi_angka(negotiated_budget):
+                if not validasiAngka(negotiated_budget):
                     print("\nBudget harus berupa angka.\n")
                     continue
                 break

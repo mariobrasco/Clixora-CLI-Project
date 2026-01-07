@@ -101,7 +101,7 @@ while True:
 
     #Page List Jobs
     if (state["account_session"] is not None and state["input_navigasi"] == "3" or state["account_session"] is None and state["input_navigasi"] == "4"):
-        findjobs.find_work(state)
+        findjobs.findJobs(state)
 
     #Login
     if (state["account_session"] is None and state["input_navigasi"] == "1"):

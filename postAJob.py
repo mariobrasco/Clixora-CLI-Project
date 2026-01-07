@@ -1,113 +1,77 @@
 import pandas as pd
 
-from utility import autoIncrementNumber, cardTemplate
+from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput, selectTheme
 
 jobs_db = pd.read_csv('storage/jobs.csv')
 
-def validasi_angka(teks):
-    for char in teks:
-        if char < '0' or char > '9':
-            return False
-    return True
-
-def validasi_tanggal(tanggal):
-    if len(tanggal) != 8:
-        return False
-    if tanggal[2] != "-" or tanggal[5] != "-":
-        return False
-
-    hari_str = tanggal[0:2]
-    bulan_str = tanggal[3:5]
-    tahun_str = tanggal[6:8]
-
-    if not (validasi_angka(hari_str) and validasi_angka(bulan_str) and validasi_angka(tahun_str)):
-        return False
-
-    hari = int(hari_str)
-    bulan = int(bulan_str)
-    tahun = int(tahun_str)
-
-    if hari < 1 or hari > 31:
-        return False
-    if bulan < 1 or bulan > 12:
-        return False
-    if tahun < 0 or tahun > 99:
-        return False
-
-    return True
-
-def validasi_waktu(waktu):
-    if len(waktu) != 5:
-        return False
-    if waktu[2] != ":":
-        return False
-
-    jam = waktu[0:2]
-    menit = waktu[3:5]
-
-    if not (validasi_angka(jam) and validasi_angka(menit)):
-        return False
-
-    jam = int(jam)
-    menit = int(menit)
-
-    if jam < 0 or jam > 23:
-        return False
-    if menit < 0 or menit > 59:
-        return False
-
-    return True
-
 def form_post_job(state):
     print("\n" + "="*44 + " Form Postingan Lowongan " + "="*44)
-    judul = input("Masukkan Judul Lowongan: ")
-    deskripsi = input("Masukkan Deskripsi Lowongan: ")
-    tema = input("Masukkan Tema Lowongan: ")
-    lokasi = input("Masukkan Lokasi Lowongan: ")
+    print("Ketik 'batal' pada input apapun untuk membatalkan pembuatan lowongan.\n")
+    judul = askInput("Masukkan Judul Lowongan: ", True)
+    if (judul):
+        deskripsi = askInput("Masukkan Deskripsi Lowongan: ", True)
+        if (deskripsi):
+            lokasi = askInput("Masukkan Lokasi Lowongan: ", True)
+            if (lokasi):
+                tema = selectTheme()
+                if tema is None:
+                    return
+                if (tema):
+                    while True:
+                        tanggal = askInput("Masukkan Tanggal Lowongan (DD-MM-YYYY): ", True)
+                        if (tanggal is None):
+                            return
+                        if validasiTanggal(tanggal):
+                            break
+                        print("Format tanggal salah! Gunakan DD-MM-YYYY")
 
-    while True:
-        tanggal = input("Masukkan Tanggal Lowongan (DD-MM-YY): ")
-        if validasi_tanggal(tanggal):
-            break
-        print("Format tanggal salah! Gunakan DD-MM-YY")
+                    while True:
+                        waktu = askInput("Masukkan Waktu Lowongan (HH:MM): ", True)
+                        if (waktu is None):
+                            return  
+                        if validasiWaktu(waktu):
+                            break
+                        print("Format waktu salah! Gunakan HH:MM")
 
-    while True:
-        waktu = input("Masukkan Waktu Lowongan (HH:MM): ")
-        if validasi_waktu(waktu):
-            break
-        print("Format waktu salah! Gunakan HH:MM")
+                    while True:
+                        print("Tipe Budget:\n[1] Per Jam\n[2] Per Proyek")
+                        tipe_budget_pilihan = askInput("Pilih Tipe Budget Katalog: ", True)
+                        if (tipe_budget_pilihan is None):
+                            return
+                        if (tipe_budget_pilihan == '1'):
+                            tipe_budget = 'jam'
+                            per_jam = askInput("Masukkan Besaran Budget Per Jam: ", True)
+                            if (per_jam is None):
+                                return
+                            budget = per_jam
+                            break
+                        elif (tipe_budget_pilihan == '2'):
+                            tipe_budget = 'proyek'
+                            per_proyek = askInput("Masukkan Besaran Budget Per Proyek: ", True)
+                            if (per_proyek is None):
+                                return
+                            budget = per_proyek
+                            break
+                        else:
+                            print("Masukkan Tipe Budget yang Valid! (1 atau 2)")
 
-    while True:
-        tipe_budget = input("Pilih Tipe Budget Lowongan: \n(1. Per Jam, \n2. Per Proyek): ")
+                    jobs_data = {
+                        "job_id": autoIncrementNumber(jobs_db),
+                        "user_id": state['account_session']['user_id'] or "",
+                        "title": judul,
+                        "description": deskripsi,
+                        "theme": ' '.join(tema) if tema else "",
+                        "tipe_budget": tipe_budget,
+                        "budget": budget,
+                        "location": lokasi,
+                        "date_needed": tanggal,
+                        "time": waktu,
+                        "status": "available",
+                    }
+                        
+                    post_job_df = pd.DataFrame([jobs_data])
+                    post_job_df.to_csv('storage/jobs.csv', mode='a', header=False, index=False)
 
-        if (tipe_budget == '1'):
-            per_jam = input("Masukkan Besaran Budget Per Jam: ")
-            budget = per_jam
-            break
-        elif (tipe_budget == '2'):
-            per_proyek = input("Masukkan Besaran Budget Per Proyek: ")
-            budget = per_proyek
-            break
-        else:
-            print("Masukkan Tipe Budget yang Valid! (1 atau 2)")
-
-    jobs_data = {
-        "job_id": autoIncrementNumber(jobs_db),
-        "user_id": state['account_session']['user_id'] or "",
-        "title": judul,
-        "description": deskripsi,
-        "theme": tema,
-        "tipe_budget": tipe_budget,
-        "budget": budget,
-        "location": lokasi,
-        "date_needed": tanggal,
-        "time": waktu,
-        "status": "available",
-    }
-        
-    post_job_df = pd.DataFrame([jobs_data])
-    post_job_df.to_csv('storage/jobs.csv', mode='a', header=False, index=False)
-
-    cardTemplate("Berhasil", "Lowongan berhasil diunggah!")
+                    cardTemplate("Berhasil", "Lowongan berhasil diunggah!")
 
 # form_post_job()

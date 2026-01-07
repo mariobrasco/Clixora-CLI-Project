@@ -1,7 +1,7 @@
 import pandas as pd
 
-from postAJob import validasi_tanggal, validasi_waktu
-from utility import autoIncrementNumber, cardTemplate
+# from postAJob import validasi_tanggal, validasi_waktu
+from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput
 
 
 def negotiateCatalog(state, catalog_data):
@@ -30,12 +30,12 @@ def negotiateCatalog(state, catalog_data):
         location = input("Masukkan lokasi tempat dilaksanakan: ")
         while True:
             tanggal = input("Masukkan Tanggal Lowongan (DD-MM-YY): ")
-            if validasi_tanggal(tanggal):
+            if validasiTanggal(tanggal):
                 break
             print("Format tanggal salah! Gunakan DD-MM-YY")
         while True:
             waktu = input("Masukkan Waktu Lowongan (HH:MM): ")
-            if validasi_waktu(waktu):
+            if validasiWaktu(waktu):
                 break
             print("Format waktu salah! Gunakan HH:MM")
             

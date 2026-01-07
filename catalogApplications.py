@@ -1,8 +1,8 @@
 import pandas as pd
 
 from payment import menuPayment
-from postAJob import validasi_angka
-from utility import cardTemplate, updateRowById
+# from postAJob import validasi_angka
+from utility import cardTemplate, updateRowById, validasiAngka
 
 FILE_PATH_PHOTOGRAPHER = 'storage/catalogApplications.csv'
 
@@ -80,7 +80,7 @@ def listCatalogApplications(catalog_id):
                         print("\nBudget harus lebih dari 0.")
                         continue
 
-                    if not validasi_angka(new_budget):
+                    if not validasiAngka(new_budget):
                         print("\nBudget harus berupa angka.")
                         continue
 
@@ -179,7 +179,7 @@ def listOrderApplications(applications_id):
                 print("\nBudget harus lebih dari 0.")
                 continue
 
-            if not validasi_angka(new_budget):
+            if not validasiAngka(new_budget):
                 print("\nBudget harus berupa angka.")
                 continue
 

@@ -1,8 +1,8 @@
 import pandas as pd
 
 from payment import menuPayment
-from postAJob import validasi_angka
-from utility import cardTemplate, updateRowById
+# from postAJob import validasi_angka
+from utility import cardTemplate, updateRowById, validasiAngka
 
 FILE_PATH_FINDER = 'storage/jobsApplications.csv'
 
@@ -77,7 +77,7 @@ def listJobsFinder(job_id):
                         print("\nBudget harus lebih dari 0.")
                         continue
 
-                    if not validasi_angka(new_budget):
+                    if not validasiAngka(new_budget):
                         print("\nBudget harus berupa angka.")
                         continue
 
@@ -123,7 +123,7 @@ def listJobsApplications(applications_id):
         user_db = pd.read_csv('storage/user.csv')
         finder_info = user_db[user_db['user_id'] == job_info['user_id']].iloc[0]
         
-        print("\n" + "="*63 + " Detail Pesanan " + "="*63)
+        print("\n" + "="*63 + " Detail Lamaran " + "="*63)
 
         if applications_selected.empty:
             cardTemplate("Info!","Pesanan tidak ditemukan.")
@@ -170,7 +170,7 @@ def listJobsApplications(applications_id):
                 print("\nBudget harus lebih dari 0.")
                 continue
 
-            if not validasi_angka(new_budget):
+            if not validasiAngka(new_budget):
                 print("\nBudget harus berupa angka.")
                 continue
 

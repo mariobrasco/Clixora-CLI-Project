@@ -3,7 +3,7 @@ from utility import login, askInput, cardTemplate, validasiEmail, autoIncrementU
 
 def menuLogin(state):
     print("\n" + "="*44 + " MENU LOGIN " + "="*44)
-    print("Jika Ingin membatalkan login, ketik 'batal'")
+    print("Jika Ingin membatalkan login, ketik 'batal'\n")
     
     input_username = askInput("*Masukkan username: ", True)
     if (input_username):
