@@ -1,8 +1,8 @@
 import pandas as pd
-from utility import login, askInput, cardTemplate, validasiEmail, autoIncrementUserId
+from utility import login, askInput, cardTemplate, validasiEmail, autoIncrementUserId, headerTemplate, footerTemplate
 
 def menuLogin(state):
-    print("\n" + "="*44 + " MENU LOGIN " + "="*44)
+    headerTemplate("MENU LOGIN", state, profile=False)
     print("Jika Ingin membatalkan login, ketik 'batal'\n")
     
     input_username = askInput("*Masukkan username: ", True)
@@ -10,19 +10,22 @@ def menuLogin(state):
         input_password = askInput("*Masukkan password: ", True)
         if (input_password):
             if(login(input_username, input_password, state)):
-                print("="*90)
+                footerTemplate()
                 cardTemplate("Berhasil!",f"Berhasil login sebagai {state['account_session']['role']}, Selamat datang, {input_username}!")
             else:
                 cardTemplate("Peringatan!", "Gagal login, username atau password salah.")
 
 def menuRegistrasi(state):
     while True:
-        print("\n" + "="*44 + " MENU REGISTRASI " + "="*44)
+        headerTemplate("MENU REGISTRASI", state, profile=False)
         print("Apakah anda Photografer atau Finder?")
-        print("1. Photografer")
-        print("2. Finder")
+        print("[1] Photografer")
+        print("[2] Finder")
+        print("[B] Batal Registrasi")
         role_picked = (input("Masukan nomor sesuai tipe akun yang diinginkan: "))
         role_id = "null"
+        if (role_picked.lower() == "b"):
+            return
         if (role_picked == "1"):
             role_id = "p"
             role_name = "photografer"
@@ -34,7 +37,7 @@ def menuRegistrasi(state):
         else:
             cardTemplate("Peringatan", f"input '{role_picked}' tidak valid, silahkan masukan nomor yang sesuai (1 dan 2)")
                 
-    print("\n" + "="*44 + " MENU REGISTRASI " + "="*44)
+    headerTemplate("MENU REGISTRASI", state, profile=False)
     print("Jika Ingin membatalkan registrasi, ketik 'batal' saat menginputkan data")
     
     input_username = askInput("*Masukkan username: ", True)
@@ -63,7 +66,7 @@ def menuRegistrasi(state):
                             }
                             new_account = pd.DataFrame([reg_data])
                             new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
-                            print("="*90)
+                            footerTemplate()
                             login(input_username, input_password, state)
                             cardTemplate("Berhasil", f"Berhasil registrasi sebagai {role_name}.\nSelamat Datang, {input_username}!")
                             break    
@@ -80,7 +83,7 @@ def menuRegistrasi(state):
                     }
                     new_account = pd.DataFrame([reg_data])
                     new_account.to_csv('storage/user.csv', mode='a', header=False, index=False)
-                    print("="*90)
+                    footerTemplate()
                     
                     login(input_username, input_password, state) 
                     cardTemplate("Berhasil", f"Berhasil registrasi sebagai {role_name}.\nSelamat Datang, {input_username}!")

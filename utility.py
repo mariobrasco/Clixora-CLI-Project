@@ -66,12 +66,38 @@ def askInput(message, required):
     return value
 
 def cardTemplate(title, message):
-    print("\n" + "="*44 + f" {title} " + "="*44)
+    panjang_card = int(len(message))
+    if ((panjang_card % 2) != 0):
+        panjang_card +=1
+    panjang_header = panjang_card // 2
+    print("\n" + "="*panjang_header + f" {title} " + "="*panjang_header)
     print(message)
     
-    panjang_text = int(88+len(title)+2)
+    panjang_text = int(panjang_card+len(title)+2)
     print("="*panjang_text)
     
+def headerTemplate(title, state=None, profile=False):
+    max_length = 100
+    panjang_title = len(title)
+    each_side = (max_length - panjang_title - 2) // 2
+    left_side = each_side
+    info_side = each_side
+    
+    if ((each_side * 2 + panjang_title + 2) > max_length ):
+        left_side -= 1
+    elif ((each_side * 2 + panjang_title + 2) < max_length ):
+        info_side += 1
+        
+    if (profile):
+        profile_info = len(f" {state['account_session']['username']} ({state['account_session']['role']})")
+        info_side = each_side - profile_info + 1
+        
+    # print(left_side, info_side, panjang_title)
+    print("\n" + "="*left_side + f" {title} " + "="*info_side + " " + (state['account_session']['username'] + f" ({state['account_session']['role']})" if profile and state else ""))
+
+def footerTemplate():
+    print("="*100)
+
 def validasiAngka(teks):
     for char in teks:
         if char < '0' or char > '9':
@@ -118,7 +144,6 @@ def validasiTanggal(tanggal):
         return False
 
     return True
-
 
 def validasiWaktu(waktu):
     if len(waktu) != 5:
@@ -216,7 +241,9 @@ def searchAndFilterByDataFrame(
     keyword=None,
     search_columns=None,
     filters=None,
-    select_columns=None
+    select_columns=None,
+    page=1,
+    per_page=5
 ):
     # Filter
     if filters:
@@ -242,7 +269,23 @@ def searchAndFilterByDataFrame(
         valid_cols = [c for c in select_columns if c in df.columns]
         df = df[valid_cols]
 
-    return df
+    # 🔹 total pages (before slicing)
+    total_rows = len(df)
+    total_pages = total_rows // per_page
+    if total_rows % per_page != 0:
+        total_pages += 1
+
+    # Pagination
+    start = (page - 1) * per_page
+    end = start + per_page
+    df = df.iloc[start:end]
+
+    # Add 'no' column (starts from 1)
+    start_no = (page - 1) * per_page + 1
+    df.insert(0, 'no', range(start_no, start_no + len(df)))
+
+    return df, total_pages
+
 
 def updateRowById(db_name, key_column, id_value, update_data):
     

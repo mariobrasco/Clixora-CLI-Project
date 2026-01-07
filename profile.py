@@ -1,22 +1,20 @@
 import pandas as pd
 
 from userPost import myApplications, myCatalog, myJobs, myOrders
-from utility import cardTemplate
+from utility import cardTemplate, headerTemplate, footerTemplate
 
 def profilePage(state):
     while True:
         # ===== ambil data user =====
         account_db = pd.read_csv('storage/user.csv')
-        user_idx = account_db.index[
-            account_db['user_id'] == state['account_session']['user_id']
-        ][0]
+        user_idx = account_db.index[ account_db['user_id'] == state['account_session']['user_id']][0]
         user_info = account_db.loc[user_idx]
 
         # ===== sinkronkan role dari login =====
         account_db.at[user_idx, 'role'] = state['account_session']['role']
 
         # ===== tampilkan profil =====
-        print("\n" + "=" * 44 + " Profil Saya " + "=" * 44)
+        headerTemplate("PROFIL SAYA", state, profile=False)
         print(f"Username   : {user_info['username']}")
         print(f"Email      : {user_info['email']}")
         print(f"Role       : {state['account_session']['role']}")
@@ -25,19 +23,16 @@ def profilePage(state):
             print(f"Lokasi     : {user_info['location']}")
             print(f"Bio        : {user_info['bio']}")
 
-
-        print("=" * 101)
-
         # ===== menu aksi =====
+        print("--------------------------------")
         print(
             f"Aksi:\n"
             f"{'[p] Pesanan saya    ' if state['account_session']['role'] == 'finder' else '[a] Lamaran saya    '}[e] Edit data profil\n"
             f"{'[c] Katalog saya    ' if state['account_session']['role'] == 'photografer' else '[j] Lowongan saya   '}[b] Tambahkan bio\n"
-            f"[K] Kembali\n"
-            f"[L] Logout\n"
-            f"[X] Keluar\n"
+            f"[K] Kembali         [L] Logout\n"
+            f"[X] Keluar"
         )
-
+        footerTemplate()
         aksi = input("Masukan aksi: ").lower()
 
         # ===== aksi user =====

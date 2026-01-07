@@ -4,19 +4,27 @@ import postAJob as postJob
 import findJobs as findjobs
 
 from profile import profilePage 
-from utility import autoIncrementUserId, askInput, cardTemplate, login
+from utility import cardTemplate, headerTemplate, footerTemplate
 from catalog import catalogList
 from loginRegister import menuLogin, menuRegistrasi
 
 account_db = pd.read_csv('storage/user.csv')
+dummy_akun = {
+    'user_id': 'f001',
+    'username': 'ajum',
+    'email': 'guest@example.com',
+    'role': 'finder',
+    'location': '',
+    'bio': ''
+}
 state = {
-    "account_session": None, 
+    "account_session": dummy_akun, 
     "input_navigasi": None,
     }
 
 #Menu Navigasi
 def navBelumLogin():
-    print("\n" + "="*44 + " BERANDA " + "="*44)
+    headerTemplate("BERANDA")
     print("📷  CLIXORA  📷")
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
     print("[T] Tentang Clixora")
@@ -26,10 +34,10 @@ def navBelumLogin():
     print("[1] Login            [3] List Catalog") 
     print("[2] Registrasi       [4] List Pekerjaan")
     print("[X] Keluar")
-    print("="*103)
+    footerTemplate()
 
 def navSudahLogin():
-    print("\n" + "="*44 + " BERANDA " + "="*32 + f" {state["account_session"]['username']} ({state["account_session"]['role']}) ")
+    headerTemplate("BERANDA", state, profile=True)
     print("📷  CLIXORA  📷")
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
     print("[T] Tentang Clixora")
@@ -39,7 +47,7 @@ def navSudahLogin():
     print("[1] Profil Saya      [3] List Pekerjaan") 
     print(f"[2] List Catalog    {' [4] Unggah Lowongan Pekerjaan' if state['account_session']['role'] == 'finder' else ' [4] Unggah Catalog'}")
     print("[X] Keluar           [L] Logout")
-    print("="*103)
+    footerTemplate()
     
 
 #Main Program Loop
