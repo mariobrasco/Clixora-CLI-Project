@@ -69,6 +69,7 @@ def menuRegistrasi(state):
         role_picked = (input("Masukan nomor sesuai tipe akun yang diinginkan: "))
         role_id = "null"
         if (role_picked.lower() == "b"):
+            cardTemplate("Berhasil", "Registrasi dibatalkan.")
             return
         if (role_picked == "1"):
             role_id = "p"
