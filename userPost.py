@@ -156,9 +156,11 @@ def myApplications(state):
             state['account_session'] = None
             state["input_navigasi"] = None
             return
-        elif(int(aksi) in merged_db['Lamaran Id'].values):
+        elif( aksi.isdigit() and int(aksi) in merged_db['Lamaran Id'].values):
             application_id = int(aksi)
             listJobsApplications(state,application_id)
+        elif( aksi.isdigit() and int(aksi) not in merged_db['Lamaran Id'].values):
+            cardTemplate("Peringatan!", f"Lamaran Id '{aksi}' tidak ada.")
             
 #======================= FINDERS =======================
 def myJobs(state):
