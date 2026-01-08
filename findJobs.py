@@ -3,6 +3,7 @@ import pandas as pd
 from applyJobs import applyJobs
 from utility import cardTemplate, validasiAngka, mergeCSV, searchAndFilterByDataFrame, headerTemplate, footerTemplate
 from loginRegister import menuLogin
+from profile import viewUserProfile
 
 def findJobs(state):
     merged_db = mergeCSV('storage/jobs.csv', 'storage/user.csv', 'user_id', 'user_id')
@@ -125,34 +126,50 @@ def findJobs(state):
                 cardTemplate("Peringatan!","⚠️  Pengguna yang memposting pekerjaan ini tidak ditemukan.")
                 return
             
-            keterangan_tipe = "Budget Per Jam"
-            if selected_post['tipe_budget'] == 2:
-                keterangan_tipe = "Budget Proyek"
+            # keterangan_tipe = "Budget Per Jam"
+            # if selected_post['tipe_budget'] == 2:
+            #     keterangan_tipe = "Budget Proyek"
 
             headerTemplate("DETAIL LOWONGAN PEKERJAAN", state, profile=True)
 
-            for i, (key, value) in enumerate(selected_post.items(), start=1):
-                if key == "tipe_budget":
-                    print(f"{i}. {key:<12}: {value} ({keterangan_tipe})")
-                elif key == "budget":
-                    print(f"{i}. {key:<12}: Rp {value}")
-                else:
-                    print(f"{i}. {key:<12}: {value}")
-
+            print(f"Job ID        : {selected_post['job_id']}")
+            print(f"Posted by     : {user_info['username']}")
+            print(f"Judul         : {selected_post['title']}")
+            print(f"Deskripsi     : {selected_post['description']}")
+            print(f"Tema          : {selected_post['theme']}")
+            print(f"Tipe Budget   : {selected_post['tipe_budget']}")
+            print(f"Budget        : {selected_post['budget']}")
+            print(f"Lokasi        : {selected_post['location']}")
+            print(f"Tanggal       : {selected_post['date_needed']}")
+            print(f"Waktu         : {selected_post['time']}")
+            print(f"Status        : {selected_post['status']}")
             print("--------------------------------")
 
-            print("[1] Lamar Pekerjaan ini      [0] Kembali ke menu awal")
-            footerTemplate()
-            aksi = input("Pilih aksi: ")
-            
-            if (aksi == '1' and state['account_session'] is not None):
-                applyJobs(state, selected_post)
-            elif (aksi == '1' and state['account_session'] is None):
-                cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
+            if (state['account_session']['role'] == 'photographer'):
+                print("[1] Lamar Pekerjaan ini      [2] Lihat Profil      [0] Kembali ")
+                footerTemplate()
+                aksi = input("Pilih aksi: ")
+                
+                if (aksi == '1' and state['account_session'] is not None):
+                    applyJobs(state, selected_post)
+                elif (aksi == '1' and state['account_session'] is None):
+                    cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
+                elif (aksi == '2'):
+                    viewUserProfile(state, user_info['user_id'])
+                elif (aksi == '0'):
+                    continue
+            elif (state['account_session']['role'] == 'finder'):
+                print("[1] Lihat Profil     [0] Kembali")
+                footerTemplate()
+                aksi = input("Pilih aksi: ")
+                if (aksi == '0'):
+                    continue
+                elif (aksi == '1'):
+                    viewUserProfile(state, user_info['user_id'])
             
             else:
-                print("⚠️  Nomor index tidak ditemukan.")
+                cardTemplate("Peringatan!","⚠️  Job Id tidak ditemukan.")
         else:
-            print("⚠️  Mohon masukkan input berupa angka.")
+            cardTemplate("Peringatan!","⚠️  Mohon masukkan input sesuai.")
 
 # find_work()
