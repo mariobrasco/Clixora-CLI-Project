@@ -59,6 +59,8 @@ def askInput(message, required):
     if (value.lower() == "batal"):
         cardTemplate("Info!", "Operasi dibatalkan, kembali ke menu Sebelumnya")
         return 
+    if (value.lower() == "lupa"):
+        return "lupa"
     if (required and not value):
         cardTemplate("Required!", "Input tidak boleh kosong, silahkan coba lagi.")
         return askInput(message, required)

@@ -29,6 +29,7 @@ state = {
 def navBelumLogin():
     headerTemplate("BERANDA")
     print("📷  CLIXORA  📷")
+    print("Dalam Aplikasi ini semua yang dikurungi oleh '[]' adalah aksi yang dapat dipilih.")
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
     print("[T] Tentang Clixora")
     print("[C] Cara Penggunaan (How To Use)")
@@ -42,6 +43,7 @@ def navBelumLogin():
 def navSudahLogin():
     headerTemplate("BERANDA", state, profile=True)
     print("📷  CLIXORA  📷")
+    print("Dalam Aplikasi ini semua yang dikurungi oleh '[]' adalah aksi yang dapat dipilih.")
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
     print("[T] Tentang Clixora")
     print("[C] Cara Penggunaan (How To Use)")

@@ -2,22 +2,66 @@ import pandas as pd
 from utility import login, askInput, cardTemplate, validasiEmail, autoIncrementUserId, headerTemplate, footerTemplate
 
 def menuLogin(state):
-    headerTemplate("MENU LOGIN", state, profile=False)
-    print("Jika Ingin membatalkan login, ketik 'batal'\n")
+    while True:
+        headerTemplate("FORM LOGIN", state, profile=False)
+        print("Jika Ingin membatalkan login, ketik [batal], jika lupa password ketik [lupa], '*' artinya tidak boleh kosong\n")
+        
+        input_username = askInput("Masukkan username*: ", True)
+        if (input_username == "lupa"):
+            forgotPassword(state)
+            continue
+        if (not input_username):
+            return
+        input_password = askInput("Masukkan password*: ", True)
+        footerTemplate()
+        if (input_password == "lupa"):
+            forgotPassword(state)
+            continue
+        if (not input_password):
+            return
+        if(login(input_username, input_password, state)):
+            cardTemplate("Berhasil!",f"Berhasil login sebagai {state['account_session']['role']}, Selamat datang, {input_username}!")
+            break
+        else:
+            cardTemplate("Peringatan!", "Gagal login, username atau password salah.")
+
+def forgotPassword(state):
+    headerTemplate("FORM UBAH PASSWORD", state, profile=False)
+    print("Jika Ingin membatalkan proses ubah password, ketik [batal], '*' artinya tidak boleh kosong\n")
     
-    input_username = askInput("*Masukkan username: ", True)
-    if (input_username):
-        input_password = askInput("*Masukkan password: ", True)
-        if (input_password):
-            if(login(input_username, input_password, state)):
-                footerTemplate()
-                cardTemplate("Berhasil!",f"Berhasil login sebagai {state['account_session']['role']}, Selamat datang, {input_username}!")
-            else:
-                cardTemplate("Peringatan!", "Gagal login, username atau password salah.")
+    input_username = askInput("Masukkan username terdaftar*: ", True)
+    if (not input_username):
+        return
+    input_email = askInput("Masukkan email terdaftar*: ", True)
+    if (not input_email):
+        return
+
+    account_db = pd.read_csv('storage/user.csv')
+    user_rows = account_db[
+        (account_db['username'] == input_username) &
+        (account_db['email'] == input_email)
+    ]
+
+    if user_rows.empty:
+        cardTemplate(
+            "Peringatan!",
+            "Username dan email tidak cocok atau tidak terdaftar."
+        )
+        return
+    user_idx = user_rows.index[0]
+    new_password = askInput("Masukkan password baru*: ", True)
+    if (not new_password):
+        return
+
+    account_db.at[user_idx, 'password'] = new_password
+    account_db.to_csv('storage/user.csv', index=False)
+    cardTemplate("Berhasil!", "Password berhasil diperbarui. Silahkan login dengan password baru Anda.")
+
 
 def menuRegistrasi(state):
     while True:
-        headerTemplate("MENU REGISTRASI", state, profile=False)
+        headerTemplate("FORM REGISTRASI", state, profile=False)
+        print("'*' artinya tidak boleh kosong\n")
         print("Apakah anda Photographer atau Finder?")
         print("[1] Photographer")
         print("[2] Finder")
@@ -40,17 +84,17 @@ def menuRegistrasi(state):
     headerTemplate("MENU REGISTRASI", state, profile=False)
     print("Jika Ingin membatalkan registrasi, ketik 'batal' saat menginputkan data")
     
-    input_username = askInput("*Masukkan username: ", True)
+    input_username = askInput("Masukkan username*: ", True)
     if (input_username):
-        input_password = askInput("*Masukkan password: ", True)
+        input_password = askInput("Masukkan password*: ", True)
         if (input_password):
             while True:
-                input_email = askInput("*Masukkan email: ", True)
+                input_email = askInput("Masukkan email*: ", True)
                 if (not validasiEmail(input_email)):
                     cardTemplate("Peringatan!", f"Email '{input_email}' tidak valid, silahkan masukan email yang sesuai.")
                     continue
                 if (role_id == "p" and input_email):
-                    input_location = askInput("*Masukkan lokasi: ", True)
+                    input_location = askInput("Masukkan lokasi*: ", True)
                     if (input_location):
                         input_bio = askInput("Masukkan bio: ")
                         if (input_bio):

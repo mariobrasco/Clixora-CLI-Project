@@ -28,10 +28,9 @@ def profilePage(state):
         # ===== menu aksi =====
         print("--------------------------------")
         print(
-            f"[P] Pesanan saya     [E] Edit Profil    \n"
-            f"[C] Katalog saya     [B] Tambah Bio     \n"
-            f"[K] Kembali          [L] Logout\n"
-            f"[X] Keluar"
+            f"[P] Pesanan saya     [E] Edit Akun    \n"
+            f"[C] Katalog saya     {'[B] Tambah Bio' if state['account_session']['role'] == 'photographer' else ''}     \n"
+            f"[K] Kembali          [X] Keluar           [L] Logout"
         )
         footerTemplate()
         aksi = input("Masukan aksi: ").lower()
@@ -43,21 +42,26 @@ def profilePage(state):
             cardTemplate("Terima Kasih!","Terima kasih telah menggunakan Clixora CLI. Sampai jumpa!")
             exit()
 
-        # ===== edit data profil (TANPA ROLE) =====
+        # ===== edit data =====
         elif aksi == "e":
-            print("\nEdit data profil (kosongkan jika tidak diubah)")
+            headerTemplate("EDIT PROFIL SAYA", state, profile=False)
+            print("\nSilahkan kosongkan kolom jika tidak diubah")
             username = input("Username : ")
-            email = input("Email    : ")
+            email =    input("Email    : ")
+            password = input("Password : ")
 
-            if username:
+            if (username):
                 account_db.at[user_idx, 'username'] = username
                 state['account_session']['username'] = username
+                
+            if (password):
+                account_db.at[user_idx, 'password'] = password
 
-            if email:
+            if (email):
                 account_db.at[user_idx, 'email'] = email
 
             account_db.to_csv('storage/user.csv', index=False)
-            cardTemplate("Berhasil!", "Data profil berhasil diperbaharui")
+            cardTemplate("Berhasil!", "Data Akun berhasil diperbaharui")
 
         # ===== tambah bio =====
         elif aksi == "b" and state['account_session']['role'] == "photographer":

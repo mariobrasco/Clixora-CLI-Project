@@ -1,7 +1,7 @@
 import pandas as pd
 
 # from postAJob import validasi_tanggal, validasi_waktu
-from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput
+from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput, headerTemplate, footerTemplate
 
 
 def negotiateCatalog(state, catalog_data):
