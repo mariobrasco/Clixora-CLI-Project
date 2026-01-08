@@ -94,8 +94,15 @@ Scan menggunakan e-wallet Anda
                     FILE_PATH_APPLICATIONS,
                     'applications_id',
                     applications_info['applications_id'],
-                    {'status': 'on going (paid)'}
+                    {'status': 'paid'}
                 )
+                if ('catalog_id' in applications_info):
+                    updateRowById(
+                        'storage/catalog.csv',
+                        'catalog_id',
+                        applications_info['catalog_id'],
+                        {'sold_count': int(event_info['sold_count']) + 1}
+                    )
                 cardTemplate("Berhasil", f"Pembayaran sebesar Rp{total} telah berhasil dilakukan kepada {photographer_info['username']}.\nTerimakasih telah menggunakan layanan Clixora!")
                 return
             elif konfirmasi.lower() == 'batal':

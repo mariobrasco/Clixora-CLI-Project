@@ -27,7 +27,8 @@ def catalogList(state):
             'budget': 'Budget',
             'status': 'Status',
             'username': 'Diupload Oleh',
-            'location': 'Lokasi'
+            'location': 'Lokasi',
+            'sold_count': 'Terjual'
         })
         headerTemplate("CATALOG", state, profile=True)
         print(f"Cari    : ( {searchWord} ) [H] Hapus Pencarian ")
@@ -38,7 +39,7 @@ def catalogList(state):
             keyword=searchWord,
             search_columns=['Judul Lowongan'],
             filters=filters,
-            select_columns=['Catalog Id','Judul Lowongan', 'Tema', 'Budget', 'Status', 'Diupload Oleh', 'Lokasi'],
+            select_columns=['Catalog Id','Judul Lowongan', 'Tema', 'Budget', 'Diupload Oleh', 'Lokasi', 'Status', 'Terjual'],
             page=current_page,
             per_page=10
         )

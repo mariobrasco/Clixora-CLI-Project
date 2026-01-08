@@ -14,14 +14,16 @@ def myCatalog(state):
             'title': 'Judul Catalog',
             'theme': 'Tema',
             'budget': 'Budget',
-            'status': 'Status'
+            'status': 'Status',
+            'sold_count': 'Terjual'
         })
         
         headerTemplate("Katalog Saya", state, profile=True)
+        print("Jumlah Catalog Anda: ", len(catalog_db_user), "|", "Jumlah Catalog Terjual: ", catalog_db_user['Terjual'].sum())
         if catalog_db_user.empty:
             print("⚠️  Anda belum memiliki katalog.")
         else:
-            print(catalog_db_user[['Catalog Id','Judul Catalog', 'Tema', 'Budget', 'Status']].to_string(index=False))
+            print(catalog_db_user[['Catalog Id','Judul Catalog', 'Tema', 'Budget', 'Status', 'Terjual']].to_string(index=False))
         print("--------------------------------")
         print("[K] Kembali    [X] Keluar dari program     [L] logout")
         footerTemplate()
@@ -39,7 +41,6 @@ def myCatalog(state):
         elif aksi.isdigit() and int(aksi) in catalog_db_user['Catalog Id'].values:
             catalog_id = int(aksi)
 
-            # ambil data asli (bukan yang sudah di-rename)
             catalog_detail = catalog_db[catalog_db['catalog_id'] == catalog_id].iloc[0]
 
             while True:
@@ -315,7 +316,7 @@ def myOrders(state):
         print("--------------------------------")
         print("[K] Kembali    [X] Keluar dari program     [S] logout.")
         footerTemplate()
-        aksi = input("Masukan order id untuk melihat detail atau aksi: ")
+        aksi = input("Masukan Id Pesanan untuk melihat detail atau aksi: ")
         if (aksi == "k"):
             return
         elif (aksi == "x"):

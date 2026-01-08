@@ -44,7 +44,8 @@ def formCatalog(state):
                             'theme': " ".join(theme) if theme else "",
                             'tipe_budget': tipe_budget,
                             'budget': budget,
-                            'status': 'available'
+                            'status': 'available',
+                            'sold_count': 0
                         }
 
                         catalog_df = pd.DataFrame([new_catalog])

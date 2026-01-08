@@ -10,6 +10,7 @@ def listCatalogApplications(state, catalog_id):
     while True:
         catalog_db = pd.read_csv('storage/catalog.csv')
         merge_db = mergeCSV(FILE_PATH_PHOTOGRAPHER, 'storage/user.csv', 'user_id', 'user_id')
+        application_info = pd.read_csv(FILE_PATH_PHOTOGRAPHER)
         catalog_info = catalog_db[catalog_db['catalog_id'] == catalog_id].iloc[0]
         applications_selected = merge_db[merge_db['catalog_id'] == catalog_id]
         applications_selected = applications_selected.rename(columns={
@@ -45,7 +46,7 @@ def listCatalogApplications(state, catalog_id):
             exit()
         
         elif choice.isdigit() and int(choice) in applications_selected['Id Tawaran'].values:
-            selected =  applications_selected[applications_selected['Id Tawaran'] == int(choice)].iloc[0]
+            selected =  application_info[application_info['applications_id'] == int(choice)].iloc[0]
             
             if (selected['status'] == 'waiting for finder'):
                 cardTemplate("Info!","Menunggu Finder merespon tawaran Anda.")
@@ -57,7 +58,7 @@ def listCatalogApplications(state, catalog_id):
             
             while True:
                 headerTemplate("Detail Tawaran", state, profile=True)
-                print(f"💰 {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} mengajukan: {selected['negotiated_budget']}")
+                print(f"💰 {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} mengajukan: {selected['negotiated_budget']} {selected['tipe_budget']}")
                 print("-------------------------")
                 print("[A] Terima tawaran")
                 print("(B) Ajukan negosiasi balik")
@@ -117,7 +118,7 @@ def listCatalogApplications(state, catalog_id):
                         'tipe_budget': selected['tipe_budget'],
                         'negotiated_budget': selected['negotiated_budget']
                     })
-                    cardTemplate("Berhasil!",f"✅ Tawaran @{merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.\n Silahkan menunggu konfirmasi pembayaran dari Finder.")
+                    cardTemplate("Berhasil!",f"✅ Tawaran {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.\n Silahkan menunggu konfirmasi pembayaran dari Finder.")
                     break
 
                 elif action == 'x':
@@ -165,8 +166,8 @@ def listOrderApplications(state, applications_id):
             print(f"[J] Terima Negosiasi dan Bayar")
         elif (applications_selected['status'] == 'accepted'):
             print(f"[B] Bayar Pesanan")
-        if (applications_selected['status'] == 'pending'):
-            print(f"[B] Lanjutkan Pembayaran")
+        # if (applications_selected['status'] == 'pending'):
+        #     print(f"[B] Lanjutkan Pembayaran")
         if (applications_selected['status'] not in ['accepted', 'rejected']):
             print("[C] Batalkan Pesanan")
             
@@ -241,7 +242,7 @@ def listOrderApplications(state, applications_id):
             menuPayment(state, applications_selected, catalog_info, photographer_info)
             return
         
-        if pilihan_aksi == 'b' and applications_selected['status'] == 'pending' or applications_selected['status'] == 'accepted':
+        if pilihan_aksi == 'b' and applications_selected['status'] == 'accepted':
             menuPayment(state, applications_selected, catalog_info, photographer_info)
         
         if pilihan_aksi == 't' and applications_selected['status'] == 'waiting for finder':

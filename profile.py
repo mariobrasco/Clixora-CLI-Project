@@ -95,7 +95,8 @@ def viewUserProfile(state, user_id):
                 'title': 'Judul',
                 'theme': 'Tema',
                 'budget': 'Budget',
-                'tipe_budget': 'Tipe Budget'
+                'tipe_budget': 'Tipe Budget',
+                'sold_count': 'Terjual'
             })
             kolom_tampilan = ['Catalog Id', 'Judul', 'Tema', 'Budget', 'Tipe Budget']
         elif (user_info['role'] == 'finder'):
@@ -117,6 +118,8 @@ def viewUserProfile(state, user_id):
             print(f"Lokasi     : {user_info['location']}")
             print(f"Bio        : {user_info['bio']}")
         headerTemplate("DAFTAR " + ("CATALOG" if (user_info['role'] == 'photographer') else "LOWONGAN PEKERJAAN") + " YANG DIUNGGAH", state, profile=False)
+        if user_info['role'] == 'photographer':
+            print("Jumlah Catalog yang diunggah: ", len(tampilan_pemilik), "|", "Jumlah Catalog Terjual: ", tampilan_pemilik['Terjual'].sum())
         if (tampilan_pemilik.empty):
             print(f"{user_info['role']} belum mengunggah apapun.")
         else:

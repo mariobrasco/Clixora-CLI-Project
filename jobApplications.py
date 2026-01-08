@@ -10,6 +10,7 @@ def listJobsFinder(state, job_id):
         jobs_db = pd.read_csv('storage/jobs.csv')
         merge_db = mergeCSV(FILE_PATH_FINDER, 'storage/user.csv', 'user_id', 'user_id')
         job_info = jobs_db[jobs_db['job_id'] == job_id].iloc[0]
+        application_info = pd.read_csv(FILE_PATH_FINDER)
         applications_selected = merge_db[merge_db['job_id'] == job_id] 
         applications_selected = applications_selected.rename(columns={
             'applications_id': 'Id Tawaran',
@@ -39,7 +40,7 @@ def listJobsFinder(state, job_id):
             exit()
             
         elif choice.isdigit() and int(choice) in applications_selected['Id Tawaran'].values:
-            selected =  applications_selected[applications_selected['Id Tawaran'] == int(choice)].iloc[0]
+            selected =  application_info[application_info['applications_id'] == int(choice)].iloc[0]
             
             if (selected['status'] == 'waiting for photographer'):
                 cardTemplate("Info!","Menunggu Photographer merespon tawaran Anda.")
@@ -74,6 +75,7 @@ def listJobsFinder(state, job_id):
                     break
 
                 if action == 'b':
+                    headerTemplate("Pengajuan Negosiasi Balik", state, profile=True)
                     print("\n💬 Ajukan negosiasi balik ke Photographer")
                     
                     while True:
