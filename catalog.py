@@ -30,7 +30,10 @@ def catalogList(state):
             'location': 'Lokasi',
             'sold_count': 'Terjual'
         })
-        headerTemplate("CATALOG", state, profile=True)
+        if (state['account_session'] is None):
+            headerTemplate("CATALOG")
+        else:
+            headerTemplate("CATALOG", state, profile=True)
         print(f"Cari    : ( {searchWord} ) [H] Hapus Pencarian ")
         print(f"Filter  : ({'(theme: ' + filter_theme + ')' if filter_theme else ''} {'(budget: ' + filter_budget + ')' if filter_budget else ''} {'(location: ' + filter_location + ')' if filter_location else ''}) [A] Hapus Filter")
         

@@ -143,15 +143,15 @@ def myApplications(state):
         else:
             print(merged_db[['Lamaran Id', "Judul Lowongan", "Lokasi", "Tema", "Tanggal", "Waktu", "Pesan", 'Budget', 'Status Lamaran']].to_string(index=False))
         print("--------------------------------")
-        print("[K] Kembali    [X] Keluar dari program     [S] logout.")
+        print("[K] Kembali    [X] Keluar dari program     [L] logout.")
         footerTemplate()
-        aksi = input("Masukan application id untuk melihat atau aksi: ")
+        aksi = input("Masukan application id untuk melihat atau aksi: ").lower()
         
         if (aksi == "k"):
             return
         elif (aksi == "x"):
             exit()
-        elif (aksi == "s"):
+        elif (aksi == "l"):
             cardTemplate("Berhasil!",f"Anda Telah Logout dari akun {state['account_session']['username']}.")
             state['account_session'] = None
             state["input_navigasi"] = None

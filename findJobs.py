@@ -29,7 +29,10 @@ def findJobs(state):
             'username': 'Diupload Oleh',
             'location_left': 'Lokasi'
         })
-        headerTemplate("FIND JOBS", state, profile=True)
+        if (state['account_session'] is None):
+            headerTemplate("FIND JOBS")
+        else:
+            headerTemplate("FIND JOBS", state, profile=True)
         print(f"Cari    : ( {searchWord} ) [H] Hapus Pencarian ")
         print(f"Filter  : ({'(theme: ' + filter_theme + ')' if filter_theme else ''} {'(budget: ' + filter_budget + ')' if filter_budget else ''} {'(location: ' + filter_location + ')' if filter_location else ''}) [A] Hapus Filter")
         
