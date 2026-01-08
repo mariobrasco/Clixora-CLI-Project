@@ -80,7 +80,7 @@ while True:
     if (state["input_navigasi"] == "t"):
         cardTemplate("Tentang Kami","Clixora adalah sebuah platform berbasis website yang berfungsi \nsebagai finder untuk mempertemukan pencari jasa (Finder) dengan \npenyedia jasa fotografer. Platform ini memungkinkan pengguna untuk \nmencari fotografer, melakukan negosiasi harga, serta membuat lowongan \njasa fotografi yang lebih spesifik sesuai kebutuhan.")
     elif (state["input_navigasi"] == "c"):
-        cardTemplate("Cara Penggunaan","1. Registrasi akun sebagai 'photografer' atau 'finder'.\n2. Login ke akun yang telah dibuat.\n3. Jika Anda seorang 'finder', Anda dapat mencari fotografer \ndan mengunggah lowongan pekerjaan.\n4. Jika Anda seorang 'photografer', Anda dapat mencari pekerjaan \ndan mengunggah katalog fotografi Anda.\n5. Gunakan menu navigasi untuk mengakses fitur-fitur yang tersedia.")    
+        cardTemplate("Cara Penggunaan","1. Registrasi akun sebagai 'photographer' atau 'finder'.\n2. Login ke akun yang telah dibuat.\n3. Jika Anda seorang 'finder', Anda dapat mencari fotografer \ndan mengunggah lowongan pekerjaan.\n4. Jika Anda seorang 'photographer', Anda dapat mencari pekerjaan \ndan mengunggah katalog fotografi Anda.\n5. Gunakan menu navigasi untuk mengakses fitur-fitur yang tersedia.")    
     elif (state["input_navigasi"] == "a"):
         cardTemplate("About Us","Contact Info: \nMuhammad Arkan Athaya  : athayaarkan8@student.upi.edu \nMario Brasco Putra Hamdani : mariobrasco@student.upi.edu \nZahra Amelia Ramadhani  : zahraamelia@student.upi.edu")
         
@@ -92,7 +92,7 @@ while True:
     if (state["account_session"] is not None and state["input_navigasi"] == "4"):
         if (state["account_session"]['role'] == "finder"):
             postJob.form_post_job(state)
-        elif (state["account_session"]['role'] == "photografer"):
+        elif (state["account_session"]['role'] == "photographer"):
             formCatalog(state)
 
     #Page List Jobs
