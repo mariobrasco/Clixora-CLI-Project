@@ -38,10 +38,10 @@ def negotiateCatalog(state, catalog_data):
         location = input("Masukkan lokasi tempat dilaksanakan: ")
         
         while True:
-            tanggal = input("Masukkan Tanggal Lowongan (DD-MM-YY): ")
+            tanggal = input("Masukkan Tanggal Lowongan (DD-MM-YYYY): ")
             if validasiTanggal(tanggal):
                 break
-            print("Format tanggal salah! Gunakan DD-MM-YY")
+            print("Format tanggal salah! Gunakan DD-MM-YYYY")
         while True:
             waktu = input("Masukkan Waktu Lowongan (HH:MM): ")
             if validasiWaktu(waktu):
