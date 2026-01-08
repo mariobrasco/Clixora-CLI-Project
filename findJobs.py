@@ -128,8 +128,10 @@ def findJobs(state):
             if (user_info.empty):
                 cardTemplate("Peringatan!","⚠️  Pengguna yang memposting pekerjaan ini tidak ditemukan.")
                 return
-
-            headerTemplate("DETAIL LOWONGAN PEKERJAAN", state, profile=True)
+            if (state['account_session'] is None):
+                headerTemplate("DETAIL LOWONGAN PEKERJAAN")
+            else:
+                headerTemplate("DETAIL LOWONGAN PEKERJAAN", state, profile=True)
 
             print(f"Job ID        : {selected_post['job_id']}")
             print(f"Posted by     : {user_info['username']}")

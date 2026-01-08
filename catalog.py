@@ -129,8 +129,10 @@ def catalogList(state):
             if user_info.empty:
                 cardTemplate("Error", "Data pemilik katalog tidak ditemukan.")
                 return
-
-            headerTemplate("DETAIL CATALOG", state, profile=False)
+            if (state['account_session'] is None):
+                headerTemplate("DETAIL CATALOG")
+            else:
+                headerTemplate("DETAIL CATALOG", state, profile=False)
             print(f"Judul  : {selected_post['title']}")
             print(f"Deskripsi: \n{selected_post['description']}")
             print(f"\nTema: {selected_post['theme']}")
