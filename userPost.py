@@ -20,6 +20,7 @@ def myCatalog(state):
         
         headerTemplate("Katalog Saya", state, profile=True)
         print("Jumlah Catalog Anda: ", len(catalog_db_user), "|", "Jumlah Catalog Terjual: ", catalog_db_user['Terjual'].sum())
+        footerTemplate()
         if catalog_db_user.empty:
             print("⚠️  Anda belum memiliki katalog.")
         else:

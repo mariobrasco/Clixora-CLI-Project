@@ -46,22 +46,28 @@ def profilePage(state):
         elif aksi == "e":
             headerTemplate("EDIT PROFIL SAYA", state, profile=False)
             print("\nSilahkan kosongkan kolom jika tidak diubah")
-            username = input("Username : ")
-            email =    input("Email    : ")
-            password = input("Password : ")
+            username = input(f"Username {user_info['username']} : ")
+            email =    input(f"Email {user_info['email']}    : ")
+            password = input(f"Password {user_info['password']} : ")
+            edited = []
 
             if (username):
                 account_db.at[user_idx, 'username'] = username
                 state['account_session']['username'] = username
+                edited.append('Username')
                 
             if (password):
                 account_db.at[user_idx, 'password'] = password
-
+                edited.append('Password')
             if (email):
                 account_db.at[user_idx, 'email'] = email
+                edited.append('Email')
 
             account_db.to_csv('storage/user.csv', index=False)
-            cardTemplate("Berhasil!", "Data Akun berhasil diperbaharui")
+            if (edited):
+                cardTemplate("Berhasil!", f"Data {', '.join(edited)} Akun berhasil diperbaharui")
+            else:
+                cardTemplate("Info!", "Tidak ada data yang diubah.")
 
         # ===== tambah bio =====
         elif aksi == "b" and state['account_session']['role'] == "photographer":
