@@ -146,28 +146,22 @@ def findJobs(state):
             print(f"Status        : {selected_post['status']}")
             print("--------------------------------")
 
-            if (state['account_session']['role'] == 'photographer'):
-                print("[1] Lamar Pekerjaan ini      [2] Lihat Profil      [0] Kembali ")
-                footerTemplate()
-                aksi = input("Pilih aksi: ")
-                
-                if (aksi == '1' and state['account_session'] is not None):
-                    applyJobs(state, selected_post)
-                elif (aksi == '1' and state['account_session'] is None):
-                    cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
-                    menuLogin(state)
-                elif (aksi == '2'):
-                    viewUserProfile(state, user_info['user_id'])
-                elif (aksi == '0'):
-                    continue
-            elif (state['account_session']['role'] == 'finder'):
-                print("[1] Lihat Profil     [0] Kembali")
-                footerTemplate()
-                aksi = input("Pilih aksi: ")
-                if (aksi == '0'):
-                    continue
-                elif (aksi == '1'):
-                    viewUserProfile(state, user_info['user_id'])
+            print("[1] Lamar Pekerjaan ini      [2] Lihat Profil      [0] Kembali ")
+            footerTemplate()
+            aksi = input("Pilih aksi: ")
+            
+            if (aksi == '1' and state['account_session'] is not None):
+                applyJobs(state, selected_post)
+            elif (aksi == '1' and state['account_session'] is None):
+                cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
+                menuLogin(state)
+            elif (aksi == '2' and state['account_session'] is None):
+                cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melihat profil finder.")
+                menuLogin(state)
+            elif (aksi == '2'):
+                viewUserProfile(state, user_info['user_id'])
+            elif (aksi == '0'):
+                continue
             
             else:
                 cardTemplate("Peringatan!","⚠️  Job Id tidak ditemukan.")

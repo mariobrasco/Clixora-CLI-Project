@@ -140,27 +140,22 @@ def catalogList(state):
             print(f"\nOleh {user_info['username']} di {user_info['location']}")
             footerTemplate()
             
-            if (state['account_session']['role'] == 'finder'):
-                print("[1] Pesan Catalog    [2] Lihat Profil    [0] Kembali")
-                aksi = input("Masukan aksi: ").lower()
-                if (aksi == '1' and state['account_session'] is not None):
-                    negotiateCatalog(state, selected_post)
-                elif (aksi == '1' and state['account_session'] is None):
-                    cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melanjutkan proses .")
-                    menuLogin(state)
-                elif (aksi == '2'):
-                    viewUserProfile(state, user_info['user_id'])
-                elif(aksi == '0'):
-                    continue
-                else:
-                    cardTemplate("Peringatan!",f"Input {aksi} tidak valid, silahkan masukan input yang sesuai.")
+            print("[1] Pesan Catalog    [2] Lihat Profil    [0] Kembali")
+            aksi = input("Masukan aksi: ").lower()
+            if (aksi == '1' and state['account_session'] is not None):
+                negotiateCatalog(state, selected_post)
+            elif (aksi == '1' and state['account_session'] is None):
+                cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melanjutkan proses .")
+                menuLogin(state)
+            elif (aksi == '2' and state['account_session'] is None):
+                cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melihat profil photographer.")
+                menuLogin(state)
+            elif (aksi == '2'):
+                viewUserProfile(state, user_info['user_id'])
+            elif(aksi == '0'):
+                continue
             else:
-                print("[1] Lihat Profil     [0] Kembali")
-                aksi = input("Masukan aksi: ").lower()
-                if(aksi == '0'):
-                    continue
-                elif (aksi == '1'):
-                    viewUserProfile(state, user_info['user_id'])
+                cardTemplate("Peringatan!",f"Input {aksi} tidak valid, silahkan masukan input yang sesuai.")
         else:
             cardTemplate("Peringatan!",f"Input {input_navigasi} tidak valid, silahkan masukan input yang sesuai.")
             
