@@ -122,7 +122,7 @@ def viewUserProfile(state, user_id):
         else:
             print(tampilan_pemilik[kolom_tampilan].to_string(index=False))
         print("--------------------------------")
-        # print("[]")
+       
         print("[K] Kembali      [X] Keluar")
         footerTemplate()
         
@@ -174,10 +174,6 @@ def viewUserProfile(state, user_id):
             if (user_info.empty):
                 cardTemplate("Info!","⚠️  Pengguna yang memposting pekerjaan ini tidak ditemukan.")
                 return
-            
-            # keterangan_tipe = "Budget Per Jam"
-            # if selected_post['tipe_budget'] == 2:
-            #     keterangan_tipe = "Budget Proyek"
 
             headerTemplate("DETAIL LOWONGAN PEKERJAAN", state, profile=True)
 

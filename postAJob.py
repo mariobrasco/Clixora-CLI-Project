@@ -1,12 +1,12 @@
 import pandas as pd
 
-from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput, selectTheme
+from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput, selectTheme, headerTemplate, footerTemplate
 
 jobs_db = pd.read_csv('storage/jobs.csv')
 
 def form_post_job(state):
-    print("\n" + "="*44 + " Form Postingan Lowongan " + "="*44)
-    print("Ketik 'batal' pada input apapun untuk membatalkan pembuatan lowongan.\n")
+    headerTemplate("FORM POSTING LOWONGAN", state, profile=True)
+    print("Ketik [batal] pada input apapun untuk membatalkan pembuatan lowongan.\n")
     judul = askInput("Masukkan Judul Lowongan: ", True)
     if (judul):
         deskripsi = askInput("Masukkan Deskripsi Lowongan: ", True)
@@ -54,7 +54,7 @@ def form_post_job(state):
                             break
                         else:
                             print("Masukkan Tipe Budget yang Valid! (1 atau 2)")
-
+                    footerTemplate()
                     jobs_data = {
                         "job_id": autoIncrementNumber(jobs_db),
                         "user_id": state['account_session']['user_id'] or "",
@@ -73,5 +73,3 @@ def form_post_job(state):
                     post_job_df.to_csv('storage/jobs.csv', mode='a', header=False, index=False)
 
                     cardTemplate("Berhasil", "Lowongan berhasil diunggah!")
-
-# form_post_job()

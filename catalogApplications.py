@@ -1,7 +1,6 @@
 import pandas as pd
 
 from payment import menuPayment
-# from postAJob import validasi_angka
 from utility import askInput, cardTemplate, deleteRowById, updateRowById, validasiAngka, headerTemplate, footerTemplate, mergeCSV
 
 FILE_PATH_PHOTOGRAPHER = 'storage/catalogApplications.csv'
@@ -9,7 +8,6 @@ FILE_PATH_PHOTOGRAPHER = 'storage/catalogApplications.csv'
 
 def listCatalogApplications(state, catalog_id):
     while True:
-        # list_catalog_photographer_db = pd.read_csv(FILE_PATH_PHOTOGRAPHER)
         catalog_db = pd.read_csv('storage/catalog.csv')
         merge_db = mergeCSV(FILE_PATH_PHOTOGRAPHER, 'storage/user.csv', 'user_id', 'user_id')
         catalog_info = catalog_db[catalog_db['catalog_id'] == catalog_id].iloc[0]
@@ -138,9 +136,7 @@ def listOrderApplications(state, applications_id):
         applications_selected = list_catalog_photographer_db[list_catalog_photographer_db['applications_id'] == applications_id].iloc[0] 
         catalog_info = catalog_db[catalog_db['catalog_id'] == applications_selected['catalog_id']].iloc[0]
         
-        
         user_db = pd.read_csv('storage/user.csv')
-        # print("catalog_info", catalog_info)
         photographer_info = user_db[user_db['user_id'] == catalog_info['user_id']].iloc[0]
         
         headerTemplate("Detail Pesanan", state, profile=True)
@@ -242,11 +238,11 @@ def listOrderApplications(state, applications_id):
                 'negotiated_budget': applications_selected['negotiated_budget']
             })
             cardTemplate("Berhasil!","✅ Negosiasi berhasil diterima. Silahkan lanjut ke pembayaran.")
-            menuPayment(applications_selected, catalog_info, photographer_info)
+            menuPayment(state, applications_selected, catalog_info, photographer_info)
             return
         
         if pilihan_aksi == 'b' and applications_selected['status'] == 'pending' or applications_selected['status'] == 'accepted':
-            menuPayment(applications_selected, catalog_info, photographer_info)
+            menuPayment(state, applications_selected, catalog_info, photographer_info)
         
         if pilihan_aksi == 't' and applications_selected['status'] == 'waiting for finder':
             updateRowById(
@@ -258,9 +254,6 @@ def listOrderApplications(state, applications_id):
             cardTemplate("Berhasil!","❌ Negosiasi berhasil ditolak.")
             return
         
-        elif pilihan_aksi not in ['a', 'j', 'b', 't', 'k', 'x']:
+        elif pilihan_aksi not in ['a', 'j', 'b', 't', 'k', 'x', 'c']:
             cardTemplate("Peringatan!", f"Input '{pilihan_aksi}' tidak valid.")
         
-        
-
-# listJobsFinder()

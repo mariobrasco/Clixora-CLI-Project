@@ -10,18 +10,8 @@ from catalog import catalogList
 from loginRegister import menuLogin, menuRegistrasi
 
 account_db = pd.read_csv('storage/user.csv')
-dummy_akun = {
-    'user_id': 'f001',
-    # 'user_id': 'p002',
-    'username': 'budi',
-    'email': 'guest@example.com',
-    'role': 'finder',
-    # 'role': 'photographer',
-    'location': '',
-    'bio': ''
-}
 state = {
-    "account_session": dummy_akun, 
+    "account_session": None, 
     "input_navigasi": None,
     }
 
@@ -57,7 +47,6 @@ def navSudahLogin():
 
 #Main Program Loop
 while True:
-    
     #Landing Page
     if (state["account_session"] is None ):
         navBelumLogin()

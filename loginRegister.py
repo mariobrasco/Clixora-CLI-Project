@@ -61,7 +61,7 @@ def forgotPassword(state):
 def menuRegistrasi(state):
     while True:
         headerTemplate("FORM REGISTRASI", state, profile=False)
-        print("'*' artinya tidak boleh kosong\n")
+        print("Jika ingin membatalkan registrasi, ketik [batal], '*' artinya tidak boleh kosong\n")
         print("Apakah anda Photographer atau Finder?")
         print("[1] Photographer")
         print("[2] Finder")

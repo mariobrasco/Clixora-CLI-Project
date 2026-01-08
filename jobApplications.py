@@ -1,25 +1,22 @@
 import pandas as pd
 
 from payment import menuPayment
-# from postAJob import validasi_angka
 from utility import askInput, cardTemplate, deleteRowById, updateRowById, validasiAngka, headerTemplate, footerTemplate, mergeCSV
 
 FILE_PATH_FINDER = 'storage/jobsApplications.csv'
 
-
 def listJobsFinder(state, job_id):
     while True:
-        # list_jobs_finder_db = pd.read_csv(FILE_PATH_FINDER)
         jobs_db = pd.read_csv('storage/jobs.csv')
         merge_db = mergeCSV(FILE_PATH_FINDER, 'storage/user.csv', 'user_id', 'user_id')
         job_info = jobs_db[jobs_db['job_id'] == job_id].iloc[0]
         applications_selected = merge_db[merge_db['job_id'] == job_id] 
         applications_selected = applications_selected.rename(columns={
-            'applications_id': 'applications_id',
-            'username': 'username',
-            'tipe_budget': 'tipe_budget',
-            'negotiated_budget': 'negotiated_budget',
-            'status': 'status'
+            'applications_id': 'Id Tawaran',
+            'username': 'Nama Photographer',
+            'tipe_budget': 'Tipe Budget',
+            'negotiated_budget': 'Budget Negosiasi',
+            'status': 'Status'
         })
         
         headerTemplate("Daftar Tawaran Lowongan", state, profile=True)
@@ -28,7 +25,7 @@ def listJobsFinder(state, job_id):
         if (applications_selected.empty):
             print("⚠️  Belum ada tawaran untuk lowongan pekerjaan ini.")
         else:
-            print(applications_selected[['applications_id','username', 'tipe_budget', 'negotiated_budget', 'status']].to_string(index=False))    
+            print(applications_selected[['Id Tawaran','Nama Photographer', 'Tipe Budget', 'Budget Negosiasi', 'Status']].to_string(index=False))    
         print("--------------------------------")
         print("[K] Kembali  [X] Keluar dari program")
         footerTemplate()
@@ -41,8 +38,8 @@ def listJobsFinder(state, job_id):
             cardTemplate("Terima Kasih!","Terima kasih telah menggunakan Clixora CLI. Sampai jumpa!")
             exit()
             
-        elif choice.isdigit() and int(choice) in applications_selected['applications_id'].values:
-            selected =  applications_selected[applications_selected['applications_id'] == int(choice)].iloc[0]
+        elif choice.isdigit() and int(choice) in applications_selected['Id Tawaran'].values:
+            selected =  applications_selected[applications_selected['Id Tawaran'] == int(choice)].iloc[0]
             
             if (selected['status'] == 'waiting for photographer'):
                 cardTemplate("Info!","Menunggu Photographer merespon tawaran Anda.")
@@ -54,19 +51,34 @@ def listJobsFinder(state, job_id):
             
             while True:
                 headerTemplate("Detail Tawaran", state, profile=True)
-                print(f"💰 {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} mengajukan: {selected['negotiated_budget']}")
-                print("\n[a] Terima tawaran")
-                print("(b) Ajukan negosiasi balik")
-                print("(x) Kembali")
+                print(f"💰 {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} mengajukan: {selected['negotiated_budget']}\n")
+                print("[A] Terima tawaran dan Bayar   [T] Tolak tawaran")
+                print(f"[B] Ajukan negosiasi balik     {'[C] Bayar Photographer' if selected['status'] == 'accepted' else ''}")
+                print("[K] Kembali")
+                footerTemplate()
 
                 action = input("Aksi: ").lower()
+                
+                if (action == 'c' and selected['status'] == 'accepted'):
+                    photographer_info = merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]
+                    menuPayment(state, selected, job_info, photographer_info)
+                    break
+                if (action == 't'):
+                    updateRowById(
+                        FILE_PATH_FINDER, 
+                        'applications_id', 
+                        selected['applications_id'], 
+                        {'status': 'rejected'}
+                    )
+                    cardTemplate("Berhasil!","❌ Tawaran berhasil ditolak.")
+                    break
 
                 if action == 'b':
                     print("\n💬 Ajukan negosiasi balik ke Photographer")
                     
                     while True:
                         print("Tipe Budget:\n[1] Per Jam\n[2] Per Proyek")
-                        tipe_budget_pilihan = askInput("Pilih Tipe Budget Katalog: ", True)
+                        tipe_budget_pilihan = askInput("Pilih Tipe Budget Katalog*: ", True)
                         
                         if (tipe_budget_pilihan is None):
                             return
@@ -112,9 +124,10 @@ def listJobsFinder(state, job_id):
                         'negotiated_budget': selected['negotiated_budget']
                     })
                     cardTemplate("Berhasil!",f"✅ Tawaran {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.")
+                    menuPayment(state, selected, job_info, merge_db[merge_db['user_id'] == selected['user_id']].iloc[0])
                     break
 
-                elif action == 'x':
+                elif action == 'k':
                     break
 
                 else:

@@ -292,7 +292,6 @@ def myJobs(state):
                 else:
                     cardTemplate("Peringatan!", "Pilihan tidak valid.")
                      
-
 def myOrders(state):
     while True:
         # orders_db = pd.read_csv('storage/catalogApplications.csv')

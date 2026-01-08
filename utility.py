@@ -290,7 +290,6 @@ def searchAndFilterByDataFrame(
 
     return df, total_pages
 
-
 def updateRowById(db_name, key_column, id_value, update_data):
     
     db = pd.read_csv(db_name)
@@ -413,6 +412,3 @@ def selectTheme(picked=None):
                 cardTemplate("Peringatan!", "Pilihan tidak valid.")
         else:
             cardTemplate("Peringatan!", "Input tidak dikenali.")
-
-
-# selectTheme()

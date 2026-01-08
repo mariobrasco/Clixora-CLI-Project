@@ -1,7 +1,7 @@
 import pandas as pd
 
 from applyJobs import applyJobs
-from utility import cardTemplate, validasiAngka, mergeCSV, searchAndFilterByDataFrame, headerTemplate, footerTemplate
+from utility import cardTemplate, mergeCSV, searchAndFilterByDataFrame, headerTemplate, footerTemplate
 from loginRegister import menuLogin
 from profile import viewUserProfile
 
@@ -125,10 +125,6 @@ def findJobs(state):
             if (user_info.empty):
                 cardTemplate("Peringatan!","⚠️  Pengguna yang memposting pekerjaan ini tidak ditemukan.")
                 return
-            
-            # keterangan_tipe = "Budget Per Jam"
-            # if selected_post['tipe_budget'] == 2:
-            #     keterangan_tipe = "Budget Proyek"
 
             headerTemplate("DETAIL LOWONGAN PEKERJAAN", state, profile=True)
 
@@ -154,6 +150,7 @@ def findJobs(state):
                     applyJobs(state, selected_post)
                 elif (aksi == '1' and state['account_session'] is None):
                     cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
+                    menuLogin(state)
                 elif (aksi == '2'):
                     viewUserProfile(state, user_info['user_id'])
                 elif (aksi == '0'):
@@ -171,5 +168,3 @@ def findJobs(state):
                 cardTemplate("Peringatan!","⚠️  Job Id tidak ditemukan.")
         else:
             cardTemplate("Peringatan!","⚠️  Mohon masukkan input sesuai.")
-
-# find_work()

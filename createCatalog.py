@@ -1,11 +1,11 @@
 import pandas as pd
 
-from utility import autoIncrementNumber, cardTemplate, selectTheme, askInput
+from utility import autoIncrementNumber, cardTemplate, selectTheme, askInput, headerTemplate, footerTemplate
 
 def formCatalog(state):
     catalog_db = pd.read_csv('storage/catalog.csv')
-    print("\n" + "="*44 + " Form Catalog " + "="*44)
-    print("Ketik 'batal' pada input apapun untuk membatalkan pembuatan catalog.\n")
+    headerTemplate("FORM UNGGAH CATALOG", state, True)
+    print("Ketik [batal] untuk membatalkan pembuatan catalog.\n")
     title = askInput("Masukkan Judul: ", True)
     if (title):
         description = askInput("Masukkan Deskripsi: ", True)
@@ -24,17 +24,17 @@ def formCatalog(state):
                             if per_jam is None:
                                 return  
                             budget = per_jam
-                            # break
                         elif (tipe_budget_pilihan == '2'):
                             tipe_budget = 'proyek'
                             per_proyek = askInput("Masukkan Besaran Budget Per Proyek: ", True)
                             if per_proyek is None:
                                 return  
                             budget = per_proyek
-                            # break
                         else:
                             cardTemplate("Peringatan!", "Masukkan Tipe Budget yang Valid! (1 atau 2)")
                             continue
+                        
+                        footerTemplate()
                                
                         new_catalog = {
                             'catalog_id': autoIncrementNumber(catalog_db),

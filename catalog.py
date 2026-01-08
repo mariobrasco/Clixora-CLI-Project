@@ -2,7 +2,7 @@ import pandas as pd
 
 from negotiateCatalog import negotiateCatalog
 from profile import viewUserProfile
-from utility import cardTemplate, askInput, login, searchAndFilterByDataFrame, mergeCSV, headerTemplate, footerTemplate
+from utility import cardTemplate, searchAndFilterByDataFrame, mergeCSV, headerTemplate, footerTemplate
 from loginRegister import menuLogin
 
 def catalogList(state):
@@ -127,11 +127,11 @@ def catalogList(state):
                 return
 
             headerTemplate("DETAIL CATALOG", state, profile=False)
-            print(f"Title  : {selected_post['title']}")
-            print(f"Description: \n{selected_post['description']}")
-            print(f"\nTheme: {selected_post['theme']}")
+            print(f"Judul  : {selected_post['title']}")
+            print(f"Deskripsi: \n{selected_post['description']}")
+            print(f"\nTema: {selected_post['theme']}")
             print(f"Budget : {selected_post['budget']} / {selected_post['tipe_budget']}")
-            print(f"\nby @{user_info['username']} in {user_info['location']}")
+            print(f"\nOleh {user_info['username']} di {user_info['location']}")
             footerTemplate()
             
             if (state['account_session']['role'] == 'finder'):
