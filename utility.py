@@ -44,11 +44,11 @@ def autoIncrementCustom(char, db_name, column_name):
     new_id = f"{char}{new_number:03}"
     return new_id
 
-def autoIncrementNumber(db_name):
-    if (db_name.empty):
+def autoIncrementNumber(db_target):
+    if (db_target.empty):
         return 1
     else:
-        latest_id = db_name.iloc[-1, 0] or 0
+        latest_id = db_target.iloc[-1, 0] or 0
         new_id = int(latest_id) + 1
         return new_id
 

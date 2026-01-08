@@ -38,7 +38,7 @@ def catalogList(state):
         #         f" (made by {user_info['username']} in {user_info['location']})"
         #     )
 
-        print(catalog_db[['catalog_id','title', 'theme', 'budget', 'status']].to_string(index=False))    
+        print(catalog_db[['catalog_id','title', 'theme', 'budget', 'status']].to_string(index=True))    
 
         print("="*102)
 
@@ -57,9 +57,8 @@ def catalogList(state):
             state['account_session'] = None
             state["input_navigasi"] = None
             return
-        elif (1 <= int(input_navigasi) <= len(catalog_db)):
-            selected_index = int(input_navigasi) - 1
-            selected_post = catalog_db.iloc[selected_index]
+        elif (input_navigasi.isdigit() and int(input_navigasi) in catalog_db['catalog_id'].values):
+            selected_post = catalog_db[catalog_db['catalog_id'] == int(input_navigasi)].iloc[0]
 
             user_info = account_db[account_db['user_id'] == selected_post['user_id']].iloc[0]
             

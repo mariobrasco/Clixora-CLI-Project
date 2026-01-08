@@ -1,2 +1,4 @@
 applications_id,job_id,user_id,message,tipe_budget,negotiated_budget,status
 3,1,p002,saya bisa apa aja ,2,1100000,accepted
+4,2,p002,anuan,1,67890,accepted
+5,2,p002,,2,800000,waiting for photographer

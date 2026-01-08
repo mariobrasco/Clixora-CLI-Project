@@ -77,6 +77,7 @@ while True:
         state['account_session'] = None
         state["input_navigasi"] = None
     
+    #Informasi Tentang Clixora, Cara Penggunaan, About Us
     if (state["input_navigasi"] == "t"):
         cardTemplate("Tentang Kami","Clixora adalah sebuah platform berbasis website yang berfungsi \nsebagai finder untuk mempertemukan pencari jasa (Finder) dengan \npenyedia jasa fotografer. Platform ini memungkinkan pengguna untuk \nmencari fotografer, melakukan negosiasi harga, serta membuat lowongan \njasa fotografi yang lebih spesifik sesuai kebutuhan.")
     elif (state["input_navigasi"] == "c"):
@@ -116,4 +117,3 @@ while True:
     if (state["account_session"] is None and state["input_navigasi"] == "2"):
         menuRegistrasi(state)
     
-    #Registrasi--
