@@ -5,6 +5,10 @@ from utility import autoIncrementNumber, cardTemplate, validasiAngka, headerTemp
 jobs_applications_db = pd.read_csv('storage/jobsApplications.csv')
 
 def applyJobs(state, job_data):
+    if (state['account_session'] is not None):
+        if (state['account_session']['role'] != 'photographer'):
+            cardTemplate("Peringatan!", "⚠️  Hanya akun photographer yang dapat melamar pekerjaan.")
+            return
     headerTemplate("PROSES PELAMARAN", state, True)
     print("Anda akan melamar pada pekerjaan berikut:")
     print(f"Job ID          : {job_data['job_id']}")
