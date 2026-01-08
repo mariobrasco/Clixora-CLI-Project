@@ -358,7 +358,7 @@ def selectTheme(picked=None):
         print("[D] Selesai memilih")
         print("[R] Hapus tema terpilih")
         print("[X] Batal")
-        print("="*88)
+        print("="*94)
 
         pilihan = input("Pilih tema (nomor / D / R / X): ").lower()
 

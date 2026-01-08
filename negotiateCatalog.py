@@ -3,6 +3,10 @@ import pandas as pd
 from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput, headerTemplate, footerTemplate
 
 def negotiateCatalog(state, catalog_data):
+    if (state['account_session'] is not None):
+        if (state['account_session']['role'] != 'finder'):
+            cardTemplate("Peringatan!", "⚠️  Hanya akun finder yang dapat melakukan negosiasi catalog.")
+            return
     catalogApplications_db = pd.read_csv('storage/catalogApplications.csv')
     headerTemplate("NEGOSIASI CATALOG", state, profile=True)
     print("Anda akan melakukan negosiasi pada catalog berikut:")

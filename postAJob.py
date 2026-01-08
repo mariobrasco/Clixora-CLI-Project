@@ -1,6 +1,6 @@
 import pandas as pd
 
-from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput, selectTheme, headerTemplate, footerTemplate
+from utility import autoIncrementNumber, cardTemplate, validasiAngka, validasiTanggal, validasiWaktu, askInput, selectTheme, headerTemplate, footerTemplate
 
 jobs_db = pd.read_csv('storage/jobs.csv')
 
@@ -41,6 +41,9 @@ def form_post_job(state):
                         if (tipe_budget_pilihan == '1'):
                             tipe_budget = 'jam'
                             per_jam = askInput("Masukkan Besaran Budget Per Jam: ", True)
+                            if (not validasiAngka(per_jam)):
+                                cardTemplate("Peringatan!","Budget harus berupa angka.")
+                                continue
                             if (per_jam is None):
                                 return
                             budget = per_jam
@@ -48,6 +51,9 @@ def form_post_job(state):
                         elif (tipe_budget_pilihan == '2'):
                             tipe_budget = 'proyek'
                             per_proyek = askInput("Masukkan Besaran Budget Per Proyek: ", True)
+                            if (not validasiAngka(per_proyek)):
+                                cardTemplate("Peringatan!","Budget harus berupa angka.")
+                                continue
                             if (per_proyek is None):
                                 return
                             budget = per_proyek
