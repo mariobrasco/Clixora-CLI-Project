@@ -53,7 +53,7 @@ def autoIncrementNumber(db_name):
         new_id = int(latest_id) + 1
         return new_id
 
-def askInput(message, required):
+def askInput(message, required=False):
     value = input(message)
     
     if (value.lower() == "batal"):
