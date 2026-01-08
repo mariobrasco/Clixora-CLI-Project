@@ -165,11 +165,11 @@ def listJobsApplications(state, applications_id):
         print(f"Status          : {applications_selected['status']}")
         print("-----------------------------------")
         
-        if (applications_selected['status'] == 'waiting for finder'):
+        if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[A] Ajukan Negosiasi")
-        if (applications_selected['status'] == 'waiting for finder'):
+        if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[T] Tolak Negosiasi")
-        if (applications_selected['status'] == 'waiting for finder'):
+        if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[J] Terima Negosiasi")
         if (applications_selected['status'] not in ['rejected', 'accepted']):
             print("[B] Batalkan Lamaran")
