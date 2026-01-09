@@ -1,2 +1,4 @@
 applications_id,job_id,user_id,message,tipe_budget,negotiated_budget,status
-3,1,p002,saya bisa apa aja ,1,1200000,pending
+1,1,p002,,2,200000,paid
+2,1,p004,terima aku dong,proyek,10,waiting for finder
+3,1,f009,1,proyek,10,waiting for finder

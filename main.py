@@ -1,10 +1,11 @@
 import pandas as pd
 from createCatalog import formCatalog
 import postAJob as postJob
-import findWork as findWork
+import findJobs as findjobs
 
 from profile import profilePage 
-from utility import autoIncrementUserId, askInput, cardTemplate, login
+from userPost import myApplications, myCatalog, myJobs, myOrders
+from utility import cardTemplate, headerTemplate, footerTemplate
 from catalog import catalogList
 from loginRegister import menuLogin, menuRegistrasi
 
@@ -16,37 +17,36 @@ state = {
 
 #Menu Navigasi
 def navBelumLogin():
-    print("\n" + "="*44 + " BERANDA " + "="*44)
+    headerTemplate("BERANDA")
     print("📷  CLIXORA  📷")
+    print("Dalam Aplikasi ini semua yang dikurungi oleh '[]' adalah aksi yang dapat dipilih.")
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
     print("[T] Tentang Clixora")
     print("[C] Cara Penggunaan (How To Use)")
-    print("[A] About Us")
+    print("[A] Tentang Kami")
     print("-----------------")
-    print("[1] Login            [4] List Pekerjaan") 
-    print("[2] Registrasi       [5] Unggah Lowongan Pekerjaan")
-    print("[3] List Catalog     [6] Unggah Catalog")
+    print("[1] Login            [3] List Catalog") 
+    print("[2] Registrasi       [4] List Pekerjaan")
     print("[X] Keluar")
-    print("="*103)
+    footerTemplate()
 
 def navSudahLogin():
-    print("\n" + "="*44 + " BERANDA " + "="*32 + f" {state["account_session"]['username']} ({state["account_session"]['role']}) ")
+    headerTemplate("BERANDA", state, profile=True)
     print("📷  CLIXORA  📷")
+    print("Dalam Aplikasi ini semua yang dikurungi oleh '[]' adalah aksi yang dapat dipilih.")
     print("Temukan Fotografer Sempurna untuk Momen Spesial Anda.")
     print("[T] Tentang Clixora")
     print("[C] Cara Penggunaan (How To Use)")
-    print("[A] About Us")
+    print("[A] Tentang Kami")
     print("-----------------")
-    print("[1] Profil Saya      [3] List Pekerjaan") 
-    print(f"[2] List Catalog    {' [4] Unggah Lowongan Pekerjaan' if state['account_session']['role'] == 'finder' else ' [4] Unggah Catalog'}")
+    print(f"[1] Profil Saya      [3] List Pekerjaan      {'  [5] Lowongan Saya' if state['account_session']['role'] == 'finder' else '  [5] Catalog Saya'}" ) 
+    print(f"[2] List Catalog    {' [4] Unggah Lowongan' if state['account_session']['role'] == 'finder' else ' [4] Unggah Catalog'}       {'[6] Pesanan Saya' if state['account_session']['role'] == 'finder' else ' [6] Lamaran Saya'}")
     print("[X] Keluar           [L] Logout")
-    print("="*103)
+    footerTemplate()
     
 
 #Main Program Loop
 while True:
-    # print(state)
-    
     #Landing Page
     if (state["account_session"] is None ):
         navBelumLogin()
@@ -57,18 +57,17 @@ while True:
 
     #Validasi Input Navigasi
     if (state["account_session"] is None):
-        if state["input_navigasi"] not in ["x", "t", "c", "a", "1", "2", "3", "4", "5", "6"]:
+        if state["input_navigasi"] not in ["x", "t", "c", "a", "1", "2", "3", "4"]:
             cardTemplate("Peringatan!", f"Input '{state['input_navigasi']}' tidak valid, silahkan masukan input yang sesuai.")
             continue
     else:
-        if state["input_navigasi"] not in ["x", "l", "t", "c", "a", "1", "2", "3", "4"]:
+        if state["input_navigasi"] not in ["x", "l", "t", "c", "a", "1", "2", "3", "4", "5", "6"]:
             cardTemplate("Peringatan!", f"Input '{state['input_navigasi']}' tidak valid, silahkan masukan input yang sesuai.")
             continue
     
     #Keluar Program
     if (state["input_navigasi"] == "x"):
-        cardTemplate("Terimakasih", "Terimakasih Telah menggunakan program ini.")
-        # exit()
+        cardTemplate("Terimakasih", "Terimakasih Telah menggunakan program CLIXORA CLI, Sampai Jumpa!")
         break
     
     #Logout
@@ -77,10 +76,11 @@ while True:
         state['account_session'] = None
         state["input_navigasi"] = None
     
+    #Informasi Tentang Clixora, Cara Penggunaan, About Us
     if (state["input_navigasi"] == "t"):
         cardTemplate("Tentang Kami","Clixora adalah sebuah platform berbasis website yang berfungsi \nsebagai finder untuk mempertemukan pencari jasa (Finder) dengan \npenyedia jasa fotografer. Platform ini memungkinkan pengguna untuk \nmencari fotografer, melakukan negosiasi harga, serta membuat lowongan \njasa fotografi yang lebih spesifik sesuai kebutuhan.")
     elif (state["input_navigasi"] == "c"):
-        cardTemplate("Cara Penggunaan","1. Registrasi akun sebagai 'photografer' atau 'finder'.\n2. Login ke akun yang telah dibuat.\n3. Jika Anda seorang 'finder', Anda dapat mencari fotografer \ndan mengunggah lowongan pekerjaan.\n4. Jika Anda seorang 'photografer', Anda dapat mencari pekerjaan \ndan mengunggah katalog fotografi Anda.\n5. Gunakan menu navigasi untuk mengakses fitur-fitur yang tersedia.")    
+        cardTemplate("Cara Penggunaan","1. Registrasi akun sebagai 'photographer' atau 'finder'.\n2. Login ke akun yang telah dibuat.\n3. Jika Anda seorang 'finder', Anda dapat mencari fotografer \ndan mengunggah lowongan pekerjaan.\n4. Jika Anda seorang 'photographer', Anda dapat mencari pekerjaan \ndan mengunggah katalog fotografi Anda.\n5. Gunakan menu navigasi untuk mengakses fitur-fitur yang tersedia.")    
     elif (state["input_navigasi"] == "a"):
         cardTemplate("About Us","Contact Info: \nMuhammad Arkan Athaya  : athayaarkan8@student.upi.edu \nMario Brasco Putra Hamdani : mariobrasco@student.upi.edu \nZahra Amelia Ramadhani  : zahraamelia@student.upi.edu")
         
@@ -92,16 +92,22 @@ while True:
     if (state["account_session"] is not None and state["input_navigasi"] == "4"):
         if (state["account_session"]['role'] == "finder"):
             postJob.form_post_job(state)
-        elif (state["account_session"]['role'] == "photografer"):
+        elif (state["account_session"]['role'] == "photographer"):
             formCatalog(state)
-    elif (state["account_session"] is None and state["input_navigasi"] == "5"):
-        cardTemplate("Peringatan!", "Anda harus login terlebih dahulu sebagai finder untuk mengunggah lowongan pekerjaan.")
-    elif (state["account_session"] is None and state["input_navigasi"] == "6"):
-        cardTemplate("Peringatan!", "Anda harus login terlebih dahulu sebagai photografer untuk mengunggah catalog.")
 
     #Page List Jobs
     if (state["account_session"] is not None and state["input_navigasi"] == "3" or state["account_session"] is None and state["input_navigasi"] == "4"):
-        findWork.find_work(state)
+        findjobs.findJobs(state)
+    
+    #Page User Posts
+    if (state["input_navigasi"] == "6" and state["account_session"]["role"] == "finder"):
+        myOrders(state)
+    if (state["input_navigasi"] == "6" and state["account_session"]["role"] == "photographer"):
+        myApplications(state)
+    if (state["input_navigasi"] == "5" and state['account_session']['role'] == "photographer"):
+        myCatalog(state) 
+    if (state["input_navigasi"] == "5" and state["account_session"]["role"] == "finder"):
+        myJobs(state)
 
     #Login
     if (state["account_session"] is None and state["input_navigasi"] == "1"):
@@ -116,4 +122,3 @@ while True:
     if (state["account_session"] is None and state["input_navigasi"] == "2"):
         menuRegistrasi(state)
     
-    #Registrasi--
