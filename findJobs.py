@@ -1,7 +1,7 @@
 import pandas as pd
 
 from applyJobs import applyJobs
-from utility import cardTemplate, mergeCSV, searchAndFilterByDataFrame, headerTemplate, footerTemplate
+from utility import cardTemplate, mergeCSV, searchAndFilterByDataFrame, headerTemplate, footerTemplate, selectTheme
 from loginRegister import menuLogin
 from profile import viewUserProfile
 
@@ -29,12 +29,13 @@ def findJobs(state):
             'username': 'Diupload Oleh',
             'location_left': 'Lokasi'
         })
+        theme_text = ', '.join(filter_theme) if isinstance(filter_theme, list) else filter_theme
         if (state['account_session'] is None):
             headerTemplate("FIND JOBS")
         else:
             headerTemplate("FIND JOBS", state, profile=True)
         print(f"Cari    : ( {searchWord} ) [H] Hapus Pencarian ")
-        print(f"Filter  : ({'(theme: ' + filter_theme + ')' if filter_theme else ''} {'(budget: ' + filter_budget + ')' if filter_budget else ''} {'(location: ' + filter_location + ')' if filter_location else ''}) [A] Hapus Filter")
+        print(f"Filter  : ({'(tema: ' + theme_text + ')' if filter_theme else ''} {'(budget: ' + filter_budget + ')' if filter_budget else ''} {'(lokasi: ' + filter_location + ')' if filter_location else ''}) [A] Hapus Filter")
         
         tampilan_job, total_pages = searchAndFilterByDataFrame(
             merged_db,
@@ -104,21 +105,21 @@ def findJobs(state):
             filter_location = ""
         elif (pilih == "f"):
             print("Masukkan filter yang diinginkan. Kosongkan jika tidak ingin menambahkan filter pada kolom tersebut.")
-            filter_theme = input("Filter Theme: ")
+            filter_theme = selectTheme(filter_theme.split() if filter_theme else [])
             filter_budget = input("Filter Budget (angka): ")
             filter_location = input("Filter Location: ")
 
             filters = {}
             if filter_theme:
-                filters['theme'] = filter_theme
+                filters['Tema'] = " ".join(filter_theme)
             if filter_budget:
                 try:
-                    filters['budget'] = int(filter_budget)
+                    filters['Budget'] = int(filter_budget)
                 except ValueError:
                     cardTemplate("Peringatan!", "Filter budget harus berupa angka.")
                     continue
             if filter_location:
-                filters['location'] = filter_location
+                filters['Lokasi'] = filter_location
         elif (pilih == "h"):
             searchWord = ""      
         elif (pilih.isdigit() and int(pilih) in tampilan_job['Job Id'].values):
@@ -150,8 +151,10 @@ def findJobs(state):
             footerTemplate()
             aksi = input("Pilih aksi: ")
             
-            if (aksi == '1' and state['account_session'] is not None):
+            if (aksi == '1' and state['account_session'] is not None and selected_post['status'] == 'available'):
                 applyJobs(state, selected_post)
+            elif (aksi == '1' and state['account_session'] is not None and selected_post['status'] != 'available'):
+                cardTemplate("Peringatan!","⚠️  Lowongan pekerjaan ini tidak tersedia untuk dilamar.")
             elif (aksi == '1' and state['account_session'] is None):
                 cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
                 menuLogin(state)

@@ -41,14 +41,7 @@ def listJobsFinder(state, job_id):
             
         elif choice.isdigit() and int(choice) in applications_selected['Id Tawaran'].values:
             selected =  application_info[application_info['applications_id'] == int(choice)].iloc[0]
-            
-            if (selected['status'] == 'waiting for photographer'):
-                cardTemplate("Info!","Menunggu Photographer merespon tawaran Anda.")
-                continue
-            
-            if (selected['status'] == 'accepted'):
-                cardTemplate("Info!","Tawaran sudah diterima sebelumnya.")
-                continue
+        
             
             while True:
                 headerTemplate("Detail Tawaran", state, profile=True)
@@ -243,7 +236,7 @@ def listJobsApplications(state, applications_id):
             cardTemplate("Berhasil!","💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Finder.")
             return
         
-        if (choice == 'b' and applications_selected['status'] not in ['waiting for finder', 'waiting for photographer', 'rejected', 'accepted']):
+        if (choice == 'b' and applications_selected['status'] not in ['rejected', 'accepted', 'pending', 'paid']):
             deleteRowById(
                 FILE_PATH_FINDER, 
                 'applications_id', 

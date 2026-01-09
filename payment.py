@@ -126,19 +126,18 @@ Scan menggunakan e-wallet Anda
         if (aksi == 'b'):
             cardTemplate("Batal!", "Pembayaran dibatalkan.")
             return
-        if (aksi == 'l'):
-            payment_data = {
-                'payment_id': autoIncrementCustom("pm", PAYMENT_CSV_PATH, 'payment_id'), 
-                'user_id': applications_info['user_id'], 
-                'application_id': applications_info['applications_id'], 
-                'application_type': 'catalog' if 'catalog_id' in applications_info else 'job', 
-                'payment_method': 'cash',
-                'payment_type': tipe_pembayaran,
-                'payment_refs': autoIncrementCustom("ref", PAYMENT_CSV_PATH, 'payment_refs'),
-                'amount': total,
-                'status': 'pending',
-                'paid_at': ""
-                }
-            payment_df = pd.DataFrame([payment_data])
-            payment_df.to_csv(PAYMENT_CSV_PATH, mode='a', header=False, index=False)
-            cardTemplate("Berhasil", f"Pembayaran sebesar Rp{total} telah tercatat sebagai 'pending'.")
+        payment_data = {
+            'payment_id': autoIncrementCustom("pm", PAYMENT_CSV_PATH, 'payment_id'), 
+            'user_id': applications_info['user_id'], 
+            'application_id': applications_info['applications_id'], 
+            'application_type': 'catalog' if 'catalog_id' in applications_info else 'job', 
+            'payment_method': 'cash',
+            'payment_type': tipe_pembayaran,
+            'payment_refs': autoIncrementCustom("ref", PAYMENT_CSV_PATH, 'payment_refs'),
+            'amount': total,
+            'status': 'pending',
+            'paid_at': ""
+            }
+        payment_df = pd.DataFrame([payment_data])
+        payment_df.to_csv(PAYMENT_CSV_PATH, mode='a', header=False, index=False)
+        cardTemplate("Berhasil", f"Pembayaran sebesar Rp{total} telah tercatat sebagai 'pending'.")

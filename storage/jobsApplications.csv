@@ -1,4 +1,7 @@
 applications_id,job_id,user_id,message,tipe_budget,negotiated_budget,status
 1,1,p002,,2,200000,paid
-2,1,p004,terima aku dong,proyek,10,waiting for finder
+2,1,p004,terima aku dong,proyek,10,paid
 3,1,f009,1,proyek,10,waiting for finder
+4,2,p005,Saya akan bersungguh sungguh,proyek,5000000,waiting for finder
+5,12,p005,saya mempertaruhkan nyawa ini,1,20000000000,paid
+6,3,p005,terimakasih mohon maaf bila banyak kesalahan yang terjadi,jam,200000,waiting for finder

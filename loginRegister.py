@@ -87,11 +87,12 @@ def menuRegistrasi(state):
     
     while True:
         input_username = askInput("Masukkan username*: ", True)
-        if (input_username):
-            if validasiUsername(input_username) == False:
-                cardTemplate("Peringatan!", f"Username '{input_username}' sudah terdaftar, silahkan gunakan username lain.")
-        else:
-            break  
+        if (not input_username):
+            break
+        if (not validasiUsername(input_username)):
+            cardTemplate("Peringatan!",f"Username '{input_username}' sudah terdaftar, silahkan gunakan username lain.")
+            continue
+        break
     if (input_username):
         input_password = askInput("Masukkan password*: ", True)
         if (input_password):
