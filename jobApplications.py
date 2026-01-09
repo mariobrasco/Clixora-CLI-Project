@@ -171,9 +171,12 @@ def listJobsApplications(state, applications_id):
             print(f"[T] Tolak Negosiasi")
         if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[J] Terima Negosiasi")
-        if (applications_selected['status'] not in ['rejected', 'accepted']):
+        if (applications_selected['status'] not in ['rejected', 'accepted', 'pending', 'paid']):
             print("[B] Batalkan Lamaran")
-            
+        if (applications_selected['status'] == 'pending'):
+            print("[S] Pembayaran Diterima")
+        if (applications_selected['status'] == 'paid'):
+            print("[L] Lihat Struk Pembayaran")
         print("[K] Kembali      [X] Keluar dari program")
         footerTemplate()
         
@@ -184,6 +187,31 @@ def listJobsApplications(state, applications_id):
             cardTemplate("Terima Kasih!","Terima kasih telah menggunakan Clixora CLI. Sampai jumpa!")
             exit()
         
+        if (choice == 's' and applications_selected['status'] == 'pending'):
+            updateRowById(
+                FILE_PATH_FINDER, 
+                'applications_id', 
+                applications_id, 
+                {'status': 'paid'}
+            )
+            cardTemplate("Berhasil!",f"✅ Pembayaran diterima sebesar {applications_selected['negotiated_budget']}.")
+        if (choice == 'l' and applications_selected['status'] == 'paid'):
+            payment_db = pd.read_csv('storage/payments.csv')
+            payment_info = payment_db[payment_db['application_id'] == applications_id].iloc[0]
+            user_info = user_db[user_db['user_id'] == state['account_session']['user_id']].iloc[0]
+            headerTemplate("Struk Pembayaran", state, profile=True)
+            print(f"Payment ID              : {payment_info['payment_id']}")
+            print(f"Finder                  : {user_info['username']}")
+            print(f"Metode Pembayaran       : {payment_info['payment_method']}")
+            print(f"Tipe Pembayaran         : {payment_info['payment_type']}")
+            print(f"Refs                    : {payment_info['payment_refs']}")
+            print(f"Jumlah dibayar          : {payment_info['amount']}")
+            print(f"Status                  : {payment_info['status']}")
+            print(f"Dibayar Pada            : {payment_info['paid_at']}")
+            footerTemplate()
+            input("Tekan Enter untuk kembali...")
+            continue
+            
         if (choice == 'a' and applications_selected['status'] == 'waiting for photographer'):
             headerTemplate("Pengajuan Negosiasi Balik ke Finder", state, profile=True)
             while True:
@@ -246,5 +274,5 @@ def listJobsApplications(state, applications_id):
             cardTemplate("Berhasil!",f"✅ Negosiasi diterima dengan Harga {applications_selected['negotiated_budget']}.")
             return
         
-        if (choice not in ['a', 't', 'j', 'k', 'x', 'b']):
+        if (choice not in ['a', 't', 'j', 'k', 'x', 'b', 's', 'l']):
             cardTemplate("Peringatan!", f"Input '{choice}' tidak valid.")

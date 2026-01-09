@@ -166,8 +166,8 @@ def listOrderApplications(state, applications_id):
             print(f"[J] Terima Negosiasi dan Bayar")
         elif (applications_selected['status'] == 'accepted'):
             print(f"[B] Bayar Pesanan")
-        # if (applications_selected['status'] == 'pending'):
-        #     print(f"[B] Lanjutkan Pembayaran")
+        if (applications_selected['status'] == 'paid'):
+            print("[L] Lihat Struk Pembayaran")
         if (applications_selected['status'] not in ['accepted', 'rejected']):
             print("[C] Batalkan Pesanan")
             
@@ -175,11 +175,26 @@ def listOrderApplications(state, applications_id):
         footerTemplate()
         
         pilihan_aksi = input("Masukan Aksi: ").lower()
-        if pilihan_aksi == 'k':
+        if (pilihan_aksi) == 'k':
             return  
-        elif pilihan_aksi == 'x':
+        if (pilihan_aksi) == 'x':
             cardTemplate("Terima Kasih!","Terima kasih telah menggunakan Clixora CLI. Sampai jumpa!")
             exit()
+        
+        if (pilihan_aksi == 'l' and applications_selected['status'] == 'paid'):
+            payment_db = pd.read_csv('storage/payments.csv')
+            payment_info = payment_db[payment_db['application_id'] == applications_id].iloc[0]
+            headerTemplate("Struk Pembayaran", state, profile=True)
+            print(f"Payment ID              : {payment_info['payment_id']}")
+            print(f"Metode Pembayaran       : {payment_info['payment_method']}")
+            print(f"Tipe Pembayaran         : {payment_info['payment_type']}")
+            print(f"Refs                    : {payment_info['payment_refs']}")
+            print(f"Jumlah dibayar          : {payment_info['amount']}")
+            print(f"Status                  : {payment_info['status']}")
+            print(f"Dibayar Pada            : {payment_info['paid_at']}")
+            footerTemplate()
+            input("Tekan Enter untuk kembali...")
+            continue
         
         if pilihan_aksi == 'a' and applications_selected['status'] == 'waiting for finder':
             headerTemplate("Pengajuan Negosiasi Balik ke Photographer", state, profile=True)

@@ -28,9 +28,8 @@ def profilePage(state):
         # ===== menu aksi =====
         print("--------------------------------")
         print(
-            f"[P] Pesanan saya     [E] Edit Akun    \n"
-            f"[C] Katalog saya     {'[B] Tambah Bio' if state['account_session']['role'] == 'photographer' else ''}     \n"
-            f"[K] Kembali          [X] Keluar           [L] Logout"
+            f"[E] Edit Akun    {'[B] Tambah Bio' if state['account_session']['role'] == 'photographer' else ''}    \n"
+            f"[K] Kembali      [X] Keluar           [L] Logout"
         )
         footerTemplate()
         aksi = input("Masukan aksi: ").lower()

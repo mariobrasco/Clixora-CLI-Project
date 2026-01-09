@@ -60,7 +60,7 @@ def forgotPassword(state):
 
 def menuRegistrasi(state):
     while True:
-        headerTemplate("FORM REGISTRASI", state, profile=False)
+        headerTemplate("MENU REGISTRASI", state, profile=False)
         print("Jika ingin membatalkan registrasi, ketik [batal], '*' artinya tidak boleh kosong\n")
         print("Apakah anda Photographer atau Finder?")
         print("[1] Photographer")
@@ -82,13 +82,17 @@ def menuRegistrasi(state):
         else:
             cardTemplate("Peringatan", f"input '{role_picked}' tidak valid, silahkan masukan nomor yang sesuai (1 dan 2)")
                 
-    headerTemplate("MENU REGISTRASI", state, profile=False)
+    headerTemplate("FORM REGISTRASI", state, profile=False)
     print("Jika Ingin membatalkan registrasi, ketik 'batal' saat menginputkan data")
     
-    input_username = askInput("Masukkan username*: ", True)
-    if (validasiUsername(input_username) == False):
-        cardTemplate("Peringatan!", f"Username '{input_username}' sudah terdaftar, silahkan gunakan username lain.")
-    if (validasiUsername(input_username)):
+    while True:
+        input_username = askInput("Masukkan username*: ", True)
+        if (input_username):
+            if validasiUsername(input_username) == False:
+                cardTemplate("Peringatan!", f"Username '{input_username}' sudah terdaftar, silahkan gunakan username lain.")
+        else:
+            break  
+    if (input_username):
         input_password = askInput("Masukkan password*: ", True)
         if (input_password):
             while True:

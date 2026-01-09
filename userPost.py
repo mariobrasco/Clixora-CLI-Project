@@ -123,8 +123,6 @@ def myCatalog(state):
 
 def myApplications(state):
     while True:
-        # applications_db = pd.read_csv('storage/jobsApplications.csv')
-        # applications_db_user = applications_db[applications_db['user_id'] == state['account_session']['user_id']]
         merged_db = mergeCSV('storage/jobsApplications.csv', 'storage/jobs.csv', 'job_id', 'job_id')
         merged_db = merged_db.rename(columns={
             'applications_id': 'Lamaran Id',
@@ -141,11 +139,11 @@ def myApplications(state):
         if merged_db.empty:
             print("⚠️  Anda belum memiliki lamaran.")
         else:
-            print(merged_db[['Lamaran Id', "Judul Lowongan", "Lokasi", "Tema", "Tanggal", "Waktu", "Pesan", 'Budget', 'Status Lamaran']].to_string(index=False))
+            print(merged_db[['Lamaran Id', "Judul Lowongan", "Lokasi", "Tanggal", "Waktu", "Pesan", 'Budget', 'Status Lamaran']].to_string(index=False))
         print("--------------------------------")
         print("[K] Kembali    [X] Keluar dari program     [L] logout.")
         footerTemplate()
-        aksi = input("Masukan application id untuk melihat atau aksi: ").lower()
+        aksi = input("Masukan Lamaran id untuk melihat Detail atau aksi: ").lower()
         
         if (aksi == "k"):
             return
