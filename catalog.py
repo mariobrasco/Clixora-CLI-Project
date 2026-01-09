@@ -2,7 +2,7 @@ import pandas as pd
 
 from negotiateCatalog import negotiateCatalog
 from profile import viewUserProfile
-from utility import cardTemplate, searchAndFilterByDataFrame, mergeCSV, headerTemplate, footerTemplate
+from utility import cardTemplate, searchAndFilterByDataFrame, mergeCSV, headerTemplate, footerTemplate, selectTheme
 from loginRegister import menuLogin
 
 def catalogList(state):
@@ -30,12 +30,13 @@ def catalogList(state):
             'location': 'Lokasi',
             'sold_count': 'Terjual'
         })
+        theme_text = ', '.join(filter_theme) if isinstance(filter_theme, list) else filter_theme
         if (state['account_session'] is None):
             headerTemplate("CATALOG")
         else:
             headerTemplate("CATALOG", state, profile=True)
         print(f"Cari    : ( {searchWord} ) [H] Hapus Pencarian ")
-        print(f"Filter  : ({'(theme: ' + filter_theme + ')' if filter_theme else ''} {'(budget: ' + filter_budget + ')' if filter_budget else ''} {'(location: ' + filter_location + ')' if filter_location else ''}) [A] Hapus Filter")
+        print(f"Filter  : ({'(tema: ' + theme_text + ')' if filter_theme else ''} {'(budget: ' + filter_budget + ')' if filter_budget else ''} {'(lokasi: ' + filter_location + ')' if filter_location else ''}) [A] Hapus Filter")
         
         tampilan_catalog, total_pages = searchAndFilterByDataFrame(
             merged_db,
@@ -105,21 +106,21 @@ def catalogList(state):
             filters = {}
         elif (input_navigasi == "f"):
             print("Masukkan filter yang diinginkan. Kosongkan jika tidak ingin menambahkan filter pada kolom tersebut.")
-            filter_theme = input("Filter Theme: ")
+            filter_theme = selectTheme(filter_theme.split() if filter_theme else [])
             filter_budget = input("Filter Budget (angka): ")
             filter_location = input("Filter Location: ")
 
             filters = {}
             if filter_theme:
-                filters['theme'] = filter_theme
+                filters['Tema'] = " ".join(filter_theme)
             if filter_budget:
                 try:
-                    filters['budget'] = int(filter_budget)
+                    filters['Budget'] = int(filter_budget)
                 except ValueError:
                     cardTemplate("Peringatan!", "Filter budget harus berupa angka.")
                     continue
             if filter_location:
-                filters['location'] = filter_location
+                filters['Lokasi'] = filter_location
         elif (input_navigasi == "h"):
             searchWord = ""
         elif (input_navigasi.isdigit() and int(input_navigasi) in catalog_db['catalog_id'].values):
@@ -142,8 +143,10 @@ def catalogList(state):
             
             print("[1] Pesan Catalog    [2] Lihat Profil    [0] Kembali")
             aksi = input("Masukan aksi: ").lower()
-            if (aksi == '1' and state['account_session'] is not None):
+            if (aksi == '1' and state['account_session'] is not None and selected_post['status'] == 'available'):
                 negotiateCatalog(state, selected_post)
+            elif (aksi == '1' and state['account_session'] is not None and selected_post['status'] != 'available'):
+                cardTemplate("Peringatan!","⚠️  Catalog ini tidak tersedia untuk dipesan.")
             elif (aksi == '1' and state['account_session'] is None):
                 cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melanjutkan proses .")
                 menuLogin(state)

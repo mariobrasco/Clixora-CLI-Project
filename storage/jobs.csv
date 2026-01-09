@@ -1,2 +1,13 @@
 job_id,user_id,title,description,theme,tipe_budget,budget,location,date_needed,time,status
-1,f001,Pernikahan Mantan,Pernikahan ini harus rusak serusak mungkin,Event Wedding Nature,proyek,10,arung jeram no 10,13-12-2001,12:23,Unavailable
+1,f001,Pernikahan Mantan,Pernikahan ini harus rusak serusak mungkin,Event Wedding Nature,proyek,100000,arung jeram no 10,13-12-2001,12:23,Unavailable
+2,f003,Prewedding Siti,Paket prewedding murah meriah,Event Wedding Nature,proyek,5000000,yogyakarta,20-11-2023,09:00,available
+3,f006,Foto Keluarga,Mencari fotografer untuk foto keluarga besar,Portrait,jam,200000,bogor,25-12-2023,15:00,available
+4,f009,Acara Ulang Tahun Anak,Mencari fotografer untuk dokumentasi ulang tahun anak,Event,jam,300000,bandung,05-01-2024,10:00,available
+5,f010,Foto Produk Online Shop,Membutuhkan fotografer untuk foto produk online shop,Product,jam,100000,jakarta,15-11-2023,14:00,Unavailable
+6,f011,Event Perusahaan,Mencari fotografer untuk dokumentasi event perusahaan,Event,jam,40000,depok,30-11-2023,09:00,available
+7,f005,Foto Lanskap,Membutuhkan fotografer untuk foto lanskap alam,Landscape,proyek,6000000,bandung,22-12-2023,08:00,available
+8,f004,Foto Prewedding,Mencari fotografer untuk sesi foto prewedding,Event Wedding Nature,proyek,700000,cimahi,18-11-2023,10:00,Unavailable
+9,f008,Foto Keluarga Besar,Membutuhkan fotografer untuk foto keluarga besar,Portrait,jam,250000,yogyakarta,28-12-2023,13:00,available
+10,f008,Acara Pernikahan Teman,Mencari fotografer untuk dokumentasi acara pernikahan teman,Event Wedding Nature,proyek,800000,jakarta,12-12-2023,11:00,available
+11,f007,Foto Produk,Membutuhkan fotografer untuk foto produk fashion,Product,jam,100000,bekasi,10-11-2023,15:00,Unavailable
+12,f012,Foto harimau malaya,saya ingn dokumentasi harimau saya tapi diluar ruangan,Documentary Nature Outdoor,jam,10000000,Jakarta,12-06-2026,12:30,available

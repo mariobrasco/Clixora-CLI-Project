@@ -28,7 +28,7 @@ def profilePage(state):
         # ===== menu aksi =====
         print("--------------------------------")
         print(
-            f"[E] Edit Akun    {'[B] Tambah Bio' if state['account_session']['role'] == 'photographer' else ''}    \n"
+            f"[E] Edit Akun    \n"
             f"[K] Kembali      [X] Keluar           [L] Logout"
         )
         footerTemplate()
@@ -45,35 +45,49 @@ def profilePage(state):
         elif aksi == "e":
             headerTemplate("EDIT PROFIL SAYA", state, profile=False)
             print("\nSilahkan kosongkan kolom jika tidak diubah")
-            username = input(f"Username {user_info['username']} : ")
-            email =    input(f"Email {user_info['email']}    : ")
-            password = input(f"Password {user_info['password']} : ")
             edited = []
-
-            if (username):
-                account_db.at[user_idx, 'username'] = username
-                state['account_session']['username'] = username
-                edited.append('Username')
-                
-            if (password):
-                account_db.at[user_idx, 'password'] = password
-                edited.append('Password')
-            if (email):
-                account_db.at[user_idx, 'email'] = email
-                edited.append('Email')
+            if state['account_session']['role'] == "finder":
+                username = input(f"Username {user_info['username']} : ")
+                email =    input(f"Email {user_info['email']}    : ")
+                password = input(f"Password {user_info['password']} : ")
+                if (username):
+                    account_db.at[user_idx, 'username'] = username
+                    state['account_session']['username'] = username
+                    edited.append('Username')
+                if (password):
+                    account_db.at[user_idx, 'password'] = password
+                    edited.append('Password')
+                if (email):
+                    account_db.at[user_idx, 'email'] = email
+                    edited.append('Email')
+            elif state['account_session']['role'] == "photographer":
+                username = input(f"Username {user_info['username']} : ")
+                email =    input(f"Email {user_info['email']}    : ")
+                password = input(f"Password {user_info['password']} : ")
+                location = input(f"Lokasi {user_info['location']}   : ")
+                bio =      input(f"Bio {user_info['bio']}        : ")
+                if (location):
+                    account_db.at[user_idx, 'location'] = location
+                    edited.append('Lokasi')
+                if (bio):
+                    account_db.at[user_idx, 'bio'] = bio
+                    edited.append('Bio')
+                if (username):
+                    account_db.at[user_idx, 'username'] = username
+                    state['account_session']['username'] = username
+                    edited.append('Username')
+                if (password):
+                    account_db.at[user_idx, 'password'] = password
+                    edited.append('Password')
+                if (email):
+                    account_db.at[user_idx, 'email'] = email
+                    edited.append('Email')
 
             account_db.to_csv('storage/user.csv', index=False)
             if (edited):
                 cardTemplate("Berhasil!", f"Data {', '.join(edited)} Akun berhasil diperbaharui")
             else:
                 cardTemplate("Info!", "Tidak ada data yang diubah.")
-
-        # ===== tambah bio =====
-        elif aksi == "b" and state['account_session']['role'] == "photographer":
-            bio = input("Masukan bio: ")
-            account_db.at[user_idx, 'bio'] = bio
-            account_db.to_csv('storage/user.csv', index=False)
-            cardTemplate("Berhasil!", "Bio berhasil ditambahkan")
 
         elif (aksi == "l"):
             cardTemplate("Berhasil!",f"Anda Telah Logout dari akun  {state['account_session']['username']}.")
@@ -101,9 +115,10 @@ def viewUserProfile(state, user_id):
                 'theme': 'Tema',
                 'budget': 'Budget',
                 'tipe_budget': 'Tipe Budget',
+                'status': 'Status',
                 'sold_count': 'Terjual'
             })
-            kolom_tampilan = ['Catalog Id', 'Judul', 'Tema', 'Budget', 'Tipe Budget']
+            kolom_tampilan = ['Catalog Id', 'Judul', 'Tema', 'Budget', 'Tipe Budget', 'Status', 'Terjual']
         elif (user_info['role'] == 'finder'):
             tampilan_pemilik = jobs_db[jobs_db['user_id'] == user_id]
             tampilan_pemilik = tampilan_pemilik.rename(columns={
@@ -111,9 +126,10 @@ def viewUserProfile(state, user_id):
                 'title': 'Judul',
                 'theme': 'Tema',
                 'budget': 'Budget',
-                'tipe_budget': 'Tipe Budget'
+                'tipe_budget': 'Tipe Budget',
+                'status': 'Status'
             })
-            kolom_tampilan = ['Job Id', 'Judul', 'Tema', 'Budget', 'Tipe Budget']
+            kolom_tampilan = ['Job Id', 'Judul', 'Tema', 'Budget', 'Tipe Budget', 'Status']
         
         headerTemplate(f"PROFIL {user_info['username']}", state, profile=True)
         print(f"Username   : {user_info['username']}")
@@ -150,18 +166,20 @@ def viewUserProfile(state, user_id):
                 return
 
             headerTemplate("DETAIL CATALOG", state, profile=False)
-            print(f"Title  : {selected_post['title']}")
-            print(f"Description: \n{selected_post['description']}")
-            print(f"\nTheme: {selected_post['theme']}")
+            print(f"Judul  : {selected_post['title']}")
+            print(f"Deskripsi: \n{selected_post['description']}")
+            print(f"\nTema: {selected_post['theme']}")
             print(f"Budget : {selected_post['budget']} / {selected_post['tipe_budget']}")
-            print(f"\nby @{user_info['username']} in {user_info['location']}")
+            print(f"\nOleh  {user_info['username']} di {user_info['location']}")
             footerTemplate()
             
             if (state['account_session']['role'] == 'finder'):
                 print("[1] Pesan Catalog    [0] Kembali")
                 aksi = input("Masukan aksi: ").lower()
-                if (aksi == '1' and state['account_session'] is not None):
+                if (aksi == '1' and state['account_session'] is not None and selected_post['status'] == 'available'):
                     negotiateCatalog(state, selected_post)
+                elif (aksi == '1' and state['account_session'] is not None and selected_post['status'] != 'available'):
+                    cardTemplate("Peringatan!","⚠️  Catalog ini tidak tersedia untuk dipesan.")
                 elif (aksi == '1' and state['account_session'] is None):
                     cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melanjutkan proses .")
                     menuLogin(state)
@@ -204,8 +222,10 @@ def viewUserProfile(state, user_id):
                 footerTemplate()
                 aksi = input("Pilih aksi: ")
                 
-                if (aksi == '1' and state['account_session'] is not None):
+                if (aksi == '1' and state['account_session'] is not None and selected_post['status'] == 'available'):
                     applyJobs(state, selected_post)
+                elif (aksi == '1' and state['account_session'] is not None and selected_post['status'] != 'available'):
+                    cardTemplate("Peringatan!","⚠️  Lowongan pekerjaan ini tidak tersedia untuk dilamar.")
                 elif (aksi == '1' and state['account_session'] is None):
                     cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
                 elif (aksi == '0'):

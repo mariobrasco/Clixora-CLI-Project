@@ -135,6 +135,7 @@ def myApplications(state):
             'message': 'Pesan',
             'status_left': 'Status Lamaran'
         })
+        merged_db = merged_db[merged_db['user_id_left'] == state['account_session']['user_id']]
         headerTemplate("Lamaran Saya", state, profile=True)
         if merged_db.empty:
             print("⚠️  Anda belum memiliki lamaran.")
@@ -309,6 +310,7 @@ def myOrders(state):
             'negotiated_budget': 'Budget Diajukan',
             'status_left': 'Status'
         })
+        merge_db = merge_db[merge_db['user_id_left'] == state['account_session']['user_id']]
         headerTemplate("Pesanan Saya", state, profile=True)
         if merge_db.empty:
             print("⚠️  Anda belum memiliki pesanan.")

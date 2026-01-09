@@ -1,7 +1,13 @@
 catalog_id,user_id,title,description,theme,tipe_budget,budget,status,sold_count
 1,p002,Wedding Organizer,Penyedia jasa wedding organizer untuk pernikahan impian Anda,Event Wedding Nature,proyek,5000000,available,1
-2,p004,Wedding Job,Catalog about wedding job,Wedding,jam,50000,available,0
-3,p004,My catalog,catolog 1,Event,proyek,2000000,available,0
-4,p004,catolug,abc,Documentary,proyek,20000000,available,0
-5,p004,weddig,adalah,Wedding,jam,dua ratus ribu,available,0
-6,p004,wedding,wedding zahra & mark lee,Wedding,proyek,duajuta,available,0
+2,p003,Wedding Job,Catalog about wedding job,Wedding,jam,50000,available,0
+3,p003,My catalog,catolog 1,Event,proyek,2000000,available,0
+4,p003,catolug,abc,Documentary,proyek,20000000,available,0
+5,p002,weddig,adalah,Wedding,jam,2000000,available,0
+6,p003,wedding,wedding zahra & mark lee,Wedding,proyek,2000000,available,0
+7,p003,Photography Service,Layanan fotografi profesional untuk berbagai acara,Event Portrait,proyek,3000000,available,2
+8,p002,Portrait Session,Sesi pemotretan potret individu atau kelompok,Portrait,jam,150000,available,3
+9,p003,Event Coverage,Layanan dokumentasi acara seperti ulang tahun, Wedding,jam,250000,available,1
+10,p003,Landscape Photography,Paket fotografi lanskap untuk keperluan pribadi atau komersial,Landscape,proyek,4000000,available,0
+11,p002,Product Photography,Layanan fotografi produk untuk keperluan bisnis dan pemasaran,Product,jam,200000,available,4
+12,p005,Graduation diluar Ruangan,Saya bisa foto diluar ruangan jika ada memiliki event graduation,Event Outdoor,proyek,20000000,available,0

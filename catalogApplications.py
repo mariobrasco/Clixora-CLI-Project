@@ -1,5 +1,6 @@
 import pandas as pd
 
+from jobApplications import FILE_PATH_FINDER
 from payment import menuPayment
 from utility import askInput, cardTemplate, deleteRowById, updateRowById, validasiAngka, headerTemplate, footerTemplate, mergeCSV
 
@@ -48,25 +49,28 @@ def listCatalogApplications(state, catalog_id):
         elif choice.isdigit() and int(choice) in applications_selected['Id Tawaran'].values:
             selected =  application_info[application_info['applications_id'] == int(choice)].iloc[0]
             
-            if (selected['status'] == 'waiting for finder'):
-                cardTemplate("Info!","Menunggu Finder merespon tawaran Anda.")
-                continue
-            
-            if (selected['status'] == 'accepted'):
-                cardTemplate("Info!","Tawaran sudah diterima sebelumnya.")
-                continue
-            
             while True:
                 headerTemplate("Detail Tawaran", state, profile=True)
                 print(f"💰 {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} mengajukan: {selected['negotiated_budget']} {selected['tipe_budget']}")
                 print("-------------------------")
+                if (merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['status'] == 'pending'):
+                    print("[S] Pembayaran Diterima")
                 print("[A] Terima tawaran")
-                print("(B) Ajukan negosiasi balik")
-                print("(X) Kembali")
+                print("[B] Ajukan negosiasi balik")
+                print("[X] Kembali")
                 footerTemplate()
 
                 action = input("Pilih Aksi: ").lower()
 
+                if (action == 's' and merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['status'] == 'pending'):
+                    updateRowById(
+                        FILE_PATH_FINDER, 
+                        'applications_id', 
+                        selected['applications_id'], 
+                        {'status': 'paid'}
+                    )
+                    cardTemplate("Berhasil!",f"✅ Pembayaran diterima sebesar {selected['negotiated_budget']}.")
+            
                 if action == 'b':
                     headerTemplate("Pengajuan Negosiasi Balik", state, profile=True)
                     
@@ -168,7 +172,7 @@ def listOrderApplications(state, applications_id):
             print(f"[B] Bayar Pesanan")
         if (applications_selected['status'] == 'paid'):
             print("[L] Lihat Struk Pembayaran")
-        if (applications_selected['status'] not in ['accepted', 'rejected']):
+        if (applications_selected['status'] not in ['accepted', 'rejected', 'pending', 'paid']):
             print("[C] Batalkan Pesanan")
             
         print("[K] Kembali    [X] Keluar dari program")
@@ -235,7 +239,7 @@ def listOrderApplications(state, applications_id):
             cardTemplate("Berhasil!","💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Photographer.")
             return
         
-        if (pilihan_aksi == 'c') and (applications_selected['status'] in ['pending', 'accepted']):
+        if (pilihan_aksi == 'c') and (applications_selected['status'] in ['accepted', 'rejected', 'pending', 'paid']):
             deleteRowById(
                 FILE_PATH_PHOTOGRAPHER, 
                 'applications_id', 
@@ -270,6 +274,6 @@ def listOrderApplications(state, applications_id):
             cardTemplate("Berhasil!","❌ Negosiasi berhasil ditolak.")
             return
         
-        elif pilihan_aksi not in ['a', 'j', 'b', 't', 'k', 'x', 'c']:
+        elif pilihan_aksi not in ['a', 'j', 'b', 't', 'k', 'x', 'c', 'l']:
             cardTemplate("Peringatan!", f"Input '{pilihan_aksi}' tidak valid.")
         
