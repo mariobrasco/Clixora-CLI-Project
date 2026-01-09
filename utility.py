@@ -169,6 +169,20 @@ def validasiWaktu(waktu):
 
     return True
 
+def validasiUsername(username_register):
+    try:
+        username_df = pd.read_csv('storage/user.csv')
+
+        username_csv = username_register.lower() in username_df['username'].str.lower().values
+        
+        if username_csv:
+            return False 
+        else:
+            return True   
+            
+    except FileNotFoundError:
+        return True
+
 # ======================= CRUD ======================= 
 def getAllData(db_name):
     db = pd.read_csv(db_name)

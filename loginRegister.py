@@ -1,5 +1,5 @@
 import pandas as pd
-from utility import login, askInput, cardTemplate, validasiEmail, autoIncrementUserId, headerTemplate, footerTemplate
+from utility import login, askInput, cardTemplate, validasiEmail, autoIncrementUserId, headerTemplate, footerTemplate, validasiUsername
 
 def menuLogin(state):
     while True:
@@ -86,7 +86,9 @@ def menuRegistrasi(state):
     print("Jika Ingin membatalkan registrasi, ketik 'batal' saat menginputkan data")
     
     input_username = askInput("Masukkan username*: ", True)
-    if (input_username):
+    if (validasiUsername(input_username) == False):
+        cardTemplate("Peringatan!", f"Username '{input_username}' sudah terdaftar, silahkan gunakan username lain.")
+    if (validasiUsername(input_username)):
         input_password = askInput("Masukkan password*: ", True)
         if (input_password):
             while True:
@@ -133,3 +135,5 @@ def menuRegistrasi(state):
                     login(input_username, input_password, state) 
                     cardTemplate("Berhasil", f"Berhasil registrasi sebagai {role_name}.\nSelamat Datang, {input_username}!")
                     break
+
+
