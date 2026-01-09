@@ -30,7 +30,10 @@ def catalogList(state):
             'location': 'Lokasi',
             'sold_count': 'Terjual'
         })
-        headerTemplate("CATALOG", state, profile=True)
+        if (state['account_session'] is None):
+            headerTemplate("CATALOG")
+        else:
+            headerTemplate("CATALOG", state, profile=True)
         print(f"Cari    : ( {searchWord} ) [H] Hapus Pencarian ")
         print(f"Filter  : ({'(theme: ' + filter_theme + ')' if filter_theme else ''} {'(budget: ' + filter_budget + ')' if filter_budget else ''} {'(location: ' + filter_location + ')' if filter_location else ''}) [A] Hapus Filter")
         
@@ -126,8 +129,10 @@ def catalogList(state):
             if user_info.empty:
                 cardTemplate("Error", "Data pemilik katalog tidak ditemukan.")
                 return
-
-            headerTemplate("DETAIL CATALOG", state, profile=False)
+            if (state['account_session'] is None):
+                headerTemplate("DETAIL CATALOG")
+            else:
+                headerTemplate("DETAIL CATALOG", state, profile=False)
             print(f"Judul  : {selected_post['title']}")
             print(f"Deskripsi: \n{selected_post['description']}")
             print(f"\nTema: {selected_post['theme']}")
@@ -135,27 +140,22 @@ def catalogList(state):
             print(f"\nOleh {user_info['username']} di {user_info['location']}")
             footerTemplate()
             
-            if (state['account_session']['role'] == 'finder'):
-                print("[1] Pesan Catalog    [2] Lihat Profil    [0] Kembali")
-                aksi = input("Masukan aksi: ").lower()
-                if (aksi == '1' and state['account_session'] is not None):
-                    negotiateCatalog(state, selected_post)
-                elif (aksi == '1' and state['account_session'] is None):
-                    cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melanjutkan proses .")
-                    menuLogin(state)
-                elif (aksi == '2'):
-                    viewUserProfile(state, user_info['user_id'])
-                elif(aksi == '0'):
-                    continue
-                else:
-                    cardTemplate("Peringatan!",f"Input {aksi} tidak valid, silahkan masukan input yang sesuai.")
+            print("[1] Pesan Catalog    [2] Lihat Profil    [0] Kembali")
+            aksi = input("Masukan aksi: ").lower()
+            if (aksi == '1' and state['account_session'] is not None):
+                negotiateCatalog(state, selected_post)
+            elif (aksi == '1' and state['account_session'] is None):
+                cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melanjutkan proses .")
+                menuLogin(state)
+            elif (aksi == '2' and state['account_session'] is None):
+                cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melihat profil photographer.")
+                menuLogin(state)
+            elif (aksi == '2'):
+                viewUserProfile(state, user_info['user_id'])
+            elif(aksi == '0'):
+                continue
             else:
-                print("[1] Lihat Profil     [0] Kembali")
-                aksi = input("Masukan aksi: ").lower()
-                if(aksi == '0'):
-                    continue
-                elif (aksi == '1'):
-                    viewUserProfile(state, user_info['user_id'])
+                cardTemplate("Peringatan!",f"Input {aksi} tidak valid, silahkan masukan input yang sesuai.")
         else:
             cardTemplate("Peringatan!",f"Input {input_navigasi} tidak valid, silahkan masukan input yang sesuai.")
             

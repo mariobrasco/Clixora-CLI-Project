@@ -165,11 +165,11 @@ def listJobsApplications(state, applications_id):
         print(f"Status          : {applications_selected['status']}")
         print("-----------------------------------")
         
-        if (applications_selected['status'] == 'waiting for finder'):
+        if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[A] Ajukan Negosiasi")
-        if (applications_selected['status'] == 'waiting for finder'):
+        if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[T] Tolak Negosiasi")
-        if (applications_selected['status'] == 'waiting for finder'):
+        if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[J] Terima Negosiasi")
         if (applications_selected['status'] not in ['rejected', 'accepted']):
             print("[B] Batalkan Lamaran")
@@ -180,6 +180,9 @@ def listJobsApplications(state, applications_id):
         choice = input("Masukan Aksi: ").lower()
         if (choice == 'k'):
             return  
+        if (choice == 'x'):
+            cardTemplate("Terima Kasih!","Terima kasih telah menggunakan Clixora CLI. Sampai jumpa!")
+            exit()
         
         if (choice == 'a' and applications_selected['status'] == 'waiting for photographer'):
             headerTemplate("Pengajuan Negosiasi Balik ke Finder", state, profile=True)
@@ -243,5 +246,5 @@ def listJobsApplications(state, applications_id):
             cardTemplate("Berhasil!",f"✅ Negosiasi diterima dengan Harga {applications_selected['negotiated_budget']}.")
             return
         
-        elif (choice not in ['a', 't', 'j', 'k', 'x', 'b']):
+        if (choice not in ['a', 't', 'j', 'k', 'x', 'b']):
             cardTemplate("Peringatan!", f"Input '{choice}' tidak valid.")

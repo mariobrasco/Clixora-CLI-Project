@@ -3,6 +3,10 @@ import pandas as pd
 from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput, headerTemplate, footerTemplate
 
 def negotiateCatalog(state, catalog_data):
+    if (state['account_session'] is not None):
+        if (state['account_session']['role'] != 'finder'):
+            cardTemplate("Peringatan!", "⚠️  Hanya akun finder yang dapat melakukan negosiasi catalog.")
+            return
     catalogApplications_db = pd.read_csv('storage/catalogApplications.csv')
     headerTemplate("NEGOSIASI CATALOG", state, profile=True)
     print("Anda akan melakukan negosiasi pada catalog berikut:")
@@ -34,10 +38,10 @@ def negotiateCatalog(state, catalog_data):
         location = input("Masukkan lokasi tempat dilaksanakan: ")
         
         while True:
-            tanggal = input("Masukkan Tanggal Lowongan (DD-MM-YY): ")
+            tanggal = input("Masukkan Tanggal Lowongan (DD-MM-YYYY): ")
             if validasiTanggal(tanggal):
                 break
-            print("Format tanggal salah! Gunakan DD-MM-YY")
+            print("Format tanggal salah! Gunakan DD-MM-YYYY")
         while True:
             waktu = input("Masukkan Waktu Lowongan (HH:MM): ")
             if validasiWaktu(waktu):

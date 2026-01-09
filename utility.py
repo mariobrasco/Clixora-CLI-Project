@@ -290,7 +290,7 @@ def searchAndFilterByDataFrame(
 
     return df, total_pages
 
-def updateRowById(db_name, key_column, id_value, update_data):
+def updateRowById(db_name, key_column, id_value, update_data, message=True):
     
     db = pd.read_csv(db_name)
     selected_row = db[key_column] == id_value
@@ -299,7 +299,8 @@ def updateRowById(db_name, key_column, id_value, update_data):
         db.loc[selected_row, key] = value
     
     db.to_csv(db_name, index=False)
-    cardTemplate("Berhasil", "Data berhasil diperbarui.")
+    if (message):
+        cardTemplate("Berhasil", "Data berhasil diperbarui.")
 
 def deleteRowById(db_name, key_column, id_value, message=""):
     db = pd.read_csv(db_name)
@@ -358,7 +359,7 @@ def selectTheme(picked=None):
         print("[D] Selesai memilih")
         print("[R] Hapus tema terpilih")
         print("[X] Batal")
-        print("="*88)
+        print("="*94)
 
         pilihan = input("Pilih tema (nomor / D / R / X): ").lower()
 
