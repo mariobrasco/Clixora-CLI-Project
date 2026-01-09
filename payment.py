@@ -1,22 +1,23 @@
 import pandas as pd
 
-from utility import cardTemplate, autoIncrementCustom, updateRowById
+from utility import cardTemplate, autoIncrementCustom, updateRowById, headerTemplate, footerTemplate
 
-def menuPayment(applications_info, event_info, photographer_info):
+def menuPayment(state, applications_info, event_info, photographer_info):
     FILE_PATH_APPLICATIONS = 'storage/jobsApplications.csv' if 'job_id' in applications_info else 'storage/catalogApplications.csv'
     PAYMENT_CSV_PATH = 'storage/payments.csv'
     payment_db = pd.read_csv(PAYMENT_CSV_PATH)
 
-    print("\n" + "="*44 + " Pembayaran " + "="*44)
+    headerTemplate("MENU PEMBAYARAN", state, profile=True)
     print("Detail Pekerjaan:")
     print(f"Title        : {event_info['title']}")
     print(f"Budget       : {applications_info['negotiated_budget']}")
     print(f"Photographer : {photographer_info['username']}\n")
-
-    print("Pilih Metode Pembayaran:")
+    print("--------------------------------")
+    print("Pilih Pembayaran:")
     print("[1] QRIS")
     print("[2] Cash")
     print("[B] Batal")
+    footerTemplate()
     metode = input("Masukan pilihan: ").lower()
 
     if metode == 'b':
@@ -48,7 +49,7 @@ def menuPayment(applications_info, event_info, photographer_info):
             cardTemplate("Gagal", "Pilihan tipe pembayaran tidak valid.")
             return
         
-        print("\n=== PEMBAYARAN QRIS ===")
+        headerTemplate("PEMBAYARAN QRIS", state, profile=True)
         print("Merchant    : CLIXORA")
         print(f"Total Bayar : Rp{total}\n")
 
@@ -68,9 +69,10 @@ def menuPayment(applications_info, event_info, photographer_info):
 QRIS PAYMENT
 Scan menggunakan e-wallet Anda
 """.strip())
+        footerTemplate()
 
         while True:
-            konfirmasi = input("\nKetik 'bayar' setelah pembayaran berhasil atau 'batal' untuk membatalkan: ")
+            konfirmasi = input("\nKetik [bayar] setelah pembayaran berhasil atau [batal] untuk membatalkan: ")
 
             if konfirmasi.lower() == 'bayar':
                 payment_data = {
@@ -92,8 +94,15 @@ Scan menggunakan e-wallet Anda
                     FILE_PATH_APPLICATIONS,
                     'applications_id',
                     applications_info['applications_id'],
-                    {'status': 'on going (paid)'}
+                    {'status': 'paid'}
                 )
+                if ('catalog_id' in applications_info):
+                    updateRowById(
+                        'storage/catalog.csv',
+                        'catalog_id',
+                        applications_info['catalog_id'],
+                        {'sold_count': int(event_info['sold_count']) + 1}
+                    )
                 cardTemplate("Berhasil", f"Pembayaran sebesar Rp{total} telah berhasil dilakukan kepada {photographer_info['username']}.\nTerimakasih telah menggunakan layanan Clixora!")
                 return
             elif konfirmasi.lower() == 'batal':
@@ -103,11 +112,11 @@ Scan menggunakan e-wallet Anda
                 cardTemplate(f"Input '{konfirmasi}' tidak valid.")
             
     elif metode == '2':
-        print("\n="*50 + " PEMBAYARAN CASH " + "="*50)
+        headerTemplate("PEMBAYARAN CASH", state, profile=True)
         print("Anda memilih metode pembayaran Cash.") 
         print(f"Silahkan lakukan pembayaran secara langsung kepada Photographer saat pekerjaan selesai\n Siapkan uang Tunai sebesar {total}!.") 
         print("Jika sudah membayar Photographer, silahkan konfirmasi pembayaran kepada Clixora.")
-        print("="*100)
+        footerTemplate()
         input("Ketik Enter jika sudah mengerti: ")
         payment_data = {
             'payment_id': autoIncrementCustom("pm", payment_db, 'payment_id'), 
@@ -121,3 +130,4 @@ Scan menggunakan e-wallet Anda
             'status': 'pending',
             'paid_at': ""
             }
+        cardTemplate("Berhasil", f"Pembayaran sebesar Rp{total} telah tercatat sebagai 'pending'. Silahkan lakukan pembayaran secara langsung kepada Photographer saat pekerjaan selesai.")

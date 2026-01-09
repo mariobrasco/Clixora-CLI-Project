@@ -1,9 +1,10 @@
 user_id,username,password,role,location,email,bio
-f001,arkan,12345,finder,bandung,cececantik123@gmail.com,seorang pemuda yang ganteng
-p002,budi,abcde,photografer,jakarta,budi123@gmail.com,seorang fotografer profesional
+f001,arkan,12345,finder,,arkan@gmail.com,seorang pemuda yang ganteng
+p002,budi,abcde,photographer,jakarta,budi123@gmail.com,seorang fotografer profesional
 f003,siti,pass789,finder,yogyakarta,sitiayu@gmail.com,mahasiswi yang rajin dan aktif
-f004,ajumalaka,tilakamu,finder,cimahi,ajumalaka@gmail.com,admin yang berdedikasi tinggi
+f004,ajumalaka,ajumedanbgt,finder,cimahi,ajumalaka@gmail.com,admin yang berdedikasi tinggi
 f005,ataha,ajunm,finder,,dwa,
 f006,mario,asdfghjkl,finder,,mario@gmail.com,
 f007,halo,12345,finder,,mario@gmail.com,
-p003,mario,ajum12345,photografer,ajum city,mario@gmail.com,anuan
+p003,mario,ajum12345,photographer,ajum city,mario@gmail.com,anuan
+f008,ajum,ajumgaming123,finder,,azzuri@gmail.com,

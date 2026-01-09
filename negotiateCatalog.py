@@ -1,22 +1,26 @@
 import pandas as pd
 
-from postAJob import validasi_tanggal, validasi_waktu
-from utility import autoIncrementNumber, cardTemplate
-
+from utility import autoIncrementNumber, cardTemplate, validasiTanggal, validasiWaktu, askInput, headerTemplate, footerTemplate
 
 def negotiateCatalog(state, catalog_data):
-    # print(state)
-    # print(catalog_data)
-    # print(user_info)
     catalogApplications_db = pd.read_csv('storage/catalogApplications.csv')
-    print("\n" + "="*44 + " Proses Negosiasi " + "="*44)
+    headerTemplate("NEGOSIASI CATALOG", state, profile=True)
+    print("Anda akan melakukan negosiasi pada catalog berikut:")
+    print(f"Catalog ID       : {catalog_data['catalog_id']}")
+    print(f"Judul Catalog    : {catalog_data['title']}")
+    print(f"Deskripsi        : {catalog_data['description']}")
+    print(f"Tipe Budget      : {catalog_data['tipe_budget']}")
+    footerTemplate()
     print("Apakah anda setuju dengan harga yang sudah ditentukan (Rp" + str(catalog_data['budget']) + ")?")
-    print("1. Setuju")
-    print("2. Negosiasi Harga")
-    print("="*102)
+    print("[1] Setuju")
+    print("[2] Negosiasi Harga")
+    print("[B] Batal Negosiasi")
+    footerTemplate()
     
     while True:
-        aksi = input("Masukkan pilihan Anda (1/2): ")
+        aksi = input("Masukkan pilihan Anda: ")
+        if (aksi.lower() == 'b'):
+            return
         if (aksi == '1'):
             negotiated_budget = catalog_data['budget']
         elif (aksi == '2'):
@@ -28,17 +32,19 @@ def negotiateCatalog(state, catalog_data):
         print("Pesan bersifat opsional, jika tidak ada, tekan enter.")
         message = input("Masukkan pesan tambahan untuk photografer : ")
         location = input("Masukkan lokasi tempat dilaksanakan: ")
+        
         while True:
             tanggal = input("Masukkan Tanggal Lowongan (DD-MM-YY): ")
-            if validasi_tanggal(tanggal):
+            if validasiTanggal(tanggal):
                 break
             print("Format tanggal salah! Gunakan DD-MM-YY")
         while True:
             waktu = input("Masukkan Waktu Lowongan (HH:MM): ")
-            if validasi_waktu(waktu):
+            if validasiWaktu(waktu):
                 break
             print("Format waktu salah! Gunakan HH:MM")
-            
+        
+        footerTemplate()
         new_application = {
             "applications_id": autoIncrementNumber(catalogApplications_db),
             "catalog_id": catalog_data['catalog_id'],
@@ -49,7 +55,7 @@ def negotiateCatalog(state, catalog_data):
             "time": waktu,
             "tipe_budget": catalog_data['tipe_budget'],
             "negotiated_budget": negotiated_budget,
-            "status": "pending"
+            "status": "waiting for photographer"
         }
         new_application_df = pd.DataFrame([new_application])
         new_application_df.to_csv('storage/catalogApplications.csv', mode='a', header=False, index=False)
