@@ -32,7 +32,7 @@ def listCatalogApplications(state, catalog_id):
         if (applications_selected.empty):
             print("⚠️  Belum ada tawaran untuk catalog ini.")
         else:
-            print(applications_selected[['Id Tawaran', 'Diajukan Oleh', 'Pesan', 'Lokasi', 'Tanggal', 'Waktu', 'Budget Diajukan', 'Tipe Budget', 'Status']].to_string(index=False))
+            print(applications_selected[['Id Tawaran', 'Diajukan Oleh', 'Lokasi', 'Tanggal', 'Waktu', 'Budget Diajukan', 'Tipe Budget', 'Status']].to_string(index=False))
         
         print("-------------------------")
         print("[K] Kembali      [X] Keluar dari program")
@@ -51,7 +51,15 @@ def listCatalogApplications(state, catalog_id):
             
             while True:
                 headerTemplate("Detail Tawaran", state, profile=True)
-                print(f"💰 {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} mengajukan: {selected['negotiated_budget']} {selected['tipe_budget']}")
+                print(
+                    f"Tawaran dari      : {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']}"
+                    f"\nPesan           : \n{selected['message']}"
+                    f"\nLokasi          : {selected['location_left']}"
+                    f"\nTanggal         : {selected['date']}"
+                    f"\nWaktu           : {selected['time']}"
+                    f"\nBudget Diajukan : {selected['negotiated_budget']} ({selected['tipe_budget']})"
+                    f"\nStatus          : {selected['status']}"
+                )
                 print("-------------------------")
                 if (merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['status'] == 'pending'):
                     print("[S] Pembayaran Diterima")
@@ -67,9 +75,9 @@ def listCatalogApplications(state, catalog_id):
                         FILE_PATH_FINDER, 
                         'applications_id', 
                         selected['applications_id'], 
-                        {'status': 'paid'}
+                        {'status': 'paid'},
+                        f"✅ Pembayaran diterima sebesar {selected['negotiated_budget']}."
                     )
-                    cardTemplate("Berhasil!",f"✅ Pembayaran diterima sebesar {selected['negotiated_budget']}.")
             
                 if action == 'b':
                     headerTemplate("Pengajuan Negosiasi Balik", state, profile=True)
@@ -108,9 +116,9 @@ def listCatalogApplications(state, catalog_id):
                         {'status': 'waiting for finder',
                         'tipe_budget': tipe_budget,
                         'negotiated_budget': new_budget
-                    })
-                    
-                    cardTemplate("Berhasil!","💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Finder.")
+                        },
+                        "💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Finder."
+                    )
                     break
                 
                 elif action == 'a':
@@ -121,8 +129,9 @@ def listCatalogApplications(state, catalog_id):
                         {'status': 'accepted',
                         'tipe_budget': selected['tipe_budget'],
                         'negotiated_budget': selected['negotiated_budget']
-                    })
-                    cardTemplate("Berhasil!",f"✅ Tawaran {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.\n Silahkan menunggu konfirmasi pembayaran dari Finder.")
+                        },
+                        f"✅ Tawaran {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.\n Silahkan menunggu konfirmasi pembayaran dari Finder."
+                        )
                     break
 
                 elif action == 'x':
@@ -235,11 +244,12 @@ def listOrderApplications(state, applications_id):
                 {'status': 'waiting for photographer',
                 'tipe_budget': tipe_budget,
                 'negotiated_budget': new_budget
-            })
-            cardTemplate("Berhasil!","💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Photographer.")
+                },
+                "💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Photographer."
+                )
             return
         
-        if (pilihan_aksi == 'c') and (applications_selected['status'] in ['accepted', 'rejected', 'pending', 'paid']):
+        if (pilihan_aksi == 'c') and (applications_selected['status'] not in ['accepted', 'rejected', 'pending', 'paid']):
             deleteRowById(
                 FILE_PATH_PHOTOGRAPHER, 
                 'applications_id', 
@@ -256,8 +266,9 @@ def listOrderApplications(state, applications_id):
                 {"status": 'accepted',
                 'tipe_budget': applications_selected['tipe_budget'],
                 'negotiated_budget': applications_selected['negotiated_budget']
-            })
-            cardTemplate("Berhasil!","✅ Negosiasi berhasil diterima. Silahkan lanjut ke pembayaran.")
+                }, 
+                "✅ Negosiasi berhasil diterima. Silahkan lanjut ke pembayaran."
+            )
             menuPayment(state, applications_selected, catalog_info, photographer_info)
             return
         
@@ -269,9 +280,9 @@ def listOrderApplications(state, applications_id):
                 FILE_PATH_PHOTOGRAPHER, 
                 'applications_id', 
                 applications_id, 
-                {"status": 'rejected'}
+                {"status": 'rejected'},
+                "❌ Negosiasi berhasil ditolak."
             )
-            cardTemplate("Berhasil!","❌ Negosiasi berhasil ditolak.")
             return
         
         elif pilihan_aksi not in ['a', 'j', 'b', 't', 'k', 'x', 'c', 'l']:

@@ -5,3 +5,4 @@ applications_id,job_id,user_id,message,tipe_budget,negotiated_budget,status
 4,2,p005,Saya akan bersungguh sungguh,proyek,5000000,waiting for finder
 5,12,p005,saya mempertaruhkan nyawa ini,1,20000000000,paid
 6,3,p005,terimakasih mohon maaf bila banyak kesalahan yang terjadi,jam,200000,waiting for finder
+7,13,p002,saya bisa dokumentasi acara seperti ini,jam,200000000000,paid

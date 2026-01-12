@@ -304,7 +304,7 @@ def searchAndFilterByDataFrame(
 
     return df, total_pages
 
-def updateRowById(db_name, key_column, id_value, update_data, message=True):
+def updateRowById(db_name, key_column, id_value, update_data, message=""):
     
     db = pd.read_csv(db_name)
     selected_row = db[key_column] == id_value
@@ -314,7 +314,7 @@ def updateRowById(db_name, key_column, id_value, update_data, message=True):
     
     db.to_csv(db_name, index=False)
     if (message):
-        cardTemplate("Berhasil", "Data berhasil diperbarui.")
+        cardTemplate("Berhasil", message)
 
 def deleteRowById(db_name, key_column, id_value, message=""):
     db = pd.read_csv(db_name)

@@ -1,3 +1,6 @@
 applications_id,catalog_id,user_id,message,location,date,time,tipe_budget,negotiated_budget,status
 1,1,f001,,jl. Sandang no 10,12-12-2009,12:12,proyek,5000000,paid
 2,12,f012,saya ingin mencoba,Smk Merdek Bandung,23-09-2026,10:00,proyek,20000000,pending
+3,12,f001,saya membutuhkan ini untuk SMK saya,SMK merdeka Bandung,12-12-2012,12:12,proyek,20000000,waiting for photographer
+4,12,f001,bisa saja,Bandung,12-12-2012,12:12,proyek,1200000,waiting for photographer
+5,13,f001,saya butuh bgt ini buat umkm saya,Jalan raya no 13,12-12-2005,12:12,proyek,500000,paid

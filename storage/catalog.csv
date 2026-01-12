@@ -11,3 +11,4 @@ catalog_id,user_id,title,description,theme,tipe_budget,budget,status,sold_count
 10,p003,Landscape Photography,Paket fotografi lanskap untuk keperluan pribadi atau komersial,Landscape,proyek,4000000,available,0
 11,p002,Product Photography,Layanan fotografi produk untuk keperluan bisnis dan pemasaran,Product,jam,200000,available,4
 12,p005,Graduation diluar Ruangan,Saya bisa foto diluar ruangan jika ada memiliki event graduation,Event Outdoor,proyek,20000000,available,0
+13,p002,Iklan Baju tiktok,saya bisa membuat foto baju baju anda menjadi lebih menarik,Product Fashion Advertising,proyek,500000,available,1

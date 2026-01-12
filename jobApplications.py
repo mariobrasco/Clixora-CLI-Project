@@ -45,7 +45,16 @@ def listJobsFinder(state, job_id):
             
             while True:
                 headerTemplate("Detail Tawaran", state, profile=True)
-                print(f"💰 {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} mengajukan: {selected['negotiated_budget']}\n")
+                print(
+                    f"Tawaran dari      : {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']}"
+                    f"\nPesan           : \n{selected['message']}"
+                    f"\nLokasi          : {selected['location_left']}"
+                    f"\nTanggal         : {selected['date']}"
+                    f"\nWaktu           : {selected['time']}"
+                    f"\nBudget Diajukan : {selected['negotiated_budget']} ({selected['tipe_budget']})"
+                    f"\nStatus          : {selected['status']}"
+                )
+                print("-------------------------")
                 print("[A] Terima tawaran dan Bayar   [T] Tolak tawaran")
                 print(f"[B] Ajukan negosiasi balik     {'[C] Bayar Photographer' if selected['status'] == 'accepted' else ''}")
                 print("[K] Kembali")
@@ -62,9 +71,9 @@ def listJobsFinder(state, job_id):
                         FILE_PATH_FINDER, 
                         'applications_id', 
                         selected['applications_id'], 
-                        {'status': 'rejected'}
+                        {'status': 'rejected'},
+                        "❌ Tawaran berhasil ditolak."
                     )
-                    cardTemplate("Berhasil!","❌ Tawaran berhasil ditolak.")
                     break
 
                 if action == 'b':
@@ -104,9 +113,10 @@ def listJobsFinder(state, job_id):
                         selected['applications_id'], 
                         {'status': 'waiting for photographer',
                         'tipe_budget': tipe_budget,
-                        'negotiated_budget': new_budget
-                    })
-                    cardTemplate("Berhasil!","💰 Negosiasi balasan dikirim ke Photographer, Silahkan tunggu respon dari Photographer.")
+                        'negotiated_budget': int(new_budget)
+                        },
+                        "💰 Negosiasi balasan dikirim ke Photographer, Silahkan tunggu respon dari Photographer."
+                    )
                     break
                 
                 elif action == 'a':
@@ -117,8 +127,9 @@ def listJobsFinder(state, job_id):
                         {'status': 'accepted',
                         'tipe_budget': selected['tipe_budget'],
                         'negotiated_budget': selected['negotiated_budget']
-                    })
-                    cardTemplate("Berhasil!",f"✅ Tawaran {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}.")
+                        },
+                        f"✅ Tawaran {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} diterima dengan Harga {selected['negotiated_budget']}."
+                    )
                     menuPayment(state, selected, job_info, merge_db[merge_db['user_id'] == selected['user_id']].iloc[0])
                     break
 
@@ -185,9 +196,9 @@ def listJobsApplications(state, applications_id):
                 FILE_PATH_FINDER, 
                 'applications_id', 
                 applications_id, 
-                {'status': 'paid'}
+                {'status': 'paid'},
+                f"✅ Pembayaran diterima sebesar {applications_selected['negotiated_budget']}."
             )
-            cardTemplate("Berhasil!",f"✅ Pembayaran diterima sebesar {applications_selected['negotiated_budget']}.")
         if (choice == 'l' and applications_selected['status'] == 'paid'):
             payment_db = pd.read_csv('storage/payments.csv')
             payment_info = payment_db[payment_db['application_id'] == applications_id].iloc[0]
@@ -231,9 +242,10 @@ def listJobsApplications(state, applications_id):
                 applications_id, 
                 {'status': 'waiting for finder',
                 'tipe_budget': tipe_budget,
-                'negotiated_budget': new_budget
-            })
-            cardTemplate("Berhasil!","💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Finder.")
+                'negotiated_budget': int(new_budget)
+                },
+                "💰 Negosiasi berhasil dikirim , Silahkan tunggu respon dari Finder."
+            )
             return
         
         if (choice == 'b' and applications_selected['status'] not in ['rejected', 'accepted', 'pending', 'paid']):
@@ -250,9 +262,9 @@ def listJobsApplications(state, applications_id):
                 FILE_PATH_FINDER, 
                 'applications_id', 
                 applications_id, 
-                {'status': 'rejected'}
+                {'status': 'rejected'},
+                "❌ Negosiasi berhasil ditolak."
             )
-            cardTemplate("Berhasil!","❌ Negosiasi berhasil ditolak.")
             return
         
         if (choice == 'j' and applications_selected['status'] == 'waiting for photographer'):
@@ -263,8 +275,9 @@ def listJobsApplications(state, applications_id):
                 {'status': 'accepted',
                 'tipe_budget': applications_selected['tipe_budget'],
                 'negotiated_budget': applications_selected['negotiated_budget']
-            })
-            cardTemplate("Berhasil!",f"✅ Negosiasi diterima dengan Harga {applications_selected['negotiated_budget']}.")
+                },
+                f"✅ Negosiasi diterima dengan Harga {applications_selected['negotiated_budget']}."
+            )
             return
         
         if (choice not in ['a', 't', 'j', 'k', 'x', 'b', 's', 'l']):

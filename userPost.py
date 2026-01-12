@@ -99,6 +99,7 @@ def myCatalog(state):
                          'budget': catalog_detail['budget'], 
                          'status': catalog_detail['status'], 
                          'tipe_budget': catalog_detail['tipe_budget']},
+                        "Catalog berhasil diperbarui."
                     )
                     break  
 
@@ -140,7 +141,7 @@ def myApplications(state):
         if merged_db.empty:
             print("⚠️  Anda belum memiliki lamaran.")
         else:
-            print(merged_db[['Lamaran Id', "Judul Lowongan", "Lokasi", "Tanggal", "Waktu", "Pesan", 'Budget', 'Status Lamaran']].to_string(index=False))
+            print(merged_db[['Lamaran Id', "Judul Lowongan", "Lokasi", "Tanggal", "Waktu", 'Budget', 'Status Lamaran']].to_string(index=False))
         print("--------------------------------")
         print("[K] Kembali    [X] Keluar dari program     [L] logout.")
         footerTemplate()
@@ -275,8 +276,9 @@ def myJobs(state):
                          'location': job_detail['location'], 
                          'date_needed': job_detail['date_needed'], 
                          'time': job_detail['time']},
+                        "Lowongan berhasil diperbarui."
                     )
-                    break  # reload list setelah edit
+                    break 
 
                 elif aksi_detail == '3':
                     
@@ -315,7 +317,7 @@ def myOrders(state):
         if merge_db.empty:
             print("⚠️  Anda belum memiliki pesanan.")
         else:
-            print(merge_db[['Id Pesanan','Judul Catalog', 'Pesan', 'Lokasi', 'Tanggal', 'Waktu', 'Budget Diajukan', 'Status']].to_string(index=False))
+            print(merge_db[['Id Pesanan','Judul Catalog', 'Lokasi', 'Tanggal', 'Waktu', 'Budget Diajukan', 'Status']].to_string(index=False))
         print("--------------------------------")
         print("[K] Kembali    [X] Keluar dari program     [S] logout.")
         footerTemplate()

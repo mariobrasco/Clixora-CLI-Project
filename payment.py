@@ -94,7 +94,8 @@ Scan menggunakan e-wallet Anda
                     FILE_PATH_APPLICATIONS,
                     'applications_id',
                     applications_info['applications_id'],
-                    {'status': 'paid'}
+                    {'status': 'paid'},
+                    f"Pembayaran sebesar Rp{total} telah berhasil dilakukan.\nTerimakasih telah menggunakan layanan Clixora!"
                 )
                 if ('catalog_id' in applications_info):
                     updateRowById(
@@ -102,9 +103,8 @@ Scan menggunakan e-wallet Anda
                         'catalog_id',
                         applications_info['catalog_id'],
                         {'sold_count': int(event_info['sold_count']) + 1},
-                        message=False
+                        f"Pembayaran sebesar Rp{total} telah berhasil dilakukan.\nTerimakasih telah menggunakan layanan Clixora!"
                     )
-                cardTemplate("Berhasil", f"Pembayaran sebesar Rp{total} telah berhasil dilakukan kepada {photographer_info['username']}.\nTerimakasih telah menggunakan layanan Clixora!")
                 return
             elif konfirmasi.lower() == 'batal':
                 cardTemplate("Batal!","Pembayaran dibatalkan.")
@@ -113,31 +113,44 @@ Scan menggunakan e-wallet Anda
                 cardTemplate(f"Input '{konfirmasi}' tidak valid.")
             
     elif metode == '2':
-        headerTemplate("PEMBAYARAN CASH", state, profile=True)
-        print("Anda memilih metode pembayaran Cash.") 
-        print(f"1. Silahkan lakukan pembayaran secara langsung kepada Photographer saat pekerjaan selesai.") 
-        print(f"2. Siapkan uang Tunai sebesar Rp{total}!")
-        print(f"3. Jika sudah membayar Photographer, Silahkan Ingatkan photographer untuk mengkonfirmasi bahwa pembayaran telah diterima")
-        print("--------------------------------")
-        print("[L] Lanjutkan      [B] Batal     ")
-        footerTemplate()
-        aksi = input("Pilih Aksi: ").lower()
-        
-        if (aksi == 'b'):
-            cardTemplate("Batal!", "Pembayaran dibatalkan.")
-            return
-        payment_data = {
-            'payment_id': autoIncrementCustom("pm", PAYMENT_CSV_PATH, 'payment_id'), 
-            'user_id': applications_info['user_id'], 
-            'application_id': applications_info['applications_id'], 
-            'application_type': 'catalog' if 'catalog_id' in applications_info else 'job', 
-            'payment_method': 'cash',
-            'payment_type': tipe_pembayaran,
-            'payment_refs': autoIncrementCustom("ref", PAYMENT_CSV_PATH, 'payment_refs'),
-            'amount': total,
-            'status': 'pending',
-            'paid_at': ""
-            }
-        payment_df = pd.DataFrame([payment_data])
-        payment_df.to_csv(PAYMENT_CSV_PATH, mode='a', header=False, index=False)
-        cardTemplate("Berhasil", f"Pembayaran sebesar Rp{total} telah tercatat sebagai 'pending'.")
+        while True:
+            headerTemplate("PEMBAYARAN CASH", state, profile=True)
+            print("Anda memilih metode pembayaran Cash.") 
+            print(f"1. Silahkan lakukan pembayaran secara langsung kepada Photographer saat pekerjaan selesai.") 
+            print(f"2. Siapkan uang Tunai sebesar Rp{total}!")
+            print(f"3. Jika sudah membayar Photographer, Silahkan Ingatkan photographer untuk mengkonfirmasi bahwa pembayaran telah diterima")
+            print("--------------------------------")
+            print("[L] Lanjutkan      [B] Batal     ")
+            footerTemplate()
+            aksi = input("Pilih Aksi: ").lower()
+            
+            if (aksi == 'b'):
+                cardTemplate("Batal!", "Pembayaran dibatalkan.")
+                return
+            if (aksi == 'l'):
+                payment_data = {
+                    'payment_id': autoIncrementCustom("pm", PAYMENT_CSV_PATH, 'payment_id'), 
+                    'user_id': applications_info['user_id'], 
+                    'application_id': applications_info['applications_id'], 
+                    'application_type': 'catalog' if 'catalog_id' in applications_info else 'job', 
+                    'payment_method': 'cash',
+                    'payment_type': tipe_pembayaran,
+                    'payment_refs': autoIncrementCustom("ref", PAYMENT_CSV_PATH, 'payment_refs'),
+                    'amount': total,
+                    'status': 'pending',
+                    'paid_at': ""
+                    }
+                payment_df = pd.DataFrame([payment_data])
+                payment_df.to_csv(PAYMENT_CSV_PATH, mode='a', header=False, index=False)
+                updateRowById(
+                    FILE_PATH_APPLICATIONS,
+                    'applications_id',
+                    applications_info['applications_id'],
+                    {'status': 'pending'},
+                    f"Pembayaran sebesar Rp{total} telah tercatat sebagai 'pending'."
+                )
+                break
+            else:
+                cardTemplate(f"Input '{aksi}' tidak valid.")
+                continue
+            

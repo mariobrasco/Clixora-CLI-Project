@@ -28,34 +28,36 @@ def menuLogin(state):
 def forgotPassword(state):
     headerTemplate("FORM UBAH PASSWORD", state, profile=False)
     print("Jika Ingin membatalkan proses ubah password, ketik [batal], '*' artinya tidak boleh kosong\n")
-    
-    input_username = askInput("Masukkan username terdaftar*: ", True)
-    if (not input_username):
-        return
-    input_email = askInput("Masukkan email terdaftar*: ", True)
-    if (not input_email):
-        return
+    while True:
+        input_username = askInput("Masukkan username terdaftar*: ", True)
+        if (not input_username):
+            return
+        input_email = askInput("Masukkan email terdaftar*: ", True)
+        if (not input_email):
+            return
 
-    account_db = pd.read_csv('storage/user.csv')
-    user_rows = account_db[
-        (account_db['username'] == input_username) &
-        (account_db['email'] == input_email)
-    ]
+        account_db = pd.read_csv('storage/user.csv')
+        user_rows = account_db[
+            (account_db['username'] == input_username) &
+            (account_db['email'] == input_email)
+        ]
 
-    if user_rows.empty:
-        cardTemplate(
-            "Peringatan!",
-            "Username dan email tidak cocok atau tidak terdaftar."
-        )
-        return
-    user_idx = user_rows.index[0]
-    new_password = askInput("Masukkan password baru*: ", True)
-    if (not new_password):
-        return
+        if user_rows.empty:
+            cardTemplate(
+                "Peringatan!",
+                "Username dan email tidak cocok atau tidak terdaftar."
+            )
+            continue
+        user_idx = user_rows.index[0]
+        print(f"(Verifikasi berhasil untuk user '{input_username}'. Silahkan masukkan password baru.)")
+        new_password = askInput("Masukkan password baru*: ", True)
+        if (not new_password):
+            return
 
-    account_db.at[user_idx, 'password'] = new_password
-    account_db.to_csv('storage/user.csv', index=False)
-    cardTemplate("Berhasil!", "Password berhasil diperbarui. Silahkan login dengan password baru Anda.")
+        account_db.at[user_idx, 'password'] = new_password
+        account_db.to_csv('storage/user.csv', index=False)
+        cardTemplate("Berhasil!", "Password berhasil diperbarui. Silahkan login dengan password baru Anda.")
+        break
 
 
 def menuRegistrasi(state):

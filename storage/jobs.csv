@@ -11,3 +11,4 @@ job_id,user_id,title,description,theme,tipe_budget,budget,location,date_needed,t
 10,f008,Acara Pernikahan Teman,Mencari fotografer untuk dokumentasi acara pernikahan teman,Event Wedding Nature,proyek,800000,jakarta,12-12-2023,11:00,available
 11,f007,Foto Produk,Membutuhkan fotografer untuk foto produk fashion,Product,jam,100000,bekasi,10-11-2023,15:00,Unavailable
 12,f012,Foto harimau malaya,saya ingn dokumentasi harimau saya tapi diluar ruangan,Documentary Nature Outdoor,jam,10000000,Jakarta,12-06-2026,12:30,available
+13,f001,Marathon Indomaret 2025,dibutuhkan dokumentasi acara marathon 2025,Sports Outdoor Event,jam,5000000,Jl Sandang no 10,12-06-2026,06:00,available
