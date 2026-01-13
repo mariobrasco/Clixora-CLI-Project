@@ -63,8 +63,12 @@ def listCatalogApplications(state, catalog_id):
                 print("-------------------------")
                 if (merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['status'] == 'pending'):
                     print("[S] Pembayaran Diterima")
-                print("[A] Terima tawaran")
-                print("[B] Ajukan negosiasi balik")
+                if (selected['status'] == 'waiting for photographer'):
+                    print("[B] Ajukan Negosiasi Balik")
+                    print("[A] Terima tawaran")
+                    print("[T] Tolak tawaran")
+                if (selected['status'] == 'paid'):
+                    print("[L] Lihat Struk Pembayaran")
                 print("[X] Kembali")
                 footerTemplate()
 
@@ -78,8 +82,33 @@ def listCatalogApplications(state, catalog_id):
                         {'status': 'paid'},
                         f"✅ Pembayaran diterima sebesar {selected['negotiated_budget']}."
                     )
-            
-                if action == 'b':
+                
+                if (action == 't' and selected['status'] == 'waiting for photographer'):
+                    updateRowById(
+                        FILE_PATH_PHOTOGRAPHER, 
+                        'applications_id', 
+                        selected['applications_id'], 
+                        {'status': 'rejected'},
+                        f"❌ Tawaran dari {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']} ditolak."
+                    )
+                    break
+                
+                if (action == 'l' and selected['status'] == 'paid'):
+                    payment_db = pd.read_csv('storage/payments.csv')
+                    payment_info = payment_db[payment_db['application_id'] == selected['applications_id']].iloc[0]
+                    headerTemplate("Struk Pembayaran", state, profile=True)
+                    print(f"Payment ID              : {payment_info['payment_id']}")
+                    print(f"Metode Pembayaran       : {payment_info['payment_method']}")
+                    print(f"Tipe Pembayaran         : {payment_info['payment_type']}")
+                    print(f"Refs                    : {payment_info['payment_refs']}")
+                    print(f"Jumlah dibayar          : {payment_info['amount']}")
+                    print(f"Status                  : {payment_info['status']}")
+                    print(f"Dibayar Pada            : {payment_info['paid_at']}")
+                    footerTemplate()
+                    input("Tekan Enter untuk kembali...")
+                    continue
+                
+                if (action == 'b' and selected['status'] == 'waiting for photographer'):
                     headerTemplate("Pengajuan Negosiasi Balik", state, profile=True)
                     
                     while True:
@@ -121,7 +150,7 @@ def listCatalogApplications(state, catalog_id):
                     )
                     break
                 
-                elif action == 'a':
+                elif (action == 'a' and selected['status'] == 'waiting for photographer'):
                     updateRowById(
                         FILE_PATH_PHOTOGRAPHER, 
                         'applications_id', 
@@ -173,10 +202,8 @@ def listOrderApplications(state, applications_id):
         
         if (applications_selected['status'] == 'waiting for finder'):
             print(f"[A] Ajukan Negosiasi")
-        if (applications_selected['status'] == 'waiting for finder'):
-            print(f"[T] Tolak Negosiasi")
-        if (applications_selected['status'] == 'waiting for finder'):
             print(f"[J] Terima Negosiasi dan Bayar")
+            print(f"[T] Tolak Negosiasi")
         elif (applications_selected['status'] == 'accepted'):
             print(f"[B] Bayar Pesanan")
         if (applications_selected['status'] == 'paid'):

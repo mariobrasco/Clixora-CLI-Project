@@ -12,3 +12,4 @@ catalog_id,user_id,title,description,theme,tipe_budget,budget,status,sold_count
 11,p002,Product Photography,Layanan fotografi produk untuk keperluan bisnis dan pemasaran,Product,jam,200000,available,4
 12,p005,Graduation diluar Ruangan,Saya bisa foto diluar ruangan jika ada memiliki event graduation,Event Outdoor,proyek,20000000,available,0
 13,p002,jasa foto wisuda sekolah,"Jasa foto wisuda profesional. Unlimited shoot, free 15 foto edit, file high-res, dan fotografer berpengalaman.",School,proyek,1500000,available,0
+14,p002,test,tes,Nature,jam,12000,available,0

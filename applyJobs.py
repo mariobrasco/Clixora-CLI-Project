@@ -2,13 +2,12 @@ import pandas as pd
 
 from utility import autoIncrementNumber, cardTemplate, validasiAngka, headerTemplate, footerTemplate
 
-jobs_applications_db = pd.read_csv('storage/jobsApplications.csv')
-
 def applyJobs(state, job_data):
     if (state['account_session'] is not None):
         if (state['account_session']['role'] != 'photographer'):
             cardTemplate("Peringatan!", "⚠️  Hanya akun photographer yang dapat melamar pekerjaan.")
             return
+    jobApplications_db = pd.read_csv('storage/jobsApplications.csv')
     headerTemplate("PROSES PELAMARAN", state, True)
     print("Anda akan melamar pada pekerjaan berikut:")
     print(f"Job ID          : {job_data['job_id']}")
@@ -20,12 +19,13 @@ def applyJobs(state, job_data):
     print("[1] Setuju")
     print("[2] Negosiasi Harga")
     print("[B] Batal Pelamaran")
-    aksi = input("Masukkan pilihan Anda: ")
-    if (aksi.lower() == 'b'):
-        cardTemplate("Info!", "Proses pelamaran dibatalkan, kembali ke menu sebelumnya.")
-        return
+    
     
     while True:
+        aksi = input("Masukkan pilihan Anda: ")
+        if (aksi.lower() == 'b'):
+            cardTemplate("Info!", "Proses pelamaran dibatalkan, kembali ke menu sebelumnya.")
+            return
         if (aksi == '1'):
             tipe_budget = job_data['tipe_budget']
             negotiated_budget = job_data['budget']
@@ -56,10 +56,8 @@ def applyJobs(state, job_data):
     message = input("Masukkan pesan tambahan untuk Finder: ")
     footerTemplate()
 
-    current_apps_db = pd.read_csv('storage/jobsApplications.csv')
-
     messages_data = {
-        'applications_id': autoIncrementNumber(current_apps_db), 
+        'applications_id': autoIncrementNumber(jobApplications_db), 
         'job_id': job_data['job_id'],
         "user_id": state['account_session']['user_id'] or "",
         'deskripsi': message,

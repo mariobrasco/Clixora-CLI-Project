@@ -11,7 +11,7 @@ def login(username, password, state):
 
 def autoIncrementUserId(role_id):
     account_db = pd.read_csv('storage/user.csv')
-    # Filter existing IDs by role prefix (p or f)
+   
     role_users = account_db[account_db['user_id'].str.startswith(role_id)]
 
     if (len(role_users) == 0):
@@ -20,7 +20,7 @@ def autoIncrementUserId(role_id):
         max_id = role_users['user_id'].str[1:].astype(int).max()
         new_number = max_id + 1
 
-    # Format number into 3 digits (e.g., 001, 002, 015)
+    #(001, 002, 015)
     new_user_id = f"{role_id}{new_number:03}"
     return new_user_id
 
@@ -184,21 +184,6 @@ def validasiUsername(username_register):
         return True
 
 # ======================= CRUD ======================= 
-def getAllData(db_name):
-    db = pd.read_csv(db_name)
-    start_no = 1
-    db.insert(0, 'No', range(start_no, start_no + len(db)))
-    return db
-
-def getDataSpesificColumn(db_name, select_columns):
-    db = pd.read_csv(db_name)
-    db = db[select_columns]
-    return db
-
-def getRowById(db_name, key_column, id_value):
-    db = pd.read_csv(db_name)
-    selected_row = db[db[key_column] == id_value]
-    return selected_row
 
 def mergeCSV(
     left_db,
@@ -220,40 +205,6 @@ def mergeCSV(
         suffixes=suffixes
     )
 
-def searchAndFilterByDBName(
-    db_name,
-    keyword=None,
-    search_columns=None,
-    filters=None,
-    select_columns=None
-):
-    db = pd.read_csv(db_name)
-
-    # Filter
-    if filters:
-        for col, val in filters.items():
-            if isinstance(val, list):
-                db = db[db[col].isin(val)]
-            else:
-                db = db[db[col] == val]
-
-    # Search
-    if keyword:
-        if search_columns is None:
-            search_columns = db.columns
-
-        mask = False
-        for col in search_columns:
-            mask = mask | db[col].astype(str).str.contains(keyword, case=False, na=False)
-
-        db = db[mask]
-
-    # Columns
-    if select_columns:
-        db = db[select_columns]
-
-    return db
-
 def searchAndFilterByDataFrame(
     df,
     keyword=None,
@@ -264,16 +215,16 @@ def searchAndFilterByDataFrame(
     per_page=5
 ):
     # Filter
-    if filters:
+    if (filters):
         for col, val in filters.items():
-            if isinstance(val, list):
-                df = df[df[col].isin(val)]
+            if (isinstance(val, list)):
+                df = df[df[col].str.contains('|'.join(val), case=False, na=False)]
             else:
-                df = df[df[col] == val]
+                df = df[df[col].str.contains(val, case=False, na=False)]
 
     # Search
-    if keyword:
-        if search_columns is None:
+    if (keyword):
+        if (search_columns is None):
             search_columns = df.columns
 
         mask = False
@@ -283,11 +234,11 @@ def searchAndFilterByDataFrame(
         df = df[mask]
 
     # Select columns
-    if select_columns:
+    if (select_columns):
         valid_cols = [c for c in select_columns if c in df.columns]
         df = df[valid_cols]
 
-    # 🔹 total pages (before slicing)
+    # Total pages 
     total_rows = len(df)
     total_pages = total_rows // per_page
     if total_rows % per_page != 0:

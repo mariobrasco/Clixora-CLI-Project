@@ -30,6 +30,7 @@ def findJobs(state):
             'location_left': 'Lokasi'
         })
         theme_text = ', '.join(filter_theme) if isinstance(filter_theme, list) else filter_theme
+        print(filters)
         if (state['account_session'] is None):
             headerTemplate("FIND JOBS")
         else:
@@ -130,50 +131,51 @@ def findJobs(state):
         elif (pilih == "h"):
             searchWord = ""      
         elif (pilih.isdigit() and int(pilih) in tampilan_job['Job Id'].values):
-            selected_post = postAJob_csv[postAJob_csv['job_id'] == int(pilih)].iloc[0]
-            user_info = account_db[account_db['user_id'] == selected_post['user_id']].iloc[0]
-            
-            if (user_info.empty):
-                cardTemplate("Peringatan!","⚠️  Pengguna yang memposting pekerjaan ini tidak ditemukan.")
-                return
-            if (state['account_session'] is None):
-                headerTemplate("DETAIL LOWONGAN PEKERJAAN")
-            else:
-                headerTemplate("DETAIL LOWONGAN PEKERJAAN", state, profile=True)
+            while True:
+                selected_post = postAJob_csv[postAJob_csv['job_id'] == int(pilih)].iloc[0]
+                user_info = account_db[account_db['user_id'] == selected_post['user_id']].iloc[0]
+                
+                if (user_info.empty):
+                    cardTemplate("Peringatan!","⚠️  Pengguna yang memposting pekerjaan ini tidak ditemukan.")
+                    return
+                if (state['account_session'] is None):
+                    headerTemplate("DETAIL LOWONGAN PEKERJAAN")
+                else:
+                    headerTemplate("DETAIL LOWONGAN PEKERJAAN", state, profile=True)
 
-            print(f"Job ID        : {selected_post['job_id']}")
-            print(f"Posted by     : {user_info['username']}")
-            print(f"Judul         : {selected_post['title']}")
-            print(f"Deskripsi     : {selected_post['description']}")
-            print(f"Tema          : {selected_post['theme']}")
-            print(f"Tipe Budget   : {selected_post['tipe_budget']}")
-            print(f"Budget        : {selected_post['budget']}")
-            print(f"Lokasi        : {selected_post['location']}")
-            print(f"Tanggal       : {selected_post['date_needed']}")
-            print(f"Waktu         : {selected_post['time']}")
-            print(f"Status        : {selected_post['status']}")
-            print("--------------------------------")
+                print(f"Job ID        : {selected_post['job_id']}")
+                print(f"Posted by     : {user_info['username']}")
+                print(f"Judul         : {selected_post['title']}")
+                print(f"Deskripsi     : {selected_post['description']}")
+                print(f"Tema          : {selected_post['theme']}")
+                print(f"Tipe Budget   : {selected_post['tipe_budget']}")
+                print(f"Budget        : {selected_post['budget']}")
+                print(f"Lokasi        : {selected_post['location']}")
+                print(f"Tanggal       : {selected_post['date_needed']}")
+                print(f"Waktu         : {selected_post['time']}")
+                print(f"Status        : {selected_post['status']}")
+                print("--------------------------------")
 
-            print("[1] Lamar Pekerjaan ini      [2] Lihat Profil      [0] Kembali ")
-            footerTemplate()
-            aksi = input("Pilih aksi: ")
-            
-            if (aksi == '1' and state['account_session'] is not None and selected_post['status'] == 'available'):
-                applyJobs(state, selected_post)
-            elif (aksi == '1' and state['account_session'] is not None and selected_post['status'] != 'available'):
-                cardTemplate("Peringatan!","⚠️  Lowongan pekerjaan ini tidak tersedia untuk dilamar.")
-            elif (aksi == '1' and state['account_session'] is None):
-                cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
-                menuLogin(state)
-            elif (aksi == '2' and state['account_session'] is None):
-                cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melihat profil finder.")
-                menuLogin(state)
-            elif (aksi == '2'):
-                viewUserProfile(state, user_info['user_id'])
-            elif (aksi == '0'):
-                continue
-            
-            else:
-                cardTemplate("Peringatan!","⚠️  Job Id tidak ditemukan.")
+                print("[1] Lamar Pekerjaan ini      [2] Lihat Profil      [0] Kembali ")
+                footerTemplate()
+                aksi = input("Pilih aksi: ")
+                
+                if (aksi == '1' and state['account_session'] is not None and selected_post['status'] == 'available'):
+                    applyJobs(state, selected_post)
+                elif (aksi == '1' and state['account_session'] is not None and selected_post['status'] != 'available'):
+                    cardTemplate("Peringatan!","⚠️  Lowongan pekerjaan ini tidak tersedia untuk dilamar.")
+                elif (aksi == '1' and state['account_session'] is None):
+                    cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melamar pekerjaan.")
+                    menuLogin(state)
+                elif (aksi == '2' and state['account_session'] is None):
+                    cardTemplate("Peringatan!","⚠️  Anda harus login terlebih dahulu untuk melihat profil finder.")
+                    menuLogin(state)
+                elif (aksi == '2'):
+                    viewUserProfile(state, user_info['user_id'])
+                elif (aksi == '0'):
+                    break
+                
+                else:
+                    cardTemplate("Peringatan!","⚠️  Mohon masukkan input sesuai.")
         else:
             cardTemplate("Peringatan!","⚠️  Mohon masukkan input sesuai.")

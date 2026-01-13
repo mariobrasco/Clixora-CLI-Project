@@ -4,3 +4,5 @@ applications_id,catalog_id,user_id,message,location,date,time,tipe_budget,negoti
 3,12,f001,saya membutuhkan ini untuk SMK saya,SMK merdeka Bandung,12-12-2012,12:12,proyek,20000000,waiting for photographer
 4,12,f001,bisa saja,Bandung,12-12-2012,12:12,proyek,1200000,waiting for photographer
 7,5,f017,saya butuh jasa ini secepatnya,bandung,12-02-2025,08:00,proyek,1500000,paid
+8,1,f001,,b,12-12-2012,12:12,proyek,5000000,waiting for photographer
+9,1,f001,,b,12-12-2012,12:12,proyek,5000000,waiting for photographer

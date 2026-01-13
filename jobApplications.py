@@ -54,8 +54,14 @@ def listJobsFinder(state, job_id):
                     f"\nStatus            : {selected['status']}"
                 )
                 print("-------------------------")
-                print("[A] Terima tawaran dan Bayar   [T] Tolak tawaran")
-                print(f"[B] Ajukan negosiasi balik     {'[C] Bayar Photographer' if selected['status'] == 'accepted' else ''}")
+                if (selected['status'] == 'waiting for finder'):
+                    print("[A] Terima tawaran dan Bayar")
+                    print("[B] Ajukan negosiasi balik")
+                    print("[T] Tolak tawaran")
+                if (selected['status'] == 'accepted'):
+                    print("[C] Bayar Photographer")
+                if (selected['status'] == 'paid'):
+                    print("[L] Lihat Struk Pembayaran")
                 print("[K] Kembali")
                 footerTemplate()
 
@@ -65,7 +71,24 @@ def listJobsFinder(state, job_id):
                     photographer_info = merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]
                     menuPayment(state, selected, job_info, photographer_info)
                     break
-                if (action == 't'):
+                if (action == 'l' and selected['status'] == 'paid'):
+                    payment_db = pd.read_csv('storage/payments.csv')
+                    payment_info = payment_db[payment_db['application_id'] == selected['applications_id']].iloc[0]
+                    user_info = merge_db[merge_db['user_id'] == state['account_session']['user_id']].iloc[0]
+                    headerTemplate("Struk Pembayaran", state, profile=True)
+                    print(f"Payment ID              : {payment_info['payment_id']}")
+                    print(f"Finder                  : {user_info['username']}")
+                    print(f"Metode Pembayaran       : {payment_info['payment_method']}")
+                    print(f"Tipe Pembayaran         : {payment_info['payment_type']}")
+                    print(f"Refs                    : {payment_info['payment_refs']}")
+                    print(f"Jumlah dibayar          : {payment_info['amount']}")
+                    print(f"Status                  : {payment_info['status']}")
+                    print(f"Dibayar Pada            : {payment_info['paid_at']}")
+                    footerTemplate()
+                    input("Tekan Enter untuk kembali...")
+                    break
+                
+                if (action == 't' and selected['status'] == 'waiting for finder'):
                     updateRowById(
                         FILE_PATH_FINDER, 
                         'applications_id', 
@@ -75,7 +98,7 @@ def listJobsFinder(state, job_id):
                     )
                     break
 
-                if action == 'b':
+                if action == 'b' and selected['status'] == 'waiting for finder':
                     headerTemplate("Pengajuan Negosiasi Balik", state, profile=True)
                     print("\n💬 Ajukan negosiasi balik ke Photographer")
                     
@@ -118,7 +141,7 @@ def listJobsFinder(state, job_id):
                     )
                     break
                 
-                elif action == 'a':
+                elif action == 'a' and selected['status'] == 'waiting for finder':
                     updateRowById(
                         FILE_PATH_FINDER, 
                         'applications_id', 
@@ -170,9 +193,7 @@ def listJobsApplications(state, applications_id):
         
         if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[A] Ajukan Negosiasi")
-        if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[T] Tolak Negosiasi")
-        if (applications_selected['status'] == 'waiting for photographer'):
             print(f"[J] Terima Negosiasi")
         if (applications_selected['status'] not in ['rejected', 'accepted', 'pending', 'paid']):
             print("[B] Batalkan Lamaran")

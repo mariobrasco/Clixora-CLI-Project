@@ -8,3 +8,7 @@ applications_id,job_id,user_id,message,tipe_budget,negotiated_budget,status
 7,13,p002,saya bisa dokumentasi acara seperti ini,jam,200000000000,paid
 9,12,p002,,jam,10000000,waiting for finder
 10,14,p002,-,2,3000000,paid
+11,2,p002,,proyek,5000000,waiting for finder
+12,2,p002,,proyek,5000000,waiting for finder
+13,2,p002,,proyek,5000000,waiting for finder
+14,7,p002,ajum,2,2000000,waiting for finder

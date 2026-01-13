@@ -131,41 +131,42 @@ def catalogList(state):
         elif (input_navigasi == "h"):
             searchWord = ""
         elif (input_navigasi.isdigit() and int(input_navigasi) in catalog_db['catalog_id'].values):
-            selected_post = catalog_db[catalog_db['catalog_id'] == int(input_navigasi)].iloc[0]
-            user_info = account_db[account_db['user_id'] == selected_post['user_id']].iloc[0]
-            
-            if user_info.empty:
-                cardTemplate("Error", "Data pemilik katalog tidak ditemukan.")
-                return
-            if (state['account_session'] is None):
-                headerTemplate("DETAIL CATALOG")
-            else:
-                headerTemplate("DETAIL CATALOG", state, profile=False)
-            print(f"Judul  : {selected_post['title']}")
-            print(f"Deskripsi: \n{selected_post['description']}")
-            print(f"\nTema: {selected_post['theme']}")
-            print(f"Budget : {selected_post['budget']} / {selected_post['tipe_budget']}")
-            print(f"\nOleh {user_info['username']} di {user_info['location']}")
-            footerTemplate()
-            
-            print("[1] Pesan Catalog    [2] Lihat Profil    [0] Kembali")
-            aksi = input("Masukan aksi: ").lower()
-            if (aksi == '1' and state['account_session'] is not None and selected_post['status'] == 'available'):
-                negotiateCatalog(state, selected_post)
-            elif (aksi == '1' and state['account_session'] is not None and selected_post['status'] != 'available'):
-                cardTemplate("Peringatan!","⚠️  Catalog ini tidak tersedia untuk dipesan.")
-            elif (aksi == '1' and state['account_session'] is None):
-                cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melanjutkan proses .")
-                menuLogin(state)
-            elif (aksi == '2' and state['account_session'] is None):
-                cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melihat profil photographer.")
-                menuLogin(state)
-            elif (aksi == '2'):
-                viewUserProfile(state, user_info['user_id'])
-            elif(aksi == '0'):
-                continue
-            else:
-                cardTemplate("Peringatan!",f"Input {aksi} tidak valid, silahkan masukan input yang sesuai.")
+            while True:
+                selected_post = catalog_db[catalog_db['catalog_id'] == int(input_navigasi)].iloc[0]
+                user_info = account_db[account_db['user_id'] == selected_post['user_id']].iloc[0]
+                
+                if user_info.empty:
+                    cardTemplate("Error", "Data pemilik katalog tidak ditemukan.")
+                    return
+                if (state['account_session'] is None):
+                    headerTemplate("DETAIL CATALOG")
+                else:
+                    headerTemplate("DETAIL CATALOG", state, profile=False)
+                print(f"Judul  : {selected_post['title']}")
+                print(f"Deskripsi: \n{selected_post['description']}")
+                print(f"\nTema: {selected_post['theme']}")
+                print(f"Budget : {selected_post['budget']} / {selected_post['tipe_budget']}")
+                print(f"\nOleh {user_info['username']} di {user_info['location']}")
+                footerTemplate()
+                
+                print("[1] Pesan Catalog    [2] Lihat Profil    [0] Kembali")
+                aksi = input("Masukan aksi: ").lower()
+                if (aksi == '1' and state['account_session'] is not None and selected_post['status'] == 'available'):
+                    negotiateCatalog(state, selected_post)
+                elif (aksi == '1' and state['account_session'] is not None and selected_post['status'] != 'available'):
+                    cardTemplate("Peringatan!","⚠️  Catalog ini tidak tersedia untuk dipesan.")
+                elif (aksi == '1' and state['account_session'] is None):
+                    cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melanjutkan proses .")
+                    menuLogin(state)
+                elif (aksi == '2' and state['account_session'] is None):
+                    cardTemplate("Peringatan!", "Anda harus login terlebih dahulu untuk melihat profil photographer.")
+                    menuLogin(state)
+                elif (aksi == '2'):
+                    viewUserProfile(state, user_info['user_id'])
+                elif(aksi == '0'):
+                    break
+                else:
+                    cardTemplate("Peringatan!",f"Input {aksi} tidak valid, silahkan masukan input yang sesuai.")
         else:
             cardTemplate("Peringatan!",f"Input {input_navigasi} tidak valid, silahkan masukan input yang sesuai.")
             

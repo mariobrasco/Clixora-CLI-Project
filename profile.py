@@ -3,7 +3,7 @@ import pandas as pd
 from applyJobs import applyJobs
 from loginRegister import menuLogin
 from negotiateCatalog import negotiateCatalog
-from utility import cardTemplate, headerTemplate, footerTemplate
+from utility import cardTemplate, headerTemplate, footerTemplate, validasiUsername
 
 def profilePage(state):
     while True:
@@ -47,7 +47,12 @@ def profilePage(state):
             print("\nSilahkan kosongkan kolom jika tidak diubah")
             edited = []
             if state['account_session']['role'] == "finder":
-                username = input(f"Username {user_info['username']} : ")
+                while True:
+                    username = input(f"Username {user_info['username']} : ")
+                    if (not validasiUsername(username) and username):
+                        cardTemplate("Peringatan!", "⚠️  Username sudah digunakan atau mengandung spasi. Silahkan coba lagi.")
+                        continue
+                    break
                 email =    input(f"Email {user_info['email']}    : ")
                 password = input(f"Password {user_info['password']} : ")
                 if (username):
