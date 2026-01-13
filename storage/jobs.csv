@@ -12,3 +12,4 @@ job_id,user_id,title,description,theme,tipe_budget,budget,location,date_needed,t
 11,f007,Foto Produk,Membutuhkan fotografer untuk foto produk fashion,Product,jam,100000,bekasi,10-11-2023,15:00,Unavailable
 12,f012,Foto harimau malaya,saya ingn dokumentasi harimau saya tapi diluar ruangan,Documentary Nature Outdoor,jam,10000000,Jakarta,12-06-2026,12:30,available
 13,f001,Marathon Indomaret 2025,dibutuhkan dokumentasi acara marathon 2025,Sports Outdoor Event,jam,5000000,Jl Sandang no 10,12-06-2026,06:00,available
+14,f017,foto wisuda di sekolah X,"bertempat di lapangan X, total siswa sebanyak 1000",School,proyek,2000000,bandung,19-02-2026,07:00,available

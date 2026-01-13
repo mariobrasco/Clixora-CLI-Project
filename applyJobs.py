@@ -56,8 +56,10 @@ def applyJobs(state, job_data):
     message = input("Masukkan pesan tambahan untuk Finder: ")
     footerTemplate()
 
+    current_apps_db = pd.read_csv('storage/jobsApplications.csv')
+
     messages_data = {
-        'applications_id': autoIncrementNumber(jobs_applications_db),
+        'applications_id': autoIncrementNumber(current_apps_db), 
         'job_id': job_data['job_id'],
         "user_id": state['account_session']['user_id'] or "",
         'deskripsi': message,

@@ -201,7 +201,7 @@ def myJobs(state):
         elif(int(aksi) in jobs_db_user['Job Id'].values):
             job_id = int(aksi)
             job_detail = jobs_db[jobs_db['job_id'] == job_id].iloc[0]
-            
+             
             while True:
                 headerTemplate("Detail Lowongan", state, profile=True)
 

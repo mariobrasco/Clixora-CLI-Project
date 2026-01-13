@@ -105,11 +105,18 @@ def findJobs(state):
             filter_location = ""
         elif (pilih == "f"):
             print("Masukkan filter yang diinginkan. Kosongkan jika tidak ingin menambahkan filter pada kolom tersebut.")
-            filter_theme = selectTheme(filter_theme.split() if filter_theme else [])
+
+            if isinstance(filter_theme, list):
+                themes_to_send = filter_theme
+            else:
+                themes_to_send = filter_theme.split() if filter_theme else []
+
+            filter_theme = selectTheme(themes_to_send)
             filter_budget = input("Filter Budget (angka): ")
             filter_location = input("Filter Location: ")
 
             filters = {}
+            
             if filter_theme:
                 filters['Tema'] = " ".join(filter_theme)
             if filter_budget:

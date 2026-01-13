@@ -6,7 +6,6 @@ from utility import askInput, cardTemplate, deleteRowById, updateRowById, valida
 
 FILE_PATH_PHOTOGRAPHER = 'storage/catalogApplications.csv'
 
-
 def listCatalogApplications(state, catalog_id):
     while True:
         catalog_db = pd.read_csv('storage/catalog.csv')
@@ -14,6 +13,7 @@ def listCatalogApplications(state, catalog_id):
         application_info = pd.read_csv(FILE_PATH_PHOTOGRAPHER)
         catalog_info = catalog_db[catalog_db['catalog_id'] == catalog_id].iloc[0]
         applications_selected = merge_db[merge_db['catalog_id'] == catalog_id]
+        
         applications_selected = applications_selected.rename(columns={
             'applications_id': 'Id Tawaran',
             'message': 'Pesan',
@@ -53,12 +53,12 @@ def listCatalogApplications(state, catalog_id):
                 headerTemplate("Detail Tawaran", state, profile=True)
                 print(
                     f"Tawaran dari      : {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']}"
-                    f"\nPesan           : \n{selected['message']}"
-                    f"\nLokasi          : {selected['location_left']}"
-                    f"\nTanggal         : {selected['date']}"
-                    f"\nWaktu           : {selected['time']}"
+                    f"\nPesan             : \n{selected['message']}"
+                    f"\nLokasi            : {selected['location']}"
+                    f"\nTanggal           : {selected['date']}"
+                    f"\nWaktu             : {selected['time']}"
                     f"\nBudget Diajukan : {selected['negotiated_budget']} ({selected['tipe_budget']})"
-                    f"\nStatus          : {selected['status']}"
+                    f"\nStatus            : {selected['status']}"
                 )
                 print("-------------------------")
                 if (merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['status'] == 'pending'):

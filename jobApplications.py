@@ -8,9 +8,9 @@ FILE_PATH_FINDER = 'storage/jobsApplications.csv'
 def listJobsFinder(state, job_id):
     while True:
         jobs_db = pd.read_csv('storage/jobs.csv')
-        merge_db = mergeCSV(FILE_PATH_FINDER, 'storage/user.csv', 'user_id', 'user_id')
+        merge_db = mergeCSV(FILE_PATH_FINDER, 'storage/user.csv', 'user_id', 'user_id') 
         job_info = jobs_db[jobs_db['job_id'] == job_id].iloc[0]
-        application_info = pd.read_csv(FILE_PATH_FINDER)
+        application_info = pd.read_csv(FILE_PATH_FINDER)    
         applications_selected = merge_db[merge_db['job_id'] == job_id] 
         applications_selected = applications_selected.rename(columns={
             'applications_id': 'Id Tawaran',
@@ -42,17 +42,16 @@ def listJobsFinder(state, job_id):
         elif choice.isdigit() and int(choice) in applications_selected['Id Tawaran'].values:
             selected =  application_info[application_info['applications_id'] == int(choice)].iloc[0]
         
-            
             while True:
                 headerTemplate("Detail Tawaran", state, profile=True)
                 print(
                     f"Tawaran dari      : {merge_db[merge_db['user_id'] == selected['user_id']].iloc[0]['username']}"
-                    f"\nPesan           : \n{selected['message']}"
-                    f"\nLokasi          : {selected['location_left']}"
-                    f"\nTanggal         : {selected['date']}"
-                    f"\nWaktu           : {selected['time']}"
+                    f"\nPesan             : {selected['message']}"
+                    f"\nLokasi            : {job_info['location']}" 
+                    f"\nTanggal           : {job_info['date_needed']}" 
+                    f"\nWaktu             : {job_info['time']}"
                     f"\nBudget Diajukan : {selected['negotiated_budget']} ({selected['tipe_budget']})"
-                    f"\nStatus          : {selected['status']}"
+                    f"\nStatus            : {selected['status']}"
                 )
                 print("-------------------------")
                 print("[A] Terima tawaran dan Bayar   [T] Tolak tawaran")

@@ -1,6 +1,6 @@
 user_id,username,password,role,location,email,bio
-f001,arkan,12,finder,,arkan2006@gmail.com,seorang pemuda yang ganteng
-p002,budiman,ate,photographer,Bandung raya,budi123@gmail.com,Seorang seniman
+f001,arkan,123,finder,,arkan2006@gmail.com,seorang pemuda yang ganteng
+p002,budiman,ate,photographer,cileunyi,budi123@gmail.com,seorang seniman asli cileunyi
 f003,siti,pass789,finder,yogyakarta,sitiayu@gmail.com,mahasiswi yang rajin dan aktif
 f004,ajumalaka,ajumedanbgt,finder,cimahi,ajumalaka@gmail.com,admin yang berdedikasi tinggi
 f005,ataha,ajunm,finder,,dwa,
@@ -15,3 +15,7 @@ f011,uber,ubertos123,finder,,uber@gmail.com,
 p005,asep jaenudin,asepcihuy,photographer,Jakarta,asep@gmail.com,Seorang photographer junior ig: @asepJaenudin
 f012,zahra susanti,zahra123,finder,,zahzi@gmail.com,
 f013,jilan,ajumalaka,finder,,kitabisa@gmail.com,
+f014,mariobrascoph,mariobrasco123,finder,,mariobrasco@gmail.com,
+f015,mariobph,mario123,finder,,mariobph19@gmail.com,
+f016,mariobph19,mariobph19,finder,,mariobph19@gmail.com,
+f017,liofy,liofy123,finder,,liofyy@gmail.com,
