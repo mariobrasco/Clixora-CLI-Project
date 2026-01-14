@@ -198,7 +198,7 @@ def myJobs(state):
             state['account_session'] = None
             state["input_navigasi"] = None
             return
-        elif(int(aksi) in jobs_db_user['Job Id'].values):
+        elif(aksi.isdigit() and int(aksi) in jobs_db_user['Job Id'].values):
             job_id = int(aksi)
             job_detail = jobs_db[jobs_db['job_id'] == job_id].iloc[0]
              
@@ -331,7 +331,7 @@ def myOrders(state):
             state['account_session'] = None
             state["input_navigasi"] = None
             return
-        elif(int(aksi) in merge_db['Id Pesanan'].values):
+        elif(aksi.isdigit() and int(aksi) in merge_db['Id Pesanan'].values):
             applications_id = int(aksi)
             listOrderApplications(state, applications_id)
         
