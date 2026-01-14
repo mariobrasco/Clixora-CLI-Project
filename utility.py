@@ -215,12 +215,20 @@ def searchAndFilterByDataFrame(
     per_page=5
 ):
     # Filter
-    if (filters):
+    if filters:
         for col, val in filters.items():
-            if (isinstance(val, list)):
-                df = df[df[col].str.contains('|'.join(val), case=False, na=False)]
+            if isinstance(val, list):
+                df = df[
+                    df[col]
+                    .astype(str)
+                    .str.contains('|'.join(map(str, val)), case=False, na=False)
+                ]
             else:
-                df = df[df[col].str.contains(val, case=False, na=False)]
+                df = df[
+                    df[col]
+                    .astype(str)
+                    .str.contains(str(val), case=False, na=False)
+                ]
 
     # Search
     if (keyword):
